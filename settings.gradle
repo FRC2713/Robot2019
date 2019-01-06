@@ -23,3 +23,7 @@ pluginManagement {
         }
     }
 }
+
+include 'robot'
+include 'coprocessor'
+

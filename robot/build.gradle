@@ -1,0 +1,47 @@
+apply plugin: 'java'
+apply plugin: "edu.wpi.first.GradleRIO"
+
+def TEAM = 2713
+def ENTRY_CLASS = "org.iraiders.robot2019.robot.Main"
+def DEBUG = project.hasProperty('debugBuild')
+def includeDesktopSupport = true // Enable Desktop Simulation support
+
+sourceCompatibility = 1.11
+
+repositories {
+  maven { url 'http://devsite.ctr-electronics.com/maven/release/' }
+}
+
+deploy {
+  targets {
+    roboRIO("roborio") {
+      team = TEAM
+    }
+  }
+  artifacts {
+    frcJavaArtifact('frcJava') {
+      targets << "roborio"
+      debug = frc.getDebugOrDefault(DEBUG)
+    }
+    // Copy anything from the 'deploy' directory to the RoboRio
+    fileTreeArtifact('frcStaticFileDeploy') {
+      targets << "roborio"
+      files = fileTree(dir: 'src/main/deploy')
+      directory = '/home/lvuser/deploy'
+    }
+  }
+}
+
+dependencies {
+  compile wpi.deps.wpilib()
+  compile wpi.deps.vendor.java()
+  nativeZip wpi.deps.vendor.jni(wpi.platforms.roborio)
+  nativeDesktopZip wpi.deps.vendor.jni(wpi.platforms.desktop)
+  testCompile 'junit:junit:4.12'
+}
+
+// Add all libraries into 'fat jar' and add manifest
+jar {
+  from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+  manifest edu.wpi.first.gradlerio.GradleRIOPlugin.javaManifest(ENTRY_CLASS)
+}
