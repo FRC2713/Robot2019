@@ -17,7 +17,7 @@ try:
 except ImportError:
   print("Not running on coproc...")
   isRunningOnPi = False
-import sys
+
 
 
 class CamHandler(BaseHTTPRequestHandler):
@@ -152,8 +152,8 @@ if __name__ == '__main__':
   sh = 255
   vh = 255
   # Range of color in hsv
-  lower_c = (h,s,v)
-  upper_c = (hh,sh,vh)
+  lower_c = np.array([h,s,v])
+  upper_c = np.array([hh,sh,vh])
 
   server_thread = Thread(target=serve, args=())
   server_thread.start()
@@ -170,18 +170,19 @@ if __name__ == '__main__':
         else:
           GPIO.output(indicatorLED, GPIO.LOW)
       frame = vs.read()
-      time.sleep(0.1)
+
       # ---- FILTER OUT THINGS WE DON'T WANT ----
       hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
       mask = cv2.inRange(hsv, lower_c, upper_c)
       rgb = cv2.cvtColor(mask, cv2.COLOR_BAYER_BG2RGB)
       res = cv2.bitwise_and(frame, frame, mask=mask)
-      cv2.imshow("res",res)
+      cv2.imshow("res", res)
+
       gray = cv2.cvtColor(rgb, cv2.COLOR_BGR2GRAY)
       # gray = cv2.GaussianBlur(gray, (5, 5), 3)
       edged = cv2.Canny(gray, 200, 300)
       if displayDebugWindow:
-        cv2.imshow("contours", gray)
+        cv2.imshow("contours", edged)
 
       _, cnts, _ = cv2.findContours(edged, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
       rectborders = [cv2.minAreaRect(c) for c in cnts]
@@ -238,7 +239,7 @@ if __name__ == '__main__':
                 cv2.putText(frame, "angle: " + str(round(angle_r2, 0)) + "deg", (int(x_r2), int(y_r2 + 60)),
                             cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 0, 0), 1)
                 # if (ratio_r2 < ratio_r + sim_ratio and ratio_r2 > ratio_r - 1):
-                if angle_r + sim_angle > angle_r2 + 61> angle_r - sim_angle:
+                if angle_r + sim_angle > angle_r2 + 61 > angle_r - sim_angle:
                   if abs(area_r / area_r2 - 1) < sim_area:
                     pairs.append([r, r2])
 

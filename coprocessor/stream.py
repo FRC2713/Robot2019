@@ -5,7 +5,7 @@ class WebcamVideoStream:
 
   def __init__(self):
     # initialize the video camera stream and read the first frame from the stream
-    self.stream = cv2.VideoCapture(1)  # 0 = built in camera, 1 = extra camera
+    self.stream = cv2.VideoCapture(0)  # 0 = built in camera, 1 = extra camera
     (self.grabbed, self.frame) = self.stream.read()
 
     # initialize the variable used to indicate if the thread should be stopped
@@ -37,7 +37,7 @@ class WebcamVideoStream:
 
   def read(self):
     # return the frame most recently read
-    #self.frame = self.adjust_gamma(self.frame, 0.1)
+    self.frame = self.adjust_gamma(self.frame, 0.1)
     return self.frame
 
   def stop(self):
