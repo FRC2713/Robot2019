@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 def nothing(x):
     pass
-cap = cv2.VideoCapture(1)
+cap = cv2.VideoCapture(0)
 cv2.namedWindow('image')
 cv2.createTrackbar('H','image',0,180,nothing)
 cv2.createTrackbar('S','image',0,255,nothing)

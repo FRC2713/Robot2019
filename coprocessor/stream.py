@@ -1,13 +1,15 @@
 import cv2
 from threading import Thread
 import numpy as np
+
+
 class WebcamVideoStream:
 
   def __init__(self):
     # initialize the video camera stream and read the first frame from the stream
     self.stream = cv2.VideoCapture(0)  # 0 = built in camera, 1 = extra camera
     (self.grabbed, self.frame) = self.stream.read()
-
+    self.filtered = self.adjust_gamma(self.frame, 0.1)
     # initialize the variable used to indicate if the thread should be stopped
     self.stopped = False
 
@@ -24,6 +26,7 @@ class WebcamVideoStream:
         return
       # otherwise, read the next frame from the stream
       (self.grabbed, self.frame) = self.stream.read()
+      self.filtered = self.adjust_gamma(self.frame, 0.1)
 
   def adjust_gamma(self, image, gamma=1.0):
     # build a lookup table mapping the pixel values [0, 255] to
@@ -35,9 +38,12 @@ class WebcamVideoStream:
     # apply gamma correction using the lookup table
     return cv2.LUT(image, table)
 
+  def readFiltered(self):
+    # return gamma filtered frame
+    return self.filtered
+
   def read(self):
     # return the frame most recently read
-    self.frame = self.adjust_gamma(self.frame, 0.1)
     return self.frame
 
   def stop(self):
