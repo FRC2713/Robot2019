@@ -26,7 +26,7 @@ class WebcamVideoStream:
         return
       # otherwise, read the next frame from the stream
       (self.grabbed, self.frame) = self.stream.read()
-      self.filtered = self.adjust_gamma(self.frame, 0.1)
+      self.filtered = self.adjust_gamma(self.frame, 1.0)
 
   def adjust_gamma(self, image, gamma=1.0):
     # build a lookup table mapping the pixel values [0, 255] to
