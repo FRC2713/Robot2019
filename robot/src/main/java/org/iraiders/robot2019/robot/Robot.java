@@ -7,9 +7,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.iraiders.robot2019.robot.commands.ExampleCommand;
 import org.iraiders.robot2019.robot.subsystems.ExampleSubsystem;
+import org.iraiders.robot2019.robot.subsystems.LiftSubsystem;
 
 public class Robot extends TimedRobot {
   public static ExampleSubsystem m_subsystem = new ExampleSubsystem();
+  public static LiftSubsystem liftSubsystem = new LiftSubsystem();
+
   public static OI m_oi;
   
   Command m_autonomousCommand;
