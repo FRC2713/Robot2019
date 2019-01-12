@@ -37,7 +37,7 @@ public class LiftSubsystem extends Subsystem {
   }
 
 
-  public enum LiftPositions {
+  public enum LiftPosition {
     STARTING, ROCKET_LOW, ROCKET_MID, ROCKET_HIGH
   }
 }
