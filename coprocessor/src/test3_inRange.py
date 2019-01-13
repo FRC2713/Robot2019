@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 def nothing(x):
     pass
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(1)
 cv2.namedWindow('image')
 h = 78
 s = 106
@@ -35,7 +35,7 @@ while(1):
     # Take each frame
     _, frame_filtered = cap.read()
     #frame_filtered= cv2.imread('ballOrange.jpg')
-    frame_filtered = adjust_gamma(frame_filtered, 1.0)
+    #frame_filtered = adjust_gamma(frame_filtered, 1.0)
     # Convert BGR to HSV
 
     hsv = cv2.cvtColor(frame_filtered, cv2.COLOR_BGR2HSV)

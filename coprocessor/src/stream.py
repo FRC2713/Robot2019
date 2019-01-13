@@ -9,7 +9,8 @@ class WebcamVideoStream:
     # initialize the video camera stream and read the first frame from the stream
     self.stream = cv2.VideoCapture(0)  # 0 = built in camera, 1 = extra camera
     (self.grabbed, self.frame) = self.stream.read()
-    self.filtered = self.adjust_gamma(self.frame, 0.1)
+    self.gamma = 1.0
+    self.filtered = self.adjust_gamma(self.frame, self.gamma)
     # initialize the variable used to indicate if the thread should be stopped
     self.stopped = False
 
@@ -26,7 +27,7 @@ class WebcamVideoStream:
         return
       # otherwise, read the next frame from the stream
       (self.grabbed, self.frame) = self.stream.read()
-      self.filtered = self.adjust_gamma(self.frame, 1.0)
+      self.filtered = self.adjust_gamma(self.frame, self.gamma)
 
   def adjust_gamma(self, image, gamma=1.0):
     # build a lookup table mapping the pixel values [0, 255] to

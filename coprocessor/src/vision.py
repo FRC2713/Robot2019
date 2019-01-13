@@ -100,7 +100,7 @@ def haveSameCoordinates(rect1, rect2):
 
 
 def isCorrectShape(rect):
-  if rect[1][0] > 12 and rect[1][1] > 12:
+  if rect[1][0] > 6 and rect[1][1] > 6:
     correct_ratio = 5.5 / 2.0  # 5.5" by 2" tape strip
     err = 5
     width = rect[1][0]
@@ -138,79 +138,6 @@ def drawBox(frame, rect, color=RED):
   cv2.drawContours(frame, [box], -1, color, 1)
 
 
-def getPairs(rectborders):
-  """
-          This may help in understanding some of the code:
-           _____
-          |     |
-          |     |  * = center, (x, y)
-          |     |  _ and | = side of minimum area rect of contour
-          |     |
-          |     |  h / w = approx 15.3 / 2.0 (dimension of single target rectangle)
-          h  *  |
-          |     |
-          |     |
-          |     |
-          |     |
-          |__w__|
-
-          cv2.minAreaRect(contour) = ((x, y), (w, h), angle)
-
-          Reason for inverting values at times is due to the fact that width and height may not correlate from one rectangle to another (width and height may be switched)
-
-  """
-  pairs = []
-  for r in rectborders:
-    # sim_* resembles range of difference between rectangles that is deemed "acceptable" for them to be a pair
-    sim_ratio = 3
-    sim_angle = 7
-    sim_area = 1
-    if isCorrectShape(r):
-      ratio_r = round(r[1][1] / r[1][0], 2)
-      width = r[1][0]
-      angle_r = round(r[2], 1)
-      if ratio_r < 1:
-        ratio_r = 1 / ratio_r
-        width = r[1][1]
-        angle_r += 90
-
-      area_r = r[1][1] * r[1][0]
-      x_r = r[0][0]
-      y_r = r[0][1]
-
-      for r2 in rectborders:
-        if r == r2 or haveSameCoordinates(r, r2):
-          break
-        elif isCorrectShape(r2):
-          ratio_r2 = round(r2[1][1] / r2[1][0], 2)
-          angle_r2 = round(r2[2], 1)
-          if ratio_r2 < 1:
-            ratio_r2 = 1 / ratio_r2
-            width = r2[1][1]
-            angle_r2 += 90
-
-          area_r2 = r2[1][1] * r2[1][0]
-          x_r2 = r2[0][0]
-          y_r2 = r2[0][1]
-          distance = math.sqrt((y_r2 - y_r) ** 2 + (x_r2 - x_r) ** 2)
-          cv2.line(frame_filtered, (int(x_r2), int(y_r2)), (int(x_r), int(y_r)), YELLOW, 1)
-          cv2.putText(frame_filtered, "angle: " + str(round(angle_r2, 0)) + "deg", (int(x_r2), int(y_r2 + 60)),
-                      cv2.FONT_HERSHEY_SIMPLEX, 0.4, WHITE, 1)
-          cv2.putText(frame_filtered, "angle: " + str(round(angle_r, 0)) + "deg", (int(x_r), int(y_r + 60)),
-                      cv2.FONT_HERSHEY_SIMPLEX, 0.4, WHITE, 1)
-          if 5 * width < distance < 8 * width:
-
-            if (ratio_r2 < ratio_r + sim_ratio and ratio_r2 > ratio_r - 1):
-
-              for inv in range(-1,2,2):
-                print(inv)
-                if angle_r + sim_angle > angle_r2 - 29 * inv> angle_r - sim_angle:
-                  if abs(area_r / area_r2 - 1) < sim_area:
-                    pairs.append([r, r2])
-
-  return pairs
-
-
 def removeRepeatContours(rectborders):
   # ---- FILTER OUT REPEAT CONTOURS ----
   # Is this necessary???
@@ -230,6 +157,60 @@ def removeRepeatContours(rectborders):
   return rectborders
 
 
+def getPairs(rectborders):
+  pairs = []
+  for r in rectborders:
+    # sim_* resembles range of difference between rectangles that is deemed "acceptable" for them to be a pair
+    sim_ratio = 3
+    sim_angle = 10
+    if isCorrectShape(r):
+
+      width_r = r[1][0]
+      height_r = r[1][1]
+      ratio_r = round(height_r / width_r, 2)
+      angle_r = round(r[2], 1)
+      if ratio_r < 1:
+        ratio_r = 1 / ratio_r
+        width_r = r[1][1]
+        height_r = r[1][0]
+        angle_r += 90
+      x_r = r[0][0]
+      y_r = r[0][1]
+
+      for r2 in rectborders:
+        if r == r2 or haveSameCoordinates(r, r2):
+          break
+        elif isCorrectShape(r2):
+
+          width_r2 = r[1][0]
+          height_r2 = r2[1][1]
+          ratio_r2 = round(height_r2 / width_r2, 2)
+          angle_r2 = round(r2[2], 1)
+          if ratio_r2 < 1:
+            ratio_r2 = 1 / ratio_r2
+            width_r2 = r2[1][1]
+            height_r2 = r2[1][0]
+            angle_r2 += 90
+          avg_width = (width_r + width_r2) / 2
+          avg_height = (height_r + height_r2) / 2
+          x_r2 = r2[0][0]
+          y_r2 = r2[0][1]
+          distance = math.sqrt((y_r2 - y_r) ** 2 + (x_r2 - x_r) ** 2)
+
+          cv2.putText(frame_filtered, "angle: " + str(round(angle_r2, 0)) + "deg", (int(x_r2), int(y_r2 + 60)),
+                      cv2.FONT_HERSHEY_SIMPLEX, 0.4, WHITE, 1)
+          cv2.putText(frame_filtered, "angle: " + str(round(angle_r, 0)) + "deg", (int(x_r), int(y_r + 60)),
+                      cv2.FONT_HERSHEY_SIMPLEX, 0.4, WHITE, 1)
+
+          if distance < 7 * avg_width or distance < 2.3 * avg_height:
+            if (ratio_r2 < ratio_r + sim_ratio and ratio_r2 > ratio_r - sim_ratio):
+              for inv in range(-1,2,2):
+                if angle_r + sim_angle > angle_r2 - 29 * inv> angle_r - sim_angle:
+                  cv2.line(frame_filtered, (int(x_r2), int(y_r2)), (int(x_r), int(y_r)), YELLOW, 1)
+                  pairs.append([r, r2])
+
+  return pairs
+
 def holeTargetCalculations(frame, pair):
   # ---- DISPLAY VISUALIZATIONS FOR CONTOURS ----
 
@@ -245,20 +226,17 @@ def holeTargetCalculations(frame, pair):
 
     angle = rect[2]
 
-    ratio = round(height / width, 3)
-    if ratio != getRegularRatio(ratio):
-      ratio = round(getRegularRatio(ratio), 3)
+    ratio = height / width
+    if ratio < 1:
+      ratio = 1 / ratio
       width = rect[1][1]
       height = rect[1][0]
-
-    cv2.putText(frame, str(ratio), (int(x), int(y)), cv2.FONT_HERSHEY_SIMPLEX, 0.5, RED, 1)
+    cv2.putText(frame, str(round(ratio, 3)), (int(x), int(y)), cv2.FONT_HERSHEY_SIMPLEX, 0.5, RED, 1)
     cv2.putText(frame, "w: " + str(round(width, 0)), (int(x), int(y + 20)), cv2.FONT_HERSHEY_SIMPLEX, 0.4,
                 WHITE, 1)
     cv2.putText(frame, "h: " + str(round(height, 0)), (int(x), int(y + 40)), cv2.FONT_HERSHEY_SIMPLEX, 0.4,
                 WHITE, 1)
-    cv2.putText(frame, "angle: " + str(round(angle, 0)) + "deg", (int(x), int(y + 60)),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.4, WHITE, 1)
-
+    #cv2.putText(frame, "angle: " + str(round(angle, 0)) + "deg", (int(x), int(y + 60)), cv2.FONT_HERSHEY_SIMPLEX, 0.4, WHITE, 1)
     inches = distance_to_camera(height)
     distances.append(inches)
 
@@ -287,48 +265,6 @@ def holeTargetCalculations(frame, pair):
   cv2.putText(frame, "%.2fft" % distance, (frame.shape[1] - 200, frame.shape[0] - 100),
               cv2.FONT_HERSHEY_SIMPLEX, 2.0, BLACK, 3)
 
-  # Tracking stuff: Would follow the target through mean shift (not in use)
-  """
-
-  track_window = (min_x, min_y, max_x - min_x, max_y - min_y)
-  target_window = ((min_x, min_y),(max_x - min_x, max_y - min_y), 0.0)
-  drawBox(frame, target_window, (255,100,0))
-  print(track_window)
-  roi = frame[min_y:max_y, min_x:max_x]
-  #print(roi)
-  hsv_roi = cv2.cvtColor(roi, cv2.COLOR_BGR2HSV)
-  mask_roi = cv2.inRange(hsv_roi, lower_c, upper_c)
-  #mask_roi = mask[min_y:max_y, min_x:max_x]
-  roi_hist = cv2.calcHist([hsv_roi], [0], mask_roi, [256], [0, 256])
-  cv2.normalize(roi_hist, roi_hist, 0, 255, cv2.NORM_MINMAX)
-  term_crit = (cv2.TERM_CRITERIA_EPS | cv2.TERM_CRITERIA_COUNT, 80, 1)
-  cv2.imshow("mask", mask_roi)
-
-  while True:
-      # grab the frame from the threaded video stream and resize it
-      # to have a maximum width of 400 pixels
-      frame = vs.read()
-      hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-      dst = cv2.calcBackProject([hsv], [0], roi_hist, [0, 180], 1)
-      ret, track_window = cv2.meanShift(dst, track_window, term_crit)
-      filter = cv2.inRange(hsv, np.array((0, 146, 149)), np.array((102, 178, 213)))
-      x, y, w, h = track_window
-      cv2.rectangle(frame, (x, y), (x + w, y + h), 255, 2)
-      cv2.rectangle(filter, (x, y), (x + w, y + h), 255, 2)
-      cv2.putText(frame, 'Tracked', (x - 25, y - 10), cv2.FONT_HERSHEY_SIMPLEX,
-                  1, (255, 255, 255), 2)
-
-      # frame = imutils.resize(frame, width=400)
-
-      # check to see if the frame should be displayed to our screen
-      obj = frame[y:y + h, x:x + w]
-      cv2.imshow("Frame", frame)
-      cv2.imshow("obj", obj)
-
-      cv2.imshow("filter", filter)
-      if cv2.waitKey(1) & 0xFF == ord('q'):
-          break
-  """
 
 
 def getFPS(frame_counter):
@@ -347,13 +283,15 @@ def halt():
     GPIO.cleanup()
   stop_server()
 
-
+def nothing(x):
+  pass
 if __name__ == '__main__':
   start_t = time.time()
 
   # Tracking Setings
-  ballTracking = True
+  ballTracking = False
   targetTracking = True
+
   # FPS settings
   displayFPS = True
   FPS = 0
@@ -367,7 +305,7 @@ if __name__ == '__main__':
   # Display settings
   displayWindows = (os.name == 'nt') or ("DISPLAY" in os.environ)
   debugWindows = True
-  unfilteredWindow = False
+  unfilteredWindow = True
 
 
   vs = WebcamVideoStream().start()
@@ -380,7 +318,7 @@ if __name__ == '__main__':
   lower_c_hole = np.array([28, 22, 121])
   upper_c_hole = np.array([64, 255, 255])
   # Range of color in hsv (Ball)
-  lower_c_ball = np.array([0, 22, 0])
+  lower_c_ball = np.array([0, 80, 0])
   upper_c_ball = np.array([32, 255, 255])
 
   server_thread = Thread(target=serve, args=())
@@ -398,9 +336,10 @@ if __name__ == '__main__':
     vt = NetworkTables.getTable("VisionProcessing")
     resetTable(vt)
     vt.putNumber("heartbeat", 0)
-  running = 1
+  isRunning = True
+  cv2.createTrackbar('var', 'image_ball', 1, 2, nothing)
   try:
-    while running:
+    while isRunning:
       if isRunningOnPi:
         if vs.grabbed:
           GPIO.output(indicatorLED, GPIO.HIGH)
@@ -414,11 +353,13 @@ if __name__ == '__main__':
 
       # Hole Target Processing
       if targetTracking:
+        kernel = np.ones((6, 6), np.uint8)
+        hsv = cv2.morphologyEx(hsv, cv2.MORPH_OPEN, kernel)
         holeTargetMask = cv2.inRange(hsv, lower_c_hole, upper_c_hole)
         rgb_hole = cv2.cvtColor(holeTargetMask, cv2.COLOR_BAYER_BG2RGB)
         res_hole = cv2.bitwise_and(frame_filtered, frame_filtered, mask=holeTargetMask)
         gray_hole = cv2.cvtColor(rgb_hole, cv2.COLOR_BGR2GRAY)
-        gray_hole = cv2.GaussianBlur(gray_hole, (5, 5), 3)
+        #gray_hole = cv2.GaussianBlur(gray_hole, (5, 5), 3)
         edged = cv2.Canny(gray_hole, 300, 400, L2gradient=True)
         frame_filtered = frame_filtered.copy()
         _, cnts, _ = cv2.findContours(edged, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
@@ -441,12 +382,12 @@ if __name__ == '__main__':
         res_ball = cv2.bitwise_and(frame_unfiltered, frame_unfiltered, mask=orangeBallMask)
         gray_ball = cv2.cvtColor(rgb_ball, cv2.COLOR_BGR2GRAY)
         frame_unfiltered = frame_unfiltered.copy()
-        circles = cv2.HoughCircles(gray_ball, cv2.HOUGH_GRADIENT, 1.0, 300)
+        circles = cv2.HoughCircles(gray_ball, cv2.HOUGH_GRADIENT, 1.0, 100)
         if circles is not None:
           circles = np.round(circles[0, :]).astype("int")
           for (x, y, r) in circles:
-            cv2.circle(frame_filtered, (x, y), r, GREEN, 2)
-            cv2.rectangle(frame_filtered, (x - 5, y - 5), (x + 5, y + 5), ORANGE, -1)
+            cv2.circle(frame_unfiltered, (x, y), r, GREEN, 2)
+            cv2.rectangle(frame_unfiltered, (x - 5, y - 5), (x + 5, y + 5), ORANGE, -1)
         if displayWindows:
           if debugWindows:
             cv2.imshow("res_ball", cv2.resize(res_ball, (350, 300)))
@@ -474,7 +415,9 @@ if __name__ == '__main__':
       if enableNetworkTables:
         # If roboRIO sets running to 0, stop running.
         vt.putNumber("heartbeat", vt.getNumber("heartbeat", 0) + 1)
-        running = vt.getNumber("running", 1)
+        isRunning = vt.getBoolean("isRunning", True)
+        targetTracking = vt.getBoolean("targetTracking", targetTracking)
+        ballTracking = vt.getBoolean("ballTracking", ballTracking)
 
       if (cv2.waitKey(1) & 0xFF) == ord('q'):
         break
