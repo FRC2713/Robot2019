@@ -9,9 +9,14 @@ import org.iraiders.robot2019.robot.commands.ExampleCommand;
 import org.iraiders.robot2019.robot.commands.OIDrive;
 import org.iraiders.robot2019.robot.subsystems.DriveSubsystem;
 import org.iraiders.robot2019.robot.subsystems.ExampleSubsystem;
+import org.iraiders.robot2019.robot.subsystems.IntakeSubsystem;
+import org.iraiders.robot2019.robot.subsystems.LiftSubsystem;
 
 public class Robot extends TimedRobot {
   public static ExampleSubsystem m_subsystem = new ExampleSubsystem();
+  public static LiftSubsystem liftSubsystem = new LiftSubsystem();
+  public static IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
+
   public static OI m_oi;
   
   Command m_autonomousCommand;
