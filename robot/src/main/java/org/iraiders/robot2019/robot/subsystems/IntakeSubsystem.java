@@ -14,6 +14,8 @@ import org.iraiders.robot2019.robot.commands.SimpleMotorCommand;
 public class IntakeSubsystem extends Subsystem {
   private final WPI_TalonSRX grabberIntakeRight = new WPI_TalonSRX(RobotMap.grabberIntakeRightTalonPort);
   private final WPI_TalonSRX grabberIntakeLeft = new WPI_TalonSRX(RobotMap.grabberIntakeLeftTalonPort);
+  public final WPI_TalonSRX grabberIntakeJoint = new WPI_TalonSRX(RobotMap.grabberIntakeJointTalonPort);
+
   private final DigitalInput ballIntakeLimitSwitch = new DigitalInput(RobotMap.ballIntakeLimitSwitchPort);
 
   public IntakeSubsystem() {
@@ -26,13 +28,19 @@ public class IntakeSubsystem extends Subsystem {
 
     JoystickButton btn3 = new JoystickButton(buttonBox, 3);
     JoystickButton btn4 = new JoystickButton(buttonBox, 4);
+    JoystickButton btn5 = new JoystickButton(buttonBox, 5);
+
 
     btn3.whileHeld(new ResponsiveMotorCommand(grabberIntakeRight,.75, ballIntakeLimitSwitch));
     btn4.whileHeld(new SimpleMotorCommand(grabberIntakeRight,-.75));
+    btn5.whileHeld(new SimpleMotorCommand(grabberIntakeJoint,.5));
   }
 
   @Override
   protected void initDefaultCommand() {
 
+  }
+  public enum IntakePosition {
+    STARTING
   }
 }

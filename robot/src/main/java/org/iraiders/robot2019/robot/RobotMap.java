@@ -13,6 +13,7 @@ public class RobotMap {
   public static int rightLiftTalonPort = 2;
   public static int grabberIntakeLeftTalonPort = 3;
   public static int grabberIntakeRightTalonPort = 4;
+  public static int grabberIntakeJointTalonPort = 5;
 
   // Sensors
   public static int ballIntakeLimitSwitchPort = 1;
