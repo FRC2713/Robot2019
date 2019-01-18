@@ -1,5 +1,6 @@
 package org.iraiders.robot2019.robot;
 
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -16,6 +17,7 @@ public class Robot extends TimedRobot {
   public static ExampleSubsystem m_subsystem = new ExampleSubsystem();
   public static LiftSubsystem liftSubsystem = new LiftSubsystem();
   public static IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
+  public static Preferences prefs = Preferences.getInstance();
 
   public static OI m_oi;
   
