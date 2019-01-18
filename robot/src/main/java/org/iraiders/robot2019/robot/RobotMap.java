@@ -7,7 +7,6 @@ package org.iraiders.robot2019.robot;
  * floating around.
  */
 public class RobotMap {
-  // PORTS
   // Motors
   public static int leftLiftTalonPort = 1;
   public static int rightLiftTalonPort = 2;
@@ -19,6 +18,12 @@ public class RobotMap {
   public static final int frontRightTalonPort = 3;
   public static final int backRightTalonPort = 4;
 
+  // Pneumatics
+  public static int grabberOpenNodeId = 0;
+  public static int grabberCloseNodeId = 1;
+
   // Sensors
   public static int ballIntakeLimitSwitchPort = 1;
+
+
 }
