@@ -1,4 +1,4 @@
-package org.iraiders.robot2019.robot.commands;
+package org.iraiders.robot2019.robot.commands.intake;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
@@ -7,7 +7,8 @@ import org.iraiders.robot2019.robot.subsystems.IntakeSubsystem;
 
 public class IntakeJointCommand extends PIDCommand {
   private final WPI_TalonSRX joint;
-  public IntakeJointCommand(IntakeSubsystem intakeSubsystem , IntakeSubsystem.IntakePosition position){
+
+  public IntakeJointCommand(IntakeSubsystem intakeSubsystem, IntakeSubsystem.IntakePosition position) {
     super(0,0,0);
     joint = intakeSubsystem.grabberIntakeJoint;
 
