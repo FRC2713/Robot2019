@@ -121,11 +121,10 @@ def getRegularRatio(ratio):
 
 
 def distance_to_camera(pixHeight):
-  # KNOWN_DISTANCE = 77
-  # KNOWN_HEIGHT = 183
-  # focalHeight = 51.333336
-  # return (KNOWN_HEIGHT * focalHeight) / pixHeight
-  return 9394 / pixHeight
+  KNOWN_DISTANCE = 61
+  KNOWN_HEIGHT = 115
+  focalHeight = 51.333336
+  return (KNOWN_HEIGHT * focalHeight) / pixHeight
 
 
 def width_to_pixel_width(width):
@@ -157,7 +156,7 @@ def removeRepeatContours(rectborders):
   return rectborders
 
 
-def getPairs(rectborders):
+def findTarget(rectborders, frame=-1):
   pairs = []
   for r in rectborders:
     # sim_* resembles range of difference between rectangles that is deemed "acceptable" for them to be a pair
@@ -195,77 +194,36 @@ def getPairs(rectborders):
           avg_height = (height_r + height_r2) / 2
           x_r2 = r2[0][0]
           y_r2 = r2[0][1]
-          distance = math.sqrt((y_r2 - y_r) ** 2 + (x_r2 - x_r) ** 2)
+          offset = math.sqrt((y_r2 - y_r) ** 2 + (x_r2 - x_r) ** 2)
 
-          cv2.putText(frame_filtered, "angle: " + str(round(angle_r2, 0)) + "deg", (int(x_r2), int(y_r2 + 60)),
-                      cv2.FONT_HERSHEY_SIMPLEX, 0.4, WHITE, 1)
-          cv2.putText(frame_filtered, "angle: " + str(round(angle_r, 0)) + "deg", (int(x_r), int(y_r + 60)),
-                      cv2.FONT_HERSHEY_SIMPLEX, 0.4, WHITE, 1)
 
-          if distance < 7 * avg_width or distance < 2.3 * avg_height:
+
+          if offset < 7 * avg_width or offset < 2.3 * avg_height:
             if (ratio_r2 < ratio_r + sim_ratio and ratio_r2 > ratio_r - sim_ratio):
               for inv in range(-1,2,2):
                 if angle_r + sim_angle > angle_r2 - 29 * inv> angle_r - sim_angle:
-                  cv2.line(frame_filtered, (int(x_r2), int(y_r2)), (int(x_r), int(y_r)), YELLOW, 1)
+                  distance = (distance_to_camera(offset) / 12)  # in feet
+                  if type(frame) != int:
+                    cv2.putText(frame, "angle: " + str(round(angle_r2, 0)) + "deg", (int(x_r2), int(y_r2 + 60)),
+                                cv2.FONT_HERSHEY_SIMPLEX, 0.4, WHITE, 1)
+                    cv2.putText(frame, "angle: " + str(round(angle_r, 0)) + "deg", (int(x_r), int(y_r + 60)),
+                                cv2.FONT_HERSHEY_SIMPLEX, 0.4, WHITE, 1)
+                    cv2.line(frame, (int(x_r2), int(y_r2)), (int(x_r), int(y_r)), YELLOW, 1)
+                    # Display Distance
+                    cv2.putText(frame, "%.2fft" % distance, (frame.shape[1] - 200, frame.shape[0] - 100),
+                                cv2.FONT_HERSHEY_SIMPLEX, 2.0, YELLOW, 3)
+                    cv2.putText(frame, "angle: " + str(round(angle_r, 0)) + "deg", (int(x_r), int(y_r + 60)),
+                                cv2.FONT_HERSHEY_SIMPLEX, 0.4, WHITE, 1)
+                    drawBox(frame, r, PURPLE)
+                    drawBox(frame, r2, PURPLE)
                   pairs.append([r, r2])
-
+                  center = ((x_r + x_r2) / 2, (y_r + y_r2) / 2)
+                  if enableNetworkTables:
+                    #vt.putNumber("angle", perspective_angle)
+                    vt.putNumber("distance", distance)
+                    vt.putNumber("x", center[0])
+                    vt.putNumber("y", center[1])
   return pairs
-
-def holeTargetCalculations(frame, pair):
-  # ---- DISPLAY VISUALIZATIONS FOR CONTOURS ----
-
-  distances = []
-
-  for rect in pair:
-
-    width = rect[1][0]
-    height = rect[1][1]
-
-    x = rect[0][0]
-    y = rect[0][1]
-
-    angle = rect[2]
-
-    ratio = height / width
-    if ratio < 1:
-      ratio = 1 / ratio
-      width = rect[1][1]
-      height = rect[1][0]
-    cv2.putText(frame, str(round(ratio, 3)), (int(x), int(y)), cv2.FONT_HERSHEY_SIMPLEX, 0.5, RED, 1)
-    cv2.putText(frame, "w: " + str(round(width, 0)), (int(x), int(y + 20)), cv2.FONT_HERSHEY_SIMPLEX, 0.4,
-                WHITE, 1)
-    cv2.putText(frame, "h: " + str(round(height, 0)), (int(x), int(y + 40)), cv2.FONT_HERSHEY_SIMPLEX, 0.4,
-                WHITE, 1)
-    #cv2.putText(frame, "angle: " + str(round(angle, 0)) + "deg", (int(x), int(y + 60)), cv2.FONT_HERSHEY_SIMPLEX, 0.4, WHITE, 1)
-    inches = distance_to_camera(height)
-    distances.append(inches)
-
-    cv2.circle(frame, (int(round(x, 0)), int(round(y, 0))), 2, PURPLE, 1)
-
-    drawBox(frame, rect, PURPLE)
-
-  # ---- FIND AVERAGE DISTANCE OF TARGET AND PERSPECTIVE ANGLE ----
-
-  diff = distances[0] - distances[1]  # this gives us the opposite for the triangle
-  distance = round((distances[0] + distances[1]) / 24, 1)
-
-  center = ((pair[0][0][0] + pair[1][0][0]) / 2, (pair[0][0][1] + pair[1][0][1]) / 2)
-  if abs(diff) < 6:  # 6 is the length in inches of the target, this gives u the hypotenuse
-    perspective_angle = round(math.degrees(math.asin(diff / 6)), 3)
-    if enableNetworkTables:
-      vt.putNumber("angle", perspective_angle)
-      vt.putNumber("distance", distance)
-      vt.putNumber("x", center[0])
-      vt.putNumber("y", center[1])
-      vt.putNumber("ipp", width_to_pixel_width(pair[0][1][0] * 2 + pair[1][1][0] * 2))
-    # Display Perspective Angle
-    cv2.putText(frame, str(perspective_angle), (frame.shape[1] - 200, frame.shape[0]), cv2.FONT_HERSHEY_SIMPLEX,
-                2.0, BLACK, 3)
-  # Display Distance
-  cv2.putText(frame, "%.2fft" % distance, (frame.shape[1] - 200, frame.shape[0] - 100),
-              cv2.FONT_HERSHEY_SIMPLEX, 2.0, BLACK, 3)
-
-
 
 def getFPS(frame_counter):
   global start_t
@@ -285,12 +243,26 @@ def halt():
 
 def nothing(x):
   pass
+
+def targetImagesProcessed(frame):
+  kernel = np.ones((6, 6), np.uint8)
+  hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+  hsv = cv2.morphologyEx(hsv, cv2.MORPH_OPEN, kernel)
+  mask = cv2.inRange(hsv, lower_c_hole, upper_c_hole)
+  rgb = cv2.cvtColor(mask, cv2.COLOR_BAYER_BG2RGB)
+  res = cv2.bitwise_and(frame, frame, mask=mask)
+  gray = cv2.cvtColor(rgb, cv2.COLOR_BGR2GRAY)
+  # gray_hole = cv2.GaussianBlur(gray_hole, (5, 5), 3)
+  edged = cv2.Canny(gray, 300, 400, L2gradient=True)
+  frame = frame.copy()
+  return res, edged
+
 if __name__ == '__main__':
   start_t = time.time()
 
   # Tracking Setings
-  ballTracking = False
-  targetTracking = True
+  ballTracking = True
+  targetTracking = False
 
   # FPS settings
   displayFPS = True
@@ -314,13 +286,23 @@ if __name__ == '__main__':
   # Range of color in hsv (Target)
   lower_c_hole = np.array([60, 0, 100])
   upper_c_hole = np.array([110, 255, 255])
+  #lower_c_hole = np.array([83, 0, 191])
+  #upper_c_hole = np.array([180, 138, 255])
   #at home
-  lower_c_hole = np.array([28, 22, 121])
-  upper_c_hole = np.array([64, 255, 255])
+  #lower_c_hole = np.array([28, 22, 121])
+  #upper_c_hole = np.array([64, 255, 255])
   # Range of color in hsv (Ball)
-  lower_c_ball = np.array([0, 80, 0])
-  upper_c_ball = np.array([32, 255, 255])
-
+  lower_c_ball = np.array([0, 79, 49])
+  upper_c_ball = np.array([29, 255, 255])
+  #lower_c_ball = np.array([0, 93, 58])
+  #upper_c_ball = np.array([13, 255, 255])
+  cv2.imshow("image_ball", vs.read())
+  cv2.createTrackbar('Param1', 'image_ball', 1, 1000, nothing)
+  cv2.createTrackbar('Param2', 'image_ball', 1, 1000, nothing)
+  cv2.createTrackbar('DP', 'image_ball', 1, 5, nothing)
+  cv2.setTrackbarPos("Param1", 'image_ball', 25)
+  cv2.setTrackbarPos("Param2", 'image_ball', 176)
+  cv2.setTrackbarPos("DP", 'image_ball', 2)
   server_thread = Thread(target=serve, args=())
   server_thread.start()
 
@@ -349,52 +331,6 @@ if __name__ == '__main__':
       frame_filtered = vs.readFiltered()
       frame_unfiltered = vs.read()
 
-      hsv = cv2.cvtColor(frame_filtered, cv2.COLOR_BGR2HSV)
-
-      # Hole Target Processing
-      if targetTracking:
-        kernel = np.ones((6, 6), np.uint8)
-        hsv = cv2.morphologyEx(hsv, cv2.MORPH_OPEN, kernel)
-        holeTargetMask = cv2.inRange(hsv, lower_c_hole, upper_c_hole)
-        rgb_hole = cv2.cvtColor(holeTargetMask, cv2.COLOR_BAYER_BG2RGB)
-        res_hole = cv2.bitwise_and(frame_filtered, frame_filtered, mask=holeTargetMask)
-        gray_hole = cv2.cvtColor(rgb_hole, cv2.COLOR_BGR2GRAY)
-        #gray_hole = cv2.GaussianBlur(gray_hole, (5, 5), 3)
-        edged = cv2.Canny(gray_hole, 300, 400, L2gradient=True)
-        frame_filtered = frame_filtered.copy()
-        _, cnts, _ = cv2.findContours(edged, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
-        rectborders = [cv2.minAreaRect(c) for c in cnts]
-        rectborders = removeRepeatContours(rectborders)
-        pairs = getPairs(rectborders)
-        if len(pairs) > 0:
-          holeTargetCalculations(frame_filtered, pairs[0])
-        if displayWindows:
-          if debugWindows:
-            cv2.imshow("res", cv2.resize(res_hole, (350, 300)))
-            cv2.imshow("contours", cv2.resize(edged, (350, 300)))
-          cv2.imshow("image", frame_filtered)
-
-      if ballTracking:
-
-        # Ball processing
-        orangeBallMask = cv2.inRange(hsv, lower_c_ball, upper_c_ball)
-        rgb_ball = cv2.cvtColor(orangeBallMask, cv2.COLOR_BAYER_BG2BGR)
-        res_ball = cv2.bitwise_and(frame_unfiltered, frame_unfiltered, mask=orangeBallMask)
-        gray_ball = cv2.cvtColor(rgb_ball, cv2.COLOR_BGR2GRAY)
-        frame_unfiltered = frame_unfiltered.copy()
-        circles = cv2.HoughCircles(gray_ball, cv2.HOUGH_GRADIENT, 1.0, 100)
-        if circles is not None:
-          circles = np.round(circles[0, :]).astype("int")
-          for (x, y, r) in circles:
-            cv2.circle(frame_unfiltered, (x, y), r, GREEN, 2)
-            cv2.rectangle(frame_unfiltered, (x - 5, y - 5), (x + 5, y + 5), ORANGE, -1)
-        if displayWindows:
-          if debugWindows:
-            cv2.imshow("res_ball", cv2.resize(res_ball, (350, 300)))
-          if unfilteredWindow:
-            cv2.imshow("image_ball", frame_unfiltered)
-
-
       # Display FPS
       frame_counter += 1
       if displayFPS == True:
@@ -402,15 +338,61 @@ if __name__ == '__main__':
         if time.time() - start_t >= FPS_update_period:
           FPS = getFPS(frame_counter)
           frame_counter = 0
-          print(FPS)
 
-        c = 0
-        if FPS > 9:
-          c = 1
-        if FPS > 29:
+        c = int(math.floor(FPS / 10))
+        if c > 2:
           c = 2
         cv2.putText(frame_filtered, str(FPS) + " FPS", (frame_filtered.shape[1] - 130, 40),
                     cv2.FONT_HERSHEY_SIMPLEX, 1.0, FPSColors[c], 2)
+
+      # Hole Target Processing
+      if targetTracking:
+
+        res_target, edged_target = targetImagesProcessed(frame_filtered)
+        _, cnts, _ = cv2.findContours(edged_target, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+        rectborders = [cv2.minAreaRect(c) for c in cnts]
+        rectborders = removeRepeatContours(rectborders)
+        pairs = findTarget(rectborders, frame_filtered)
+
+        if displayWindows:
+          if debugWindows:
+            cv2.imshow("res target", cv2.resize(res_target, (350, 300)))
+            cv2.imshow("edged target", cv2.resize(edged_target, (350, 300)))
+          cv2.imshow("frame target", frame_filtered)
+
+      if ballTracking:
+
+        # Ball processing
+        hsv_ball = cv2.cvtColor(frame_unfiltered, cv2.COLOR_BGR2HSV)
+        kernel = np.ones((10, 10), np.uint8)
+        hsv_ball = cv2.morphologyEx(hsv_ball, cv2.MORPH_OPEN, kernel)
+        orangeBallMask = cv2.inRange(hsv_ball, lower_c_ball, upper_c_ball)
+        rgb_ball = cv2.cvtColor(orangeBallMask, cv2.COLOR_BAYER_BG2BGR)
+        res_ball = cv2.bitwise_and(frame_unfiltered, frame_unfiltered, mask=orangeBallMask)
+        gray_ball = cv2.cvtColor(res_ball, cv2.COLOR_BGR2GRAY)
+
+        gray_ball = cv2.GaussianBlur(gray_ball, (5, 5), 3)
+
+        frame_unfiltered = frame_unfiltered.copy()
+        p1 = cv2.getTrackbarPos('Param1', 'image_ball')
+        p2 = cv2.getTrackbarPos('Param2', 'image_ball')
+        dp = cv2.getTrackbarPos('DP', 'image_ball')
+        circles = cv2.HoughCircles(gray_ball, cv2.HOUGH_GRADIENT, dp, np.shape(gray_ball)[0]/8,
+                                   param1=p1, param2=p2, minRadius=20, maxRadius=500)
+
+        if circles is not None:
+          circles = np.round(circles[0, :]).astype("int")
+          for (x, y, r) in circles:
+            cv2.circle(frame_unfiltered, (x, y), r, BLUE, 2)
+            cv2.rectangle(frame_unfiltered, (x - 5, y - 5), (x + 5, y + 5), BLUE, -1)
+        if displayWindows:
+          if debugWindows:
+            cv2.imshow("res_ball", cv2.resize(res_ball, (350, 300)))
+            cv2.imshow("gray_ball", cv2.resize(gray_ball, (350, 300)))
+          if unfilteredWindow:
+            cv2.imshow("image_ball", frame_unfiltered)
+
+
 
       if enableNetworkTables:
         # If roboRIO sets running to 0, stop running.

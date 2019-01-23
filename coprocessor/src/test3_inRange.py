@@ -1,8 +1,9 @@
 import cv2
+from coprocessor.src.stream import WebcamVideoStream
 import numpy as np
 def nothing(x):
     pass
-cap = cv2.VideoCapture(1)
+vs = WebcamVideoStream()
 cv2.namedWindow('image')
 h = 78
 s = 106
@@ -20,20 +21,10 @@ cv2.createTrackbar('SH','image',0,255,nothing)
 cv2.createTrackbar('VH','image',0,255,nothing)
 
 
-def adjust_gamma(image, gamma=1.0):
-    # build a lookup table mapping the pixel values [0, 255] to
-    # their adjusted gamma values
-    invGamma = 1.0 / gamma
-    table = np.array([((i / 255.0) ** invGamma) * 255
-                      for i in np.arange(0, 256)]).astype("uint8")
-
-    # apply gamma correction using the lookup table
-    return cv2.LUT(image, table)
-
 while(1):
 
     # Take each frame
-    _, frame_filtered = cap.read()
+    frame_filtered = vs.readFiltered()
     #frame_filtered= cv2.imread('ballOrange.jpg')
     #frame_filtered = adjust_gamma(frame_filtered, 1.0)
     # Convert BGR to HSV
