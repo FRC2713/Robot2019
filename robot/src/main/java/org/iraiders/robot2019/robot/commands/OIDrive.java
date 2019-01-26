@@ -14,18 +14,21 @@ public class OIDrive extends Command {
   private double lastRightStickVal = 0;
   private XboxController xbox = OI.xBoxController;
 
+  private double joystickChangeLimit;
+
   public OIDrive(DriveSubsystem driveSubsystem) {
     this.driveSubsystem = driveSubsystem;
     requires(driveSubsystem);
   }
 
   @Override
-  protected void execute() {
+  protected void initialize() {
     driveSubsystem.roboDrive.setMaxOutput(Robot.prefs.getFloat("OIMaxSpeed", 1));
-    driveSubsystem.roboDrive.setSafetyEnabled(false);
+    joystickChangeLimit = Robot.prefs.getDouble("JoystickChangeLimit", 1f);
+  }
 
-    double joystickChangeLimit = Robot.prefs.getDouble("JoystickChangeLimit", 1f);
-
+  @Override
+  protected void execute() {
     double measuredLeft;
     double measuredRight;
 
@@ -34,7 +37,6 @@ public class OIDrive extends Command {
       lastRightStickVal = 0;
       lastLeftStickVal = 0;
       OI.rumbleController(xbox, .5, 500);
-
     }
 
     if (useTankInsteadOfBradford) {
@@ -43,7 +45,7 @@ public class OIDrive extends Command {
       driveSubsystem.roboDrive.tankDrive(measuredLeft, measuredRight, true);
     } else {
       measuredLeft = DriveSubsystem.slewLimit(-xbox.getY(GenericHID.Hand.kLeft), lastLeftStickVal, joystickChangeLimit);
-      measuredRight = DriveSubsystem.slewLimit(-xbox.getY(GenericHID.Hand.kRight), lastRightStickVal, joystickChangeLimit);
+      measuredRight = DriveSubsystem.slewLimit(xbox.getX(GenericHID.Hand.kRight), lastRightStickVal, joystickChangeLimit);
       driveSubsystem.roboDrive.arcadeDrive(measuredLeft, measuredRight, true);
     }
 
@@ -51,9 +53,7 @@ public class OIDrive extends Command {
 
   @Override
   protected void end() {
-    driveSubsystem.roboDrive.arcadeDrive(0, 0, false);
-    driveSubsystem.roboDrive.setSafetyEnabled(true);
-
+    driveSubsystem.roboDrive.stopMotor();
   }
 
   @Override

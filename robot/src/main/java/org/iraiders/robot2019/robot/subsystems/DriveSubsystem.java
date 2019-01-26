@@ -13,16 +13,18 @@ public class DriveSubsystem extends Subsystem {
   public final WPI_TalonSRX frontRight = new WPI_TalonSRX(RobotMap.frontRightTalonPort);
   private final WPI_TalonSRX backRight = new WPI_TalonSRX(RobotMap.backRightTalonPort);
 
+  private OIDrive oiDrive;
+
   public DifferentialDrive roboDrive = new DifferentialDrive(frontLeft, frontRight);
 
   public DriveSubsystem() {
     backLeft.set(ControlMode.Follower, RobotMap.frontLeftTalonPort);
     backRight.set(ControlMode.Follower, RobotMap.frontRightTalonPort);
-
   }
 
   public void initTeleop() {
-
+    oiDrive = new OIDrive(this);
+    oiDrive.start();
   }
 
   @Override

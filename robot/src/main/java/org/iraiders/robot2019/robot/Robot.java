@@ -7,28 +7,28 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.iraiders.robot2019.robot.commands.ExampleCommand;
-import org.iraiders.robot2019.robot.commands.OIDrive;
 import org.iraiders.robot2019.robot.subsystems.DriveSubsystem;
-import org.iraiders.robot2019.robot.subsystems.ExampleSubsystem;
 import org.iraiders.robot2019.robot.subsystems.IntakeSubsystem;
 import org.iraiders.robot2019.robot.subsystems.LiftSubsystem;
 
 public class Robot extends TimedRobot {
-  public static ExampleSubsystem m_subsystem = new ExampleSubsystem();
-  public static LiftSubsystem liftSubsystem = new LiftSubsystem();
-  public static IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
+  public static DriveSubsystem driveSubsystem;
+  public static LiftSubsystem liftSubsystem;
+  public static IntakeSubsystem intakeSubsystem;
   public static Preferences prefs = Preferences.getInstance();
 
   public static OI m_oi;
   
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
-  DriveSubsystem driveSubsystem = new DriveSubsystem();
-  Command xbox = new OIDrive(driveSubsystem);
+
   
   @Override
   public void robotInit() {
     m_oi = new OI();
+    driveSubsystem = new DriveSubsystem();
+    liftSubsystem = new LiftSubsystem();
+    intakeSubsystem = new IntakeSubsystem();
     m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
     // chooser.addOption("My Auto", new MyAutoCommand());
     SmartDashboard.putData("Auto mode", m_chooser);
@@ -78,15 +78,16 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+
+    driveSubsystem.initTeleop();
   }
   
   @Override
   public void teleopPeriodic() {
     Scheduler.getInstance().run();
-    if (xbox.isRunning()) xbox.start();
 
   }
-  
+
   @Override
   public void testPeriodic() {
   }
