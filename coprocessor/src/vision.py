@@ -8,7 +8,7 @@ import math
 from networktables import NetworkTables
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import time
-from coprocessor.src.stream import WebcamVideoStream
+from stream import WebcamVideoStream
 import os
 
 isRunningOnPi = True
@@ -85,10 +85,15 @@ def stop_server():
 
 
 def resetTable(vt):
-  vt.putNumber("angle", -1)
-  vt.putNumber("distance", -1)
-  vt.putNumber("x", -1)
-  vt.putNumber("y", -1)
+  vt.putNumber("angleOfTarget", -1)
+  vt.putNumber("distanceToTarget", -1)
+  vt.putNumber("targetX", -1)
+  vt.putNumber("targetY", -1)
+
+  vt.putNumber("ballX", -1)
+  vt.putNumber("ballY", -1)
+  vt.putNumber("distanceToBall", -1)
+
   vt.putNumber("heartbeat", -1)
 
 
@@ -220,9 +225,9 @@ def findTarget(rectborders, frame=-1):
                   center = ((x_r + x_r2) / 2, (y_r + y_r2) / 2)
                   if enableNetworkTables:
                     #vt.putNumber("angle", perspective_angle)
-                    vt.putNumber("distance", distance)
-                    vt.putNumber("x", center[0])
-                    vt.putNumber("y", center[1])
+                    vt.putNumber("distanceToBall", distance)
+                    vt.putNumber("ballX", center[0])
+                    vt.putNumber("ballY", center[1])
   return pairs
 
 def getFPS(frame_counter):
@@ -262,7 +267,7 @@ if __name__ == '__main__':
 
   # Tracking Setings
   ballTracking = True
-  targetTracking = False
+  targetTracking = True
 
   # FPS settings
   displayFPS = True
