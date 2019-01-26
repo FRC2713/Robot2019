@@ -7,13 +7,23 @@ package org.iraiders.robot2019.robot;
  * floating around.
  */
 public class RobotMap {
-  // For example to map the left and right motors, you could define the
-  // following variables to use with your drivetrain subsystem.
-  // public static int leftMotor = 1;
-  // public static int rightMotor = 2;
+  // Motors
+  public static final int frontLeftTalonPort = 2;
+  public static final int backLeftTalonPort = 4;
+  public static final int frontRightTalonPort = 1;
+  public static final int backRightTalonPort = 3;
+  public static final int leftLiftTalonPort = 5;
+  public static final int rightLiftTalonPort = 6;
+  public static final int grabberIntakeLeftTalonPort = 7;
+  public static final int grabberIntakeRightTalonPort = 8;
+  public static final int grabberIntakeJointTalonPort = 9;
 
-  // If you are using multiple modules, make sure to define both the port
-  // number and the module. For example you with a rangefinder:
-  // public static int rangefinderPort = 1;
-  // public static int rangefinderModule = 1;
+  // Pneumatics
+  public static int grabberOpenNodeId = 0;
+  public static int grabberCloseNodeId = 1;
+
+  // Sensors
+  public static int ballIntakeLimitSwitchPort = 1;
+
+
 }
