@@ -15,6 +15,7 @@ public class LiftSubsystem extends Subsystem {
   public final WPI_TalonSRX leftLift = new WPI_TalonSRX(RobotMap.leftLiftTalonPort);
   private final WPI_TalonSRX rightLift = new WPI_TalonSRX(RobotMap.rightLiftTalonPort);
 
+
   public LiftSubsystem(){
     //sets right lift as follower of left lift
     rightLift.set(ControlMode.Follower, RobotMap.leftLiftTalonPort);
