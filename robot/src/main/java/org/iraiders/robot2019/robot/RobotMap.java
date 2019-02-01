@@ -22,8 +22,12 @@ public class RobotMap {
   public static int grabberOpenNodeId = 0;
   public static int grabberCloseNodeId = 1;
 
-  // Sensors
+  // Analog Sensors
   public static int ballIntakeLimitSwitchPort = 1;
+
+  // Digital Sensors
+  public static int ultrasonicPing = 0;
+  public static int ultrasonicResponse = 1;
 
 
 }

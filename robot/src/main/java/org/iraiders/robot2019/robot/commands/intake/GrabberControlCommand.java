@@ -1,6 +1,5 @@
 package org.iraiders.robot2019.robot.commands.intake;
 
-import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import org.iraiders.robot2019.robot.subsystems.IntakeSubsystem;
 
@@ -16,9 +15,9 @@ public class GrabberControlCommand extends InstantCommand {
  @Override
  protected void initialize(){
    if (position.equals(IntakeSubsystem.GrabberPosition.OPEN)) {
-     intakeSubsystem.grabberSolenoid.set(DoubleSolenoid.Value.kForward);
+     //intakeSubsystem.grabberSolenoid.set(DoubleSolenoid.Value.kForward);
    } else if (position.equals(IntakeSubsystem.GrabberPosition.CLOSE)) {
-     intakeSubsystem.grabberSolenoid.set(DoubleSolenoid.Value.kReverse);
+     //intakeSubsystem.grabberSolenoid.set(DoubleSolenoid.Value.kReverse);
    }
  }
 }

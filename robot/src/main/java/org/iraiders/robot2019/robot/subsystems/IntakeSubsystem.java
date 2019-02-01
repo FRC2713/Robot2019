@@ -3,7 +3,6 @@ package org.iraiders.robot2019.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -18,7 +17,7 @@ public class IntakeSubsystem extends Subsystem {
   private final WPI_TalonSRX grabberIntakeLeft = new WPI_TalonSRX(RobotMap.grabberIntakeLeftTalonPort);
   public final WPI_TalonSRX grabberIntakeJoint = new WPI_TalonSRX(RobotMap.grabberIntakeJointTalonPort);
 
-  public final DoubleSolenoid grabberSolenoid = new DoubleSolenoid(RobotMap.grabberOpenNodeId, RobotMap.grabberCloseNodeId);
+  //public final DoubleSolenoid grabberSolenoid = new DoubleSolenoid(RobotMap.grabberOpenNodeId, RobotMap.grabberCloseNodeId);
 
   private final DigitalInput ballIntakeLimitSwitch = new DigitalInput(RobotMap.ballIntakeLimitSwitchPort);
 
