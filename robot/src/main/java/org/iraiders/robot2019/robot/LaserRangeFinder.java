@@ -107,6 +107,7 @@ public class LaserRangeFinder extends I2C {
 
   public void init() {
     int address = 0x00;
+    byte[] tmp = new byte[1];
     for (address = 0x2D; address <= 0x87; address++){
       write(address, configarray[address - 0x2D]);
     }
