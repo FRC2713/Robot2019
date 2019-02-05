@@ -111,12 +111,49 @@ public class LaserRangeFinder extends I2C {
     for (address = 0x2D; address <= 0x87; address++){
       write(address, configarray[address - 0x2D]);
     }
+
     startRangeFinding();
+
+    while(tmp[0]==0){
+      checkForDataReady(tmp);
+  }
+    tmp[0]  = 0;
     write(0x0086,0x01);
     stopRangeFinding();
     write(0x0008,0x09);
     write(0x0B,0);
   }
+  private boolean getInterruptPolarity(byte[] interruptPolarity) {
+    byte[] Temp = new byte[1];
+    boolean status = false;
+    status = read(0x0030, Temp.length, Temp);
+    Temp[0] = (byte)(Temp[0] & 0x10);
+	  if(Temp[0]>>4 == 0) {
+	    interruptPolarity[0] = 1;
+    }
+    else {
+      interruptPolarity[0] = 0;
+    }
+    return status;
+  }
+  private void checkForDataReady(byte[] isDataReady) {
+    byte[] Temp = new byte[1];
+    byte[] IntPol = new byte[1];
+    boolean status = false;
+
+    status = getInterruptPolarity(IntPol);
+    status = read(0x0031, Temp.length, Temp);
+    /* Read in the register to check if a new value is available */
+    if (status == false) {
+      if ((Temp[0] & 1) == IntPol[0]) {
+        isDataReady[0] = 1;
+      }
+      else {
+      isDataReady[0] = 0;
+    }
+    }
+  }
+
   public void startRangeFinding() {
     write(0x0087,0x40);
   }
