@@ -2,8 +2,12 @@ package org.iraiders.robot2019.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import org.iraiders.robot2019.robot.OI;
 import org.iraiders.robot2019.robot.RobotMap;
 import org.iraiders.robot2019.robot.commands.OIDrive;
 
@@ -13,9 +17,17 @@ public class DriveSubsystem extends Subsystem {
   public final WPI_TalonSRX frontRight = new WPI_TalonSRX(RobotMap.frontRightTalonPort);
   private final WPI_TalonSRX backRight = new WPI_TalonSRX(RobotMap.backRightTalonPort);
 
-  private OIDrive oiDrive;
 
+  public final DigitalInput leftLine = new DigitalInput(RobotMap.leftLineSensorPort);
+  public final DigitalInput midLine = new DigitalInput(RobotMap.midLineSensorPort);
+  public final DigitalInput rightLine = new DigitalInput(RobotMap.rightLineSensorPort);
+
+  public GenericHID buttonBox = OI.arcadeController;
+  public JoystickButton btn8 = new JoystickButton(buttonBox, 8);
+  private OIDrive oiDrive;
   public DifferentialDrive roboDrive = new DifferentialDrive(frontLeft, frontRight);
+
+
 
   public DriveSubsystem() {
     backLeft.set(ControlMode.Follower, RobotMap.frontLeftTalonPort);
@@ -27,6 +39,10 @@ public class DriveSubsystem extends Subsystem {
     oiDrive.start();
   }
 
+  private void initControls() {
+
+
+  }
   @Override
   protected void initDefaultCommand() {
 
@@ -50,4 +66,5 @@ public class DriveSubsystem extends Subsystem {
     else if (change < -increment) { change = -increment; }
     return current + change;
   }
+
 }

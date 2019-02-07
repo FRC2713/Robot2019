@@ -24,6 +24,9 @@ public class RobotMap {
 
   // Sensors
   public static int ballIntakeLimitSwitchPort = 1;
+  public static int leftLineSensorPort = 2;
+  public static int midLineSensorPort = 3;
+  public static int rightLineSensorPort = 4;
 
 
 }
