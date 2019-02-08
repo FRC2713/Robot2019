@@ -18,7 +18,7 @@ deploy {
           password = PASSWORD
         }
         ssh {
-          address = '192.168.3.179'
+          address = '192.168.3.104'
           user = USERNAME
           password = PASSWORD
         }
@@ -32,7 +32,7 @@ deploy {
     fileTreeArtifact('visionCoprocessor') {
       files = fileTree(dir: 'src')
       targets << 'rpi'
-      postdeploy << { execute 'echo Post' }
+      postdeploy << { execute 'sudo systemctl restart vision' }
     }
   }
 }
