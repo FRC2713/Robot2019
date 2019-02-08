@@ -1,13 +1,13 @@
 import cv2
-from threading import Thread
 import numpy as np
+from threading import Thread
 
 
 class WebcamVideoStream:
 
   def __init__(self):
     # initialize the video camera stream and read the first frame from the stream
-    self.stream = cv2.VideoCapture(1)  # 0 = built in camera, 1 = extra camera
+    self.stream = cv2.VideoCapture(0)  # 0 = built in camera, 1 = extra camera
     (self.grabbed, self.frame) = self.stream.read()
     self.gamma = 0.1
     self.filtered = self.adjust_gamma(self.frame, self.gamma)
