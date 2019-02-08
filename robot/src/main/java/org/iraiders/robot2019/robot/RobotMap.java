@@ -14,13 +14,11 @@ public class RobotMap {
   public static final int backRightTalonPort = 3;
   public static final int leftLiftTalonPort = 5;
   public static final int rightLiftTalonPort = 6;
-  public static final int grabberIntakeLeftTalonPort = 7;
-  public static final int grabberIntakeRightTalonPort = 8;
-  public static final int grabberIntakeJointTalonPort = 9;
+  public static final int ballIntakeMotorPort = 8;
 
   // Pneumatics
-  public static int grabberOpenNodeId = 0;
-  public static int grabberCloseNodeId = 1;
+  public static int ballIntakeUpNodeId = 0;
+  public static int ballIntakeDownNodeId = 1;
 
   // Sensors
   public static int ballIntakeLimitSwitchPort = 1;

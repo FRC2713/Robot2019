@@ -1,10 +1,8 @@
 package org.iraiders.robot2019.robot;
 
 
-import edu.wpi.first.wpilibj.Preferences;
-
 import edu.wpi.first.wpilibj.Compressor;
-
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
