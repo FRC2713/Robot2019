@@ -1,20 +1,18 @@
 package org.iraiders.robot2019.robot.commands.intake;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.command.InstantCommand;
+import edu.wpi.first.wpilibj.command.Command;
 import org.iraiders.robot2019.robot.subsystems.IntakeSubsystem;
 
-public class BallIntakeJointCommand extends InstantCommand {
+public class BallIntakeJointCommand extends Command {
   private IntakeSubsystem intakeSubsystem;
-  private IntakeSubsystem.IntakeJointPosition position;
+  private IntakeSubsystem.IntakeJointPosition position = IntakeSubsystem.IntakeJointPosition.UP;
 
- public BallIntakeJointCommand(IntakeSubsystem intakeSubsystem, IntakeSubsystem.IntakeJointPosition position){
+ public BallIntakeJointCommand(IntakeSubsystem intakeSubsystem){
    this.intakeSubsystem = intakeSubsystem;
-   this.position = position;
  }
 
- @Override
- protected void initialize() {
+ private void update() {
    switch(position) {
      default:
      case UP:
@@ -22,9 +20,26 @@ public class BallIntakeJointCommand extends InstantCommand {
        break;
 
      case DOWN:
-       // TODO safety check, do NOT put down if hatch intake extended
        intakeSubsystem.ballIntakeSolenoid.set(DoubleSolenoid.Value.kReverse);
        break;
    }
  }
+
+  public IntakeSubsystem.IntakeJointPosition getIntakeJointPosition(){
+   return position;
+  }
+
+  public boolean setIntakeJointPosition(IntakeSubsystem.IntakeJointPosition ijp){
+    if (intakeSubsystem.hatchCommand.getHatchPosition() == IntakeSubsystem.HatchPosition.EXTENDED) {
+      return false;
+    }
+    position = ijp;
+    update();
+    return true;
+  }
+
+  @Override
+  protected boolean isFinished() {
+    return false;
+  }
 }
