@@ -1,15 +1,16 @@
-from socketserver import ThreadingMixIn
-from threading import Thread
-from io import BytesIO
-from PIL import Image
-import numpy as np
 import cv2
 import math
-from networktables import NetworkTables
-from http.server import BaseHTTPRequestHandler, HTTPServer
-import time
-from stream import WebcamVideoStream
+import numpy as np
 import os
+import time
+from PIL import Image
+from http.server import BaseHTTPRequestHandler, HTTPServer
+from io import BytesIO
+from networktables import NetworkTables
+from socketserver import ThreadingMixIn
+from threading import Thread
+
+from stream import WebcamVideoStream
 
 isRunningOnPi = True
 try:
@@ -301,7 +302,7 @@ if __name__ == '__main__':
   upper_c_ball = np.array([29, 255, 255])
   #lower_c_ball = np.array([0, 93, 58])
   #upper_c_ball = np.array([13, 255, 255])
-  cv2.imshow("image_ball", vs.read())
+  if displayWindows: cv2.imshow("image_ball", vs.read())
   cv2.createTrackbar('Param1', 'image_ball', 1, 1000, nothing)
   cv2.createTrackbar('Param2', 'image_ball', 1, 1000, nothing)
   cv2.createTrackbar('DP', 'image_ball', 1, 5, nothing)
