@@ -24,16 +24,18 @@ public class LiftControlCommand extends PIDCommand {
   @Override
   protected void initialize() {
     liftSubsystem.laserRange.init();
+    //liftSubsystem.laserRange.startRangeFinding();
+    System.out.println("Bradford works");
 //  motor.configSelectedFeedbackSensor(FeedbackDevice.Analog);
 
   }
 
   @Override
   protected void execute () {
-    liftSubsystem.laserRange.startRangeFinding();
+
     System.out.printf("Lift Range: %d \n", liftSubsystem.laserRange.getDistance());
-    liftSubsystem.laserRange.stopRangeFinding();
-    System.out.printf("Channel 6 of DIO: %b \n", liftSubsystem.digitalInput.get());
+    //liftSubsystem.laserRange.stopRangeFinding();
+    //System.out.printf("Channel 6 of DIO: %b \n", liftSubsystem.digitalInput.get());
   }
 
   @Override

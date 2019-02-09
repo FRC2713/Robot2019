@@ -7,8 +7,9 @@ import java.nio.ByteBuffer;
 public class LaserRangeFinder extends I2C {
   private int deviceID;
   private int[] configarray;
-  public LaserRangeFinder(int deviceID){
-    super(Port.kOnboard,deviceID);
+
+  public LaserRangeFinder(int deviceID) {
+    super(Port.kOnboard, deviceID);
     this.deviceID = deviceID;
     configarray = new int[]{
       0x00, /* 0x2d : set bit 2 and 5 to 1 for fast plus mode (1MHz I2C), else don't touch */
@@ -54,6 +55,7 @@ public class LaserRangeFinder extends I2C {
       0x00, /* 0x55 : not user-modifiable */
       0x00, /* 0x56 : not user-modifiable */
       0x38, /* 0x57 : not user-modifiable */
+      0xff, /* 0x58 : not user-modifiable */
       0xff, /* 0x58 : not user-modifiable */
       0x01, /* 0x59 : not user-modifiable */
       0x00, /* 0x5a : not user-modifiable */
@@ -106,23 +108,31 @@ public class LaserRangeFinder extends I2C {
   }
 
   public void init() {
+    boolean status = true;
     int address = 0x00;
     byte[] tmp = new byte[1];
     for (address = 0x2D; address <= 0x87; address++){
       write(address, configarray[address - 0x2D]);
     }
 
-    startRangeFinding();
+    status = startRangeFinding();
 
     while(tmp[0]==0){
-      checkForDataReady(tmp);
+      status = checkForDataReady(tmp);
   }
     tmp[0]  = 0;
-    write(0x0086,0x01);
-    stopRangeFinding();
-    write(0x0008,0x09);
-    write(0x0B,0);
+    status = write(0x0086,0x01);
+    //status = stopRangeFinding();
+    status = write(0x0008,0x09);
+    status = write(0x0B,0);
+
+    if(status) {
+      System.exit(99);
+      //Timer.delay(10);
+    }
+    System.out.println("Bradford 2 works");
   }
+
   private boolean getInterruptPolarity(byte[] interruptPolarity) {
     byte[] Temp = new byte[1];
     boolean status = false;
@@ -136,7 +146,7 @@ public class LaserRangeFinder extends I2C {
     }
     return status;
   }
-  private void checkForDataReady(byte[] isDataReady) {
+  private boolean checkForDataReady(byte[] isDataReady) {
     byte[] Temp = new byte[1];
     byte[] IntPol = new byte[1];
     boolean status = false;
@@ -150,26 +160,28 @@ public class LaserRangeFinder extends I2C {
       }
       else {
       isDataReady[0] = 0;
+      }
     }
-    }
+    return status;
   }
 
-  public void startRangeFinding() {
-    write(0x0087,0x40);
+  public boolean startRangeFinding() {
+    return write(0x0087,0x40);
   }
 
-  public void stopRangeFinding() {
-    write(0x0087, 0x00);
+  public boolean stopRangeFinding() {
+    return write(0x0087, 0x00);
   }
 
   public short getDistance() {
     byte[] bytearray = new byte[2];
-    System.out.println("This is"+read(0x0096, 2, bytearray));
-    System.out.printf("inside bytearray %d and %d \n", bytearray[0],bytearray[1]);
+    //System.out.println("This is"+read(0x0096, 2, bytearray));
+    //System.out.printf("inside bytearray %d and %d \n", bytearray[0],bytearray[1]);
     return toShort(bytearray);
   }
 
   private short toShort(byte[] bytearray) {
+    //System.out.println("bradford  works");
     return ByteBuffer.wrap(bytearray).getShort();
   }
 }

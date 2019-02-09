@@ -13,6 +13,11 @@ deploy {
           password = PASSWORD
         }
         ssh {
+          address = "team2713-coproc.MELROSESCHOOLS.local"
+          user = USERNAME
+          password = PASSWORD
+        }
+        ssh {
           address = '10.27.13.57'
           user = USERNAME
           password = PASSWORD
