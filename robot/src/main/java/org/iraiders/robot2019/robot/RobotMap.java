@@ -20,8 +20,10 @@ public class RobotMap {
   // Pneumatics
   public static int ballIntakeUpNodeId = 0;
   public static int ballIntakeDownNodeId = 1;
-  public static int pistonCloseNodeId = 3;
-  public static int pistonOpenNodeId = 4;
+  public static int hatchInNodeId = 2;
+  public static int hatchOutNodeId = 3;
+  public static int pistonCloseNodeId = 4;
+  public static int pistonOpenNodeId = 5;
 
   // Sensors
   public static int ballIntakeLimitSwitchPort = 1;
