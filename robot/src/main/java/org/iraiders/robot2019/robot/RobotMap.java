@@ -18,7 +18,7 @@ public class RobotMap {
   public static final int backRightTalonPort = 3;
   public static final int leftLiftTalonPort = 5;
   public static final int rightLiftTalonPort = 6;
-  public static final int backWheelTalonPort =  11;
+  public static final int backWheelTalonPort = 11;
   public static final int ballIntakeMotorPort = 8;
 
   // Pneumatics
@@ -31,7 +31,7 @@ public class RobotMap {
 
   // Sensors
   public static int ballIntakeLimitSwitchPort = 1;
-//buttonbox
+  //buttonbox
   public static int leftLiftForward = 1;
   public static int LeftLiftReverse = 2;
   public static int climberLeverUp = 3;
@@ -47,9 +47,8 @@ public class RobotMap {
   public static int plateIn = 12;
 
 
-
- static GenericHID buttonBox = OI.arcadeController;
- static XboxController XboxController =  OI.xBoxController;
+  static GenericHID buttonBox = OI.arcadeController;
+  static XboxController xboxController = OI.xBoxController;
 
   public static JoystickButton leftLiftForwardButton = new JoystickButton(buttonBox, 1);
   public static JoystickButton LeftLiftReverseButton = new JoystickButton(buttonBox, 2);
@@ -57,12 +56,14 @@ public class RobotMap {
   public static JoystickButton climberLevelDownButton = new JoystickButton(buttonBox, 4);
   public static JoystickButton ballIntakeMotorInButton = new JoystickButton(buttonBox, 5);
   public static JoystickButton ballIntakeMotorOutButton = new JoystickButton(buttonBox, 6);
-  public static  JoystickButton ballIntakeJointUpButton = new JoystickButton(XboxController, 7);
-  public static JoystickButton ballIntakeJointDownButton = new JoystickButton(XboxController, 8);
-  public static JoystickButton pistonOutButton = new JoystickButton(XboxController, 9);
-  public static JoystickButton pistonInButton = new JoystickButton(XboxController, 10);
-  public static JoystickButton plateOutButton = new JoystickButton(XboxController, 11);
-  public static JoystickButton plateInButton = new JoystickButton(XboxController, 12);
+  public static JoystickButton ballIntakeJointUpButton = new JoystickButton(xboxController, 7);
+  public static JoystickButton ballIntakeJointDownButton = new JoystickButton(xboxController, 8);
+  public static JoystickButton pistonOutButton = new JoystickButton(xboxController, 9);
+  public static JoystickButton pistonInButton = new JoystickButton(xboxController, 10);
+  public static JoystickButton plateOutButton = new JoystickButton(xboxController, 11);
+  public static JoystickButton plateInButton = new JoystickButton(xboxController, 12);
+}
+
 
 
 
