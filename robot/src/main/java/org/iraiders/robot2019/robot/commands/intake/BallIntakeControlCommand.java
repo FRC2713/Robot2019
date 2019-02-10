@@ -4,11 +4,18 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.command.Command;
 import org.iraiders.robot2019.robot.RobotMap;
+import org.iraiders.robot2019.robot.subsystems.IntakeSubsystem;
 
 public class BallIntakeControlCommand extends Command {
-  private BallIntakeState currentState = BallIntakeState.STOPPED;
+  private IntakeSubsystem intakeSubsystem;
+public static BallIntakeState ballIntakeState;
+  public BallIntakeState currentState = BallIntakeState.STOPPED;
   private WPI_TalonSRX intake = new WPI_TalonSRX(RobotMap.ballIntakeMotorPort);
   private double intakeSpeed = .4;
+  public BallIntakeControlCommand(IntakeSubsystem intakeSubsystem, BallIntakeState ballIntakeState){
+    this.intakeSubsystem = intakeSubsystem;
+    this.ballIntakeState = currentState;
+  }
 
   @Override
   protected void execute() {

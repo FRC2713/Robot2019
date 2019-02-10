@@ -6,9 +6,10 @@ import org.iraiders.robot2019.robot.subsystems.IntakeSubsystem;
 
 public class BallIntakeJointCommand extends Command {
   private IntakeSubsystem intakeSubsystem;
-  private IntakeSubsystem.IntakeJointPosition position = IntakeSubsystem.IntakeJointPosition.UP;
+  public static IntakeSubsystem.IntakeJointPosition position = IntakeSubsystem.IntakeJointPosition.UP;
 
- public BallIntakeJointCommand(IntakeSubsystem intakeSubsystem){
+ public BallIntakeJointCommand(IntakeSubsystem intakeSubsystem, IntakeSubsystem.IntakeJointPosition position){
+   this.position = position;
    this.intakeSubsystem = intakeSubsystem;
  }
 
@@ -30,7 +31,8 @@ public class BallIntakeJointCommand extends Command {
   }
 
   public boolean setIntakeJointPosition(IntakeSubsystem.IntakeJointPosition ijp){
-    if (intakeSubsystem.hatchCommand.getHatchPosition() == IntakeSubsystem.HatchPosition.EXTENDED) {
+    if (intakeSubsystem.plateCommand.getPlatePosition() == IntakeSubsystem.HatchPosition.EXTENDED
+    || intakeSubsystem.pistonCommand.getPistonPosition() == IntakeSubsystem.HatchPosition.EXTENDED) {
       return false;
     }
     position = ijp;
