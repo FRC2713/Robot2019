@@ -6,8 +6,8 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import org.iraiders.robot2019.robot.RobotMap;
 import org.iraiders.robot2019.robot.commands.SimpleMotorCommand;
 
-import static org.iraiders.robot2019.robot.RobotMap.leftLiftForwardButton;
-import static org.iraiders.robot2019.robot.RobotMap.leftLiftReverseButton;
+import static org.iraiders.robot2019.robot.RobotMap.liftDownButton;
+import static org.iraiders.robot2019.robot.RobotMap.liftUpButton;
 
 //Subsystem for elevator arm
 public class LiftSubsystem extends Subsystem {
@@ -22,8 +22,8 @@ public class LiftSubsystem extends Subsystem {
   }
 
   private void initControls(){
-    leftLiftForwardButton.whileHeld(new SimpleMotorCommand(leftLift,.5));
-    leftLiftReverseButton.whileHeld(new SimpleMotorCommand(leftLift,-.5));
+    liftUpButton.whileHeld(new SimpleMotorCommand(leftLift,.5));
+    liftDownButton.whileHeld(new SimpleMotorCommand(leftLift,-.5));
   }
 
   @Override

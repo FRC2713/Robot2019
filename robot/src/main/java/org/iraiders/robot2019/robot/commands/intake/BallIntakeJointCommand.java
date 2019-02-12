@@ -6,7 +6,7 @@ import org.iraiders.robot2019.robot.subsystems.IntakeSubsystem;
 
 public class BallIntakeJointCommand extends Command {
   private IntakeSubsystem intakeSubsystem;
-  public static IntakeSubsystem.IntakeJointPosition position = IntakeSubsystem.IntakeJointPosition.UP;
+  public IntakeSubsystem.IntakeJointPosition position = IntakeSubsystem.IntakeJointPosition.UP;
 
  public BallIntakeJointCommand(IntakeSubsystem intakeSubsystem, IntakeSubsystem.IntakeJointPosition position){
    this.position = position;
@@ -18,10 +18,12 @@ public class BallIntakeJointCommand extends Command {
      default:
      case UP:
        intakeSubsystem.ballIntakeSolenoid.set(DoubleSolenoid.Value.kForward);
+       intakeSubsystem.ballIntakeControlCommand.setBallIntakeState(BallIntakeControlCommand.BallIntakeState.STOPPED);
        break;
 
      case DOWN:
        intakeSubsystem.ballIntakeSolenoid.set(DoubleSolenoid.Value.kReverse);
+       intakeSubsystem.ballIntakeControlCommand.setBallIntakeState(BallIntakeControlCommand.BallIntakeState.IN);
        break;
    }
  }

@@ -36,18 +36,15 @@ public class RobotMap {
   private static GenericHID buttonBox = OI.arcadeController;
   private static XboxController xboxController = OI.xBoxController;
 
-  public static JoystickButton leftLiftForwardButton = new JoystickButton(buttonBox, 1);
-  public static JoystickButton leftLiftReverseButton = new JoystickButton(buttonBox, 2);
-  public static JoystickButton climberLevelUpButton = new JoystickButton(buttonBox, 3);
+  public static JoystickButton liftUpButton = new JoystickButton(buttonBox, 7);
+  public static JoystickButton liftDownButton = new JoystickButton(buttonBox, 2);
+  public static JoystickButton climberLevelUpButton = new JoystickButton(buttonBox, 8);
   public static JoystickButton climberLevelDownButton = new JoystickButton(buttonBox, 4);
-  public static JoystickButton ballIntakeMotorInButton = new JoystickButton(buttonBox, 5);
-  public static JoystickButton ballIntakeMotorOutButton = new JoystickButton(buttonBox, 6);
-  public static JoystickButton ballIntakeJointUpButton = new JoystickButton(xboxController, 1);
-  public static JoystickButton ballIntakeJointDownButton = new JoystickButton(xboxController, 2);
-  public static JoystickButton pistonOutButton = new JoystickButton(xboxController, 3);
-  public static JoystickButton pistonInButton = new JoystickButton(xboxController, 4);
-  public static JoystickButton plateOutButton = new JoystickButton(xboxController, 5);
-  public static JoystickButton plateInButton = new JoystickButton(xboxController, 6);
+
+  public static JoystickButton ballIntakeMotorOutButton = new JoystickButton(buttonBox, 1);
+  public static JoystickButton ballIntakeJointToggleButton = new JoystickButton(buttonBox, 5);
+  public static JoystickButton pistonToggleButton = new JoystickButton(buttonBox, 2);
+  public static JoystickButton plateToggleButton = new JoystickButton(buttonBox, 6);
 }
 
 
