@@ -122,15 +122,16 @@ public class LaserRangeFinder extends I2C {
   }
     tmp[0]  = 0;
     status = write(0x0086,0x01);
-    //status = stopRangeFinding();
+    status = stopRangeFinding();
     status = write(0x0008,0x09);
     status = write(0x0B,0);
 
     if(status) {
-      System.exit(99);
+      //System.exit(99);
       //Timer.delay(10);
     }
     System.out.println("Bradford 2 works");
+
   }
 
   private boolean getInterruptPolarity(byte[] interruptPolarity) {
@@ -175,8 +176,9 @@ public class LaserRangeFinder extends I2C {
 
   public short getDistance() {
     byte[] bytearray = new byte[2];
-    //System.out.println("This is"+read(0x0096, 2, bytearray));
-    //System.out.printf("inside bytearray %d and %d \n", bytearray[0],bytearray[1]);
+    System.out.println("This is"+read(0x0096, 2, bytearray));
+    //read(0x0096, 2, bytearray);
+    System.out.printf("inside bytearray %d and %d \n", bytearray[0],bytearray[1]);
     return toShort(bytearray);
   }
 

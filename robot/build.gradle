@@ -1,10 +1,12 @@
+import java.awt.Desktop
+
 apply plugin: 'java'
 apply plugin: "edu.wpi.first.GradleRIO"
 
 def TEAM = 2713
 def ENTRY_CLASS = "org.iraiders.robot2019.robot.Main"
 def DEBUG = project.hasProperty('debugBuild')
-def includeDesktopSupport = true // Enable Desktop Simulation support
+def includeDesktopSupport = true
 
 sourceCompatibility = 1.11
 
