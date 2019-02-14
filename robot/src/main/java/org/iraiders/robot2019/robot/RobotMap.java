@@ -14,7 +14,7 @@ public class RobotMap {
   public static final int backRightTalonPort = 3;
   public static final int leftLiftTalonPort = 5;
   public static final int rightLiftTalonPort = 6;
-  public static final int backWheelTalonPort =  7;
+  public static final int backWheelTalonPort =  11;
   public static final int ballIntakeMotorPort = 8;
 
   // Pneumatics
@@ -27,21 +27,6 @@ public class RobotMap {
 
   // Sensors
   public static int ballIntakeLimitSwitchPort = 1;
-
-  // Button Box
-  public static int leftLiftForward = 1;
-  public static int leftLiftReverse = 2;
-  public static int climberLevelUp = 3;
-  public static int climberLevelDown = 4;
-  // Xbox Buttons
-  public static int ballIntakeMotorIn = 7;
-  public static int ballIntakeMotorOut = 8;
-  public static int ballIntakeJointUp = 5;
-  public static int ballIntakeJointDown = 6;
-  public static int pistonOut = 9;
-  public static int pistonIn = 10;
-  public static int plateOut = 11;
-  public static int plateIn = 12;
 
 
 }

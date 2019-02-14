@@ -30,19 +30,20 @@ public class IntakeSubsystem extends Subsystem {
   private void initControls() {
     GenericHID buttonBox = OI.arcadeController;
 
-   /* JoystickButton btn3 = new JoystickButton(buttonBox, 3);
+    /*
+    JoystickButton btn3 = new JoystickButton(buttonBox, 3);
     JoystickButton btn4 = new JoystickButton(buttonBox, 4);
     JoystickButton btn5 = new JoystickButton(buttonBox, 5);
     JoystickButton btn6 = new JoystickButton(buttonBox, 6);
     JoystickButton btn7 = new JoystickButton(buttonBox, 7);
 
-
+/*
     btn3.whileHeld(new ResponsiveMotorCommand(ballIntakeMotor,.75, ballIntakeLimitSwitch));
     btn4.whileHeld(new SimpleMotorCommand(ballIntakeMotor,-.75));
     btn5.whileHeld(new SimpleMotorCommand(grabberIntakeJoint,.5));
     btn6.whileHeld(new BallIntakeJointCommand(this, GrabberPosition.OPEN));
     btn7.whileHeld(new BallIntakeJointCommand(this, GrabberPosition.CLOSE));
-    */
+   */
   }
 
   @Override

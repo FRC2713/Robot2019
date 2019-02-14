@@ -1,16 +1,18 @@
-package org.iraiders.robot2019.robot.commands.intake;
+package org.iraiders.robot2019.robot.commands.intake.hatch;
+
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.command.Command;
+import org.iraiders.robot2019.robot.commands.intake.BallIntakeControlCommand;
 import org.iraiders.robot2019.robot.subsystems.IntakeSubsystem;
 
-
-public class HatchCommand extends Command {
+public class PistonCommand extends Command {
   private IntakeSubsystem intakeSubsystem;
-  private IntakeSubsystem.HatchPosition hatchPosition = IntakeSubsystem.HatchPosition.RETRACTED;
+  public static IntakeSubsystem.HatchPosition hatchPosition = IntakeSubsystem.HatchPosition.RETRACTED;
 
-  public HatchCommand(IntakeSubsystem intakeSubsystem) {
+  public PistonCommand(IntakeSubsystem intakeSubsystem, IntakeSubsystem.HatchPosition hatchPosition) {
     this.intakeSubsystem = intakeSubsystem;
+    this.hatchPosition = hatchPosition;
     update();
   }
 
@@ -18,22 +20,20 @@ public class HatchCommand extends Command {
     switch(hatchPosition) {
       default:
       case EXTENDED:
-        intakeSubsystem.hatchSolenoidLeft.set(DoubleSolenoid.Value.kReverse);
-        intakeSubsystem.hatchSolenoidRight.set(DoubleSolenoid.Value.kReverse);
+        intakeSubsystem.pistonSolenoid.set(DoubleSolenoid.Value.kReverse);
         break;
 
       case RETRACTED:
-        intakeSubsystem.hatchSolenoidLeft.set(DoubleSolenoid.Value.kForward);
-        intakeSubsystem.hatchSolenoidRight.set(DoubleSolenoid.Value.kForward);
+        intakeSubsystem.pistonSolenoid.set(DoubleSolenoid.Value.kForward);
         break;
     }
   }
 
-  public IntakeSubsystem.HatchPosition getHatchPosition() {
+  public IntakeSubsystem.HatchPosition getPistonPosition() {
     return hatchPosition;
   }
 
-  public boolean setHatchposition(IntakeSubsystem.HatchPosition hp) {
+  public boolean setPistonPosition(IntakeSubsystem.HatchPosition hp) {
     if (intakeSubsystem.ballIntakeControlCommand.getBallIntakeState() ==
       BallIntakeControlCommand.BallIntakeState.OUT) {
       return false;
@@ -48,3 +48,4 @@ public class HatchCommand extends Command {
     return false;
   }
 }
+

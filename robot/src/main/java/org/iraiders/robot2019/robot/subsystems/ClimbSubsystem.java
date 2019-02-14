@@ -11,6 +11,9 @@ import org.iraiders.robot2019.robot.RobotMap;
 import org.iraiders.robot2019.robot.commands.SimpleMotorCommand;
 import org.iraiders.robot2019.robot.commands.climb.ClimbingCommand;
 
+import static org.iraiders.robot2019.robot.RobotMap.climberLevelDownButton;
+import static org.iraiders.robot2019.robot.RobotMap.climberLevelUpButton;
+
 public class ClimbSubsystem extends Subsystem {
   private WPI_TalonSRX backWheel = new WPI_TalonSRX(RobotMap.backWheelTalonPort);
   public final DoubleSolenoid pistons = new DoubleSolenoid(RobotMap.pistonOpenNodeId, RobotMap.pistonCloseNodeId);
@@ -27,6 +30,8 @@ public class ClimbSubsystem extends Subsystem {
     btn8.whileHeld(new ClimbingCommand(this, ClimberLevel.UP));
     btn8.whileHeld(new SimpleMotorCommand(backWheel, .3));
     btn9.whileHeld(new ClimbingCommand(this, ClimberLevel.DOWN));
+    climberLevelUpButton.whileHeld(new ClimbingCommand(this, ClimberLevel.UP));
+    climberLevelDownButton.whileHeld(new ClimbingCommand(this, ClimberLevel.DOWN));
   }
 
   @Override
@@ -36,5 +41,6 @@ public class ClimbSubsystem extends Subsystem {
 
   public enum ClimberLevel {
     UP, DOWN
+
   }
 }
