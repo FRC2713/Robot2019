@@ -10,7 +10,7 @@ public class LiftControlCommand extends PIDCommand {
 
   public LiftControlCommand(LiftSubsystem liftSubsystem, LiftSubsystem.LiftPosition position) {
     super(0,0,0);
-    motor = liftSubsystem.leftLift;
+    motor = liftSubsystem.liftTalon;
 
     // TODO Properly configure PID targets and ranges
     this.setSetpoint(0);
