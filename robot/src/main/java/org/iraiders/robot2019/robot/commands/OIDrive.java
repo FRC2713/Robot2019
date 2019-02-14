@@ -1,6 +1,8 @@
 package org.iraiders.robot2019.robot.commands;
 
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.command.Command;
 import org.iraiders.robot2019.robot.OI;
@@ -16,6 +18,10 @@ public class OIDrive extends Command {
 
   private double joystickChangeLimit;
 
+  Ultrasonic ultra = new Ultrasonic(0, 1);
+
+  AnalogInput ai = new AnalogInput(0);
+
   public OIDrive(DriveSubsystem driveSubsystem) {
     this.driveSubsystem = driveSubsystem;
     requires(driveSubsystem);
@@ -25,6 +31,8 @@ public class OIDrive extends Command {
   protected void initialize() {
     driveSubsystem.roboDrive.setMaxOutput(Robot.prefs.getFloat("OIMaxSpeed", 1));
     joystickChangeLimit = Robot.prefs.getDouble("JoystickChangeLimit", 1f);
+
+    AnalogInput.setGlobalSampleRate(62500);
   }
 
   @Override
@@ -48,8 +56,15 @@ public class OIDrive extends Command {
       measuredRight = DriveSubsystem.slewLimit(xbox.getX(GenericHID.Hand.kRight), lastRightStickVal, joystickChangeLimit);
       driveSubsystem.roboDrive.arcadeDrive(measuredLeft, measuredRight, true);
     }
-
+    System.out.printf("Voltage: %f Distance: %f Average Voltage: %f \n",ai.getVoltage(), distanceCalc(ai.getVoltage()), ai.getAverageVoltage());
+    System.out.printf("This is the response of the ping %f /n", ultra.getRangeInches());
   }
+  private double distanceCalc(double Voltage) {
+    // voltage / 2 / 0.00666667 = distance
+    return Voltage / 4 / 0.00666667;
+  }
+
+
 
   @Override
   protected void end() {
