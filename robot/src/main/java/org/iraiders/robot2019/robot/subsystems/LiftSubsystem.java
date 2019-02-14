@@ -12,18 +12,22 @@ import static org.iraiders.robot2019.robot.RobotMap.liftUpButton;
 //Subsystem for elevator arm
 public class LiftSubsystem extends Subsystem {
   //establishes motors (upper and lower)
-  public final WPI_TalonSRX leftLift = new WPI_TalonSRX(RobotMap.leftLiftTalonPort);
-  private final WPI_TalonSRX rightLift = new WPI_TalonSRX(RobotMap.rightLiftTalonPort);
+  public final WPI_TalonSRX liftTalon = new WPI_TalonSRX(RobotMap.liftOneTalonPort);
+  private final WPI_TalonSRX liftTalonTwo = new WPI_TalonSRX(RobotMap.liftTwoTalonPort);
+  private final WPI_TalonSRX liftTalonThree = new WPI_TalonSRX(RobotMap.liftThreeTalonPort);
+  private final WPI_TalonSRX liftTalonFour = new WPI_TalonSRX(RobotMap.liftFourTalonPort);
 
-  public LiftSubsystem(){
-    //sets right lift as follower of left lift
-    rightLift.set(ControlMode.Follower, RobotMap.leftLiftTalonPort);
+  public LiftSubsystem() {
+    liftTalonTwo.set(ControlMode.Follower, RobotMap.liftOneTalonPort);
+    liftTalonThree.set(ControlMode.Follower, RobotMap.liftOneTalonPort);
+    liftTalonFour.set(ControlMode.Follower, RobotMap.liftOneTalonPort);
+
     initControls();
   }
 
   private void initControls(){
-    liftUpButton.whileHeld(new SimpleMotorCommand(leftLift,.5));
-    liftDownButton.whileHeld(new SimpleMotorCommand(leftLift,-.5));
+    liftUpButton.whileHeld(new SimpleMotorCommand(liftTalon,.5));
+    liftDownButton.whileHeld(new SimpleMotorCommand(liftTalon,-.5));
   }
 
   @Override

@@ -16,10 +16,12 @@ public class RobotMap {
   public static final int backLeftTalonPort = 4;
   public static final int frontRightTalonPort = 1;
   public static final int backRightTalonPort = 3;
-  public static final int leftLiftTalonPort = 5;
-  public static final int rightLiftTalonPort = 6;
+  public static final int liftOneTalonPort = 5;
+  public static final int liftTwoTalonPort = 6;
+  public static final int liftThreeTalonPort = 7;
+  public static final int liftFourTalonPort = 9;
   public static final int backWheelTalonPort = 11;
-  public static final int ballIntakeMotorPort = 8;
+  public static final int ballIntakeMotorPort = 10;
 
   // Pneumatics
   public static int ballIntakeUpNodeId = 0;
