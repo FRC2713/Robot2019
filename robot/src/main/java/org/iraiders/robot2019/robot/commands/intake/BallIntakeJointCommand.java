@@ -33,8 +33,8 @@ public class BallIntakeJointCommand extends Command {
   }
 
   public boolean setIntakeJointPosition(IntakeSubsystem.IntakeJointPosition ijp){
-    if (intakeSubsystem.plateCommand.getPlatePosition() == IntakeSubsystem.HatchPosition.EXTENDED
-    || intakeSubsystem.pistonCommand.getPistonPosition() == IntakeSubsystem.HatchPosition.EXTENDED) {
+    if (intakeSubsystem.hatchExtendCommand.getPosition() == IntakeSubsystem.HatchPosition.EXTENDED
+    || intakeSubsystem.plateExtendCommand.getPosition() == IntakeSubsystem.HatchPosition.EXTENDED) {
       return false;
     }
     position = ijp;

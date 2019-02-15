@@ -26,8 +26,13 @@ public class RobotMap {
   public static int ballIntakeDownNodeId = 1;
   public static int hatchInNodeId = 2;
   public static int hatchOutNodeId = 3;
-  public static int pistonCloseNodeId = 4;
-  public static int pistonOpenNodeId = 5;
+  public static int plateCloseNodeId = 4;
+  public static int plateOpenNodeId = 5;
+  public static int climbFrontOpenNodeId = 6;
+  public static int climbFrontCloseNodeId = 7;
+  public static int climbBackOpenNodeId = 6;
+  public static int climbBackCloseNodeId = 7;
+
 
   // Sensors
   public static int ballIntakeLimitSwitchPort = 1;
@@ -46,6 +51,33 @@ public class RobotMap {
   public static JoystickButton pistonToggleButton = new JoystickButton(buttonBox, 2);
   public static JoystickButton plateToggleButton = new JoystickButton(buttonBox, 6);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
