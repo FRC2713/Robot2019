@@ -61,6 +61,9 @@ public class OIDrive extends Command {
     } else {
       measuredLeft = DriveSubsystem.slewLimit(-xbox.getY(GenericHID.Hand.kLeft), lastLeftStickVal, joystickChangeLimit);
       measuredRight = DriveSubsystem.slewLimit(xbox.getX(GenericHID.Hand.kRight), lastRightStickVal, joystickChangeLimit);
+      if(Math.abs(measuredLeft) >  0.07 && measuredRight == 0) {
+        measuredRight = 1;
+      }
       driveSubsystem.roboDrive.arcadeDrive(measuredLeft, measuredRight * arcadeSnapScaler, true);
     }
   }
