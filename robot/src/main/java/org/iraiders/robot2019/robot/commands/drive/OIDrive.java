@@ -1,4 +1,4 @@
-package org.iraiders.robot2019.robot.commands;
+package org.iraiders.robot2019.robot.commands.drive;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -6,20 +6,22 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.iraiders.robot2019.robot.OI;
 import org.iraiders.robot2019.robot.Robot;
+import org.iraiders.robot2019.robot.RobotMap;
 import org.iraiders.robot2019.robot.subsystems.DriveSubsystem;
 
 public class OIDrive extends Command {
   private DriveSubsystem driveSubsystem;
+  private XboxController xbox = OI.xBoxController;
   private boolean useTankInsteadOfBradford = false;
+
   private double lastLeftStickVal = 0;
   private double lastRightStickVal = 0;
-  private XboxController xbox = OI.xBoxController;
-  public boolean lineSensing = false;
-  private double joystickChangeLimit;
-  public boolean isLineSensing = false;
   private double snappingScalingValue = 1.0;
   private double leftSnappingScalingValue = 1.0;
   private double rightSnappingScalingValue = 1.0;
+
+  private double joystickChangeLimit;
+  public boolean isLineSensing = false;
 
   public OIDrive(DriveSubsystem driveSubsystem) {
     this.driveSubsystem = driveSubsystem;
@@ -31,6 +33,7 @@ public class OIDrive extends Command {
     driveSubsystem.roboDrive.setMaxOutput(Robot.prefs.getFloat("OIMaxSpeed", 1));
     joystickChangeLimit = Robot.prefs.getDouble("JoystickChangeLimit", 1f);
     snappingScalingValue = SmartDashboard.getNumber("Snapping scaling value", 1.0);
+    RobotMap.toggleLineSensor.toggleWhenPressed(new LineSensorControl(this));
   }
 
   @Override
@@ -38,15 +41,13 @@ public class OIDrive extends Command {
     double measuredLeft;
     double measuredRight;
 
-    if(isLineSensing == true) {
-      if (driveSubsystem.leftLine.get() == true) {
+    if(isLineSensing) {
+      if (driveSubsystem.leftLine.get()) {
         leftSnappingScalingValue *= (1+snappingScalingValue);
-      }
-      else if (driveSubsystem.rightLine.get() == true) {
+      } else if (driveSubsystem.rightLine.get()) {
         rightSnappingScalingValue *= (1+snappingScalingValue);
       }
-    }
-    else {
+    } else {
       leftSnappingScalingValue = 1;
       rightSnappingScalingValue = 1;
     }
@@ -67,11 +68,6 @@ public class OIDrive extends Command {
       measuredRight = DriveSubsystem.slewLimit(xbox.getX(GenericHID.Hand.kRight), lastRightStickVal, joystickChangeLimit)*rightSnappingScalingValue;
       driveSubsystem.roboDrive.arcadeDrive(measuredLeft, measuredRight, true);
     }
-
-    driveSubsystem.btn8.toggleWhenPressed(new enableLineSensors(this));
-
-
-    isLineSensing = false;
   }
 
   @Override

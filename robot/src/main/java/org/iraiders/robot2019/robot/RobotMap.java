@@ -32,8 +32,8 @@ public class RobotMap {
   public static int plateOpenNodeId = 5;
   public static int climbFrontOpenNodeId = 6;
   public static int climbFrontCloseNodeId = 7;
-  public static int climbBackOpenNodeId = 6;
-  public static int climbBackCloseNodeId = 7;
+  public static int climbBackOpenNodeId = 8;
+  public static int climbBackCloseNodeId = 9;
 
 
   // Sensors
@@ -46,6 +46,8 @@ public class RobotMap {
   private static GenericHID buttonBox = OI.arcadeController;
   private static XboxController xboxController = OI.xBoxController;
 
+  public static JoystickButton toggleLineSensor = new JoystickButton(xboxController, 8);
+
   public static JoystickButton liftUpButton = new JoystickButton(buttonBox, 7);
   public static JoystickButton liftDownButton = new JoystickButton(buttonBox, 2);
   public static JoystickButton climberLevelUpButton = new JoystickButton(buttonBox, 8);
@@ -56,39 +58,3 @@ public class RobotMap {
   public static JoystickButton pistonToggleButton = new JoystickButton(buttonBox, 2);
   public static JoystickButton plateToggleButton = new JoystickButton(buttonBox, 6);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
