@@ -1,6 +1,8 @@
 package org.iraiders.robot2019.robot;
 
 
+import edu.wpi.cscore.UsbCamera;
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -28,6 +30,8 @@ public class Robot extends TimedRobot {
   
   @Override
   public void robotInit() {
+    initCamera();
+
     m_oi = new OI();
     driveSubsystem = new DriveSubsystem();
     liftSubsystem = new LiftSubsystem();
@@ -38,6 +42,14 @@ public class Robot extends TimedRobot {
 
     compressor.start();
   }
+
+  private void initCamera() {
+    CameraServer cs = CameraServer.getInstance();
+    UsbCamera u = cs.startAutomaticCapture();
+    //u.setResolution(640, 480);
+    //u.setFPS(10);
+  }
+
 
   @Override
   public void robotPeriodic() {
