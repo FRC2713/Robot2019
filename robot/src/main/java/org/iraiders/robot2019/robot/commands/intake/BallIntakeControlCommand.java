@@ -19,15 +19,15 @@ public class BallIntakeControlCommand extends Command {
     switch(currentState) {
       default:
       case STOPPED:
-        intakeSubsystem.intake.set(ControlMode.PercentOutput, 0);
+        intakeSubsystem.intakeTalon.set(ControlMode.PercentOutput, 0);
         break;
 
       case IN:
-        intakeSubsystem.intake.set(ControlMode.PercentOutput, intakeSpeed);
+        intakeSubsystem.intakeTalon.set(ControlMode.PercentOutput, intakeSpeed);
         break;
 
       case OUT:
-        intakeSubsystem.intake.set(ControlMode.PercentOutput, -intakeSpeed);
+        intakeSubsystem.intakeTalon.set(ControlMode.PercentOutput, -intakeSpeed);
         break;
     }
     SmartDashboard.putString("Ball intake state", currentState.name());

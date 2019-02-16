@@ -14,10 +14,10 @@ public class BallIntakeMonitor extends Command {
 
   @Override
   protected void execute() {
-    if (intakeSubsystem.ballIntakeLimitSwitch.get()) {
+    if (intakeSubsystem.ballIntakeLimitSwitch.get() || intakeSubsystem.intakeTalon.getOutputCurrent() >= 100) {
       if (firstDetectedTime == 0) firstDetectedTime = Timer.getFPGATimestamp();
 
-      if (Timer.getFPGATimestamp() - firstDetectedTime >= 1) {
+      if (Timer.getFPGATimestamp() - firstDetectedTime >= .5) {
         intakeSubsystem.ballIntakeJointCommand.setIntakeJointPosition(IntakeSubsystem.IntakeJointPosition.UP);
         intakeSubsystem.ballIntakeControlCommand.setBallIntakeState(BallIntakeControlCommand.BallIntakeState.STOPPED);
       }
