@@ -41,6 +41,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData("Auto mode", m_chooser);
 
     compressor.start();
+    SmartDashboard.getBoolean("Compressor is: ", compressor.enabled());
   }
 
   private void initCamera() {

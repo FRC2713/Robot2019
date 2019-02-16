@@ -6,7 +6,7 @@ import org.iraiders.robot2019.robot.subsystems.IntakeSubsystem;
 
 public class GenericHatch {
   private final IntakeSubsystem intakeSubsystem;
-  private IntakeSubsystem.HatchPosition hatchPosition;
+  private IntakeSubsystem.HatchPosition hatchPosition = IntakeSubsystem.HatchPosition.RETRACTED;
   private final DoubleSolenoid solenoid;
 
   public GenericHatch(IntakeSubsystem intakeSubsystem, DoubleSolenoid solenoid) {

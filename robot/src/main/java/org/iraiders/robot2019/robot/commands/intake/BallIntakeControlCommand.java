@@ -2,6 +2,7 @@ package org.iraiders.robot2019.robot.commands.intake;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.iraiders.robot2019.robot.subsystems.IntakeSubsystem;
 
 public class BallIntakeControlCommand extends Command {
@@ -29,6 +30,7 @@ public class BallIntakeControlCommand extends Command {
         intakeSubsystem.intake.set(ControlMode.PercentOutput, -intakeSpeed);
         break;
     }
+    SmartDashboard.putString("Ball intake state:", currentState.toString());
   }
 
   @Override
