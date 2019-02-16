@@ -18,7 +18,7 @@ import static org.iraiders.robot2019.robot.subsystems.IntakeSubsystem.IntakeJoin
 import static org.iraiders.robot2019.robot.subsystems.IntakeSubsystem.IntakeJointPosition.UP;
 
 public class IntakeSubsystem extends Subsystem {
-  public WPI_TalonSRX intake = new WPI_TalonSRX(RobotMap.ballIntakeMotorPort);
+  public WPI_TalonSRX intakeTalon = new WPI_TalonSRX(RobotMap.ballIntakeMotorPort);
   public final DoubleSolenoid ballIntakeSolenoid = new DoubleSolenoid(RobotMap.ballIntakeUpNodeId, RobotMap.ballIntakeDownNodeId);
   public final DoubleSolenoid hatchSolenoid = new DoubleSolenoid(RobotMap.hatchInNodeId, RobotMap.hatchOutNodeId);
   public final DoubleSolenoid plateSolenoid = new DoubleSolenoid(RobotMap.plateOpenNodeId, RobotMap.plateCloseNodeId);
