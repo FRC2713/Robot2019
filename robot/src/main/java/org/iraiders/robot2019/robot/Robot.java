@@ -3,6 +3,7 @@ package org.iraiders.robot2019.robot;
 
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
@@ -21,7 +22,7 @@ public class Robot extends TimedRobot {
   public static Preferences prefs = Preferences.getInstance();
 
   public static OI m_oi;
-  //public static final Compressor compressor = new Compressor();
+  public static final Compressor compressor = new Compressor();
   
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
@@ -39,7 +40,7 @@ public class Robot extends TimedRobot {
     // chooser.addOption("My Auto", new MyAutoCommand());
     SmartDashboard.putData("Auto mode", m_chooser);
 
-    //compressor.start();
+    compressor.start();
   }
 
   private void initCamera() {

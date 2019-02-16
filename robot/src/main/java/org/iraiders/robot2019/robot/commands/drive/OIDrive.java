@@ -27,6 +27,8 @@ public class OIDrive extends Command {
   protected void initialize() {
     driveSubsystem.roboDrive.setMaxOutput(Robot.prefs.getFloat("OIMaxSpeed", 1));
     joystickChangeLimit = Robot.prefs.getDouble("JoystickChangeLimit", 1f);
+
+    driveSubsystem.roboDrive.setDeadband(0.07);
   }
 
   @Override
@@ -40,24 +42,26 @@ public class OIDrive extends Command {
       lastLeftStickVal = 0;
       OI.rumbleController(xbox, .5, 500);
     }
+    double leftSnapScalar = 1;
+    double rightSnapScalar = 1;
+    double arcadeSnapScaler = 1;
+
+    if (driveSubsystem.leftLine.get()) {
+      leftSnapScalar = SmartDashboard.getNumber("Snap Scale Value", 1.0);
+      arcadeSnapScaler = -(SmartDashboard.getNumber("Snap Scale Value", 1.0));
+    } else if (driveSubsystem.rightLine.get()) {
+      rightSnapScalar = SmartDashboard.getNumber("Snap Scale Value", 1.0);
+      arcadeSnapScaler = SmartDashboard.getNumber("Snap Scale Value", 1.0);
+    }
 
     if (useTankInsteadOfBradford) {
-      double leftSnapScalar = 1;
-      double rightSnapScalar = 1;
-
-      if (driveSubsystem.leftLine.get()) {
-        leftSnapScalar = SmartDashboard.getNumber("Snap Scale Value", 1.0);
-      } else if (driveSubsystem.rightLine.get()) {
-        rightSnapScalar = SmartDashboard.getNumber("Snap Scale Value", 1.0);
-      }
-
       measuredLeft = DriveSubsystem.slewLimit(-xbox.getY(GenericHID.Hand.kLeft), lastLeftStickVal, joystickChangeLimit)*leftSnapScalar;
       measuredRight = DriveSubsystem.slewLimit(-xbox.getY(GenericHID.Hand.kRight), lastRightStickVal, joystickChangeLimit)*rightSnapScalar;
       driveSubsystem.roboDrive.tankDrive(measuredLeft, measuredRight, true);
     } else {
       measuredLeft = DriveSubsystem.slewLimit(-xbox.getY(GenericHID.Hand.kLeft), lastLeftStickVal, joystickChangeLimit);
       measuredRight = DriveSubsystem.slewLimit(xbox.getX(GenericHID.Hand.kRight), lastRightStickVal, joystickChangeLimit);
-      driveSubsystem.roboDrive.arcadeDrive(measuredLeft, measuredRight, true);
+      driveSubsystem.roboDrive.arcadeDrive(measuredLeft, measuredRight * arcadeSnapScaler, true);
     }
   }
 
