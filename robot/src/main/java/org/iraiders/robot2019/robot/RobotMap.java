@@ -46,8 +46,6 @@ public class RobotMap {
   private static GenericHID buttonBox = OI.arcadeController;
   private static XboxController xboxController = OI.xBoxController;
 
-  public static JoystickButton toggleLineSensor = new JoystickButton(xboxController, 8);
-
   public static JoystickButton liftUpButton = new JoystickButton(buttonBox, 7);
   public static JoystickButton liftDownButton = new JoystickButton(buttonBox, 3);
   public static JoystickButton climberLevelUpButton = new JoystickButton(buttonBox, 8);
