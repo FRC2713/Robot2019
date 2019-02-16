@@ -4,11 +4,11 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import org.iraiders.robot2019.robot.subsystems.ClimbSubsystem;
 
-public class ClimbingCommand extends InstantCommand {
+public class BackClimbCommand extends InstantCommand {
   private final ClimbSubsystem.ClimberLevel climberPosition;
   private ClimbSubsystem climbSubsystem;
 
-  public ClimbingCommand(ClimbSubsystem climbSubsystem, ClimbSubsystem.ClimberLevel position) {
+  public BackClimbCommand(ClimbSubsystem climbSubsystem, ClimbSubsystem.ClimberLevel position) {
     this.climbSubsystem = climbSubsystem;
     this.climberPosition = position;
     requires(climbSubsystem);
@@ -16,9 +16,10 @@ public class ClimbingCommand extends InstantCommand {
 
   protected void initialize() {
     if(climberPosition.equals(ClimbSubsystem.ClimberLevel.UP)) {
-      climbSubsystem.pistons.set(DoubleSolenoid.Value.kForward);
+      climbSubsystem.backPistons.set(DoubleSolenoid.Value.kForward);
     } else if (climberPosition.equals(ClimbSubsystem.ClimberLevel.DOWN)) {
-      climbSubsystem.pistons.set(DoubleSolenoid.Value.kReverse);
+      climbSubsystem.frontPistons.set(DoubleSolenoid.Value.kReverse);
     }
   }
+
 }
