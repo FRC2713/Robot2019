@@ -5,12 +5,13 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import org.iraiders.robot2019.robot.OI;
 import org.iraiders.robot2019.robot.RobotMap;
+import org.iraiders.robot2019.robot.commands.feedback.EncoderReporter;
 import org.iraiders.robot2019.robot.commands.intake.BallIntakeControlCommand;
 import org.iraiders.robot2019.robot.commands.intake.BallIntakeJointCommand;
 import org.iraiders.robot2019.robot.commands.intake.BallIntakeMonitor;
 import org.iraiders.robot2019.robot.commands.intake.hatch.GenericHatch;
-import org.iraiders.robot2019.robot.OI;
 
 import static org.iraiders.robot2019.robot.RobotMap.*;
 import static org.iraiders.robot2019.robot.commands.intake.BallIntakeControlCommand.BallIntakeState.OUT;
@@ -46,13 +47,13 @@ public class IntakeSubsystem extends Subsystem {
 
     plateToggleButton.whenPressed(new InstantCommand(()-> this.hatchExtendCommand.setPosition(HatchPosition.EXTENDED)));
     plateToggleButton.whenReleased(new InstantCommand(()-> this.hatchExtendCommand.setPosition(HatchPosition.RETRACTED)));
-
   }
 
   @Override
   protected void initDefaultCommand() {
     ballIntakeControlCommand.start();
     ballIntakeMonitor.start();
+    new EncoderReporter(intakeTalon).start();
   }
 
   public enum IntakeJointPosition {
