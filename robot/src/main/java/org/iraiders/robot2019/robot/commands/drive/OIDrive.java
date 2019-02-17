@@ -1,11 +1,13 @@
 package org.iraiders.robot2019.robot.commands.drive;
 
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.iraiders.robot2019.robot.OI;
 import org.iraiders.robot2019.robot.Robot;
+import org.iraiders.robot2019.robot.RobotMap;
 import org.iraiders.robot2019.robot.subsystems.DriveSubsystem;
 
 public class OIDrive extends Command {
@@ -16,6 +18,7 @@ public class OIDrive extends Command {
   private double lastLeftStickVal = 0;
   private double lastRightStickVal = 0;
   private double deadband = 0.17 ;
+  Ultrasonic ultra = new Ultrasonic(RobotMap.ultraSonicPing,RobotMap.ultraSonicEcho);
 
   private double joystickChangeLimit;
 
@@ -30,6 +33,7 @@ public class OIDrive extends Command {
     joystickChangeLimit = Robot.prefs.getDouble("JoystickChangeLimit", 1f);
 
     driveSubsystem.roboDrive.setDeadband(deadband-0.1);
+    ultra.setAutomaticMode(true);
   }
 
   @Override
@@ -56,6 +60,10 @@ public class OIDrive extends Command {
       rightSnapScalar = SmartDashboard.getNumber("Snap Scale Value", 1.0);
       leftSnapScalar = 1.0 ;
       arcadeSnapScaler = -SmartDashboard.getNumber("Snap Scale Value", 1.0);
+    } else {
+      rightSnapScalar = 1;
+      leftSnapScalar = 1;
+      arcadeSnapScaler = 1;
     }
 
     if (useTankInsteadOfBradford) {
@@ -71,6 +79,9 @@ public class OIDrive extends Command {
         measuredRight = measuredRight + ((arcadeSnapScaler < 0) ? arcadeSnapScaler + 1 : arcadeSnapScaler - 1);
       }
       driveSubsystem.roboDrive.arcadeDrive(measuredLeft, measuredRight, true);
+    }
+    if (SmartDashboard.getNumber("Snap Scale Value", 1.0)>1.0&& ultra.getRangeInches() < SmartDashboard.getNumber ("PreStopRange", 0.001))  {
+
     }
   }
 
