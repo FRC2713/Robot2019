@@ -10,6 +10,7 @@ import org.iraiders.robot2019.robot.commands.intake.BallIntakeControlCommand;
 import org.iraiders.robot2019.robot.commands.intake.BallIntakeJointCommand;
 import org.iraiders.robot2019.robot.commands.intake.BallIntakeMonitor;
 import org.iraiders.robot2019.robot.commands.intake.hatch.GenericHatch;
+import org.iraiders.robot2019.robot.OI;
 
 import static org.iraiders.robot2019.robot.RobotMap.*;
 import static org.iraiders.robot2019.robot.commands.intake.BallIntakeControlCommand.BallIntakeState.OUT;
@@ -19,9 +20,9 @@ import static org.iraiders.robot2019.robot.subsystems.IntakeSubsystem.IntakeJoin
 
 public class IntakeSubsystem extends Subsystem {
   public WPI_TalonSRX intakeTalon = new WPI_TalonSRX(RobotMap.ballIntakeMotorPort);
-  public final DoubleSolenoid ballIntakeSolenoid = new DoubleSolenoid(RobotMap.ballIntakeUpNodeId, RobotMap.ballIntakeDownNodeId);
-  public final DoubleSolenoid hatchSolenoid = new DoubleSolenoid(RobotMap.hatchInNodeId, RobotMap.hatchOutNodeId);
-  public final DoubleSolenoid plateSolenoid = new DoubleSolenoid(RobotMap.plateOpenNodeId, RobotMap.plateCloseNodeId);
+  public final DoubleSolenoid ballIntakeSolenoid = OI.getDoubleSolenoid(RobotMap.ballIntakeUpNodeId, RobotMap.ballIntakeDownNodeId);
+  public final DoubleSolenoid hatchSolenoid = OI.getDoubleSolenoid(RobotMap.hatchInNodeId, RobotMap.hatchOutNodeId);
+  public final DoubleSolenoid plateSolenoid = OI.getDoubleSolenoid(RobotMap.plateOpenNodeId, RobotMap.plateCloseNodeId);
   public final DigitalInput ballIntakeLimitSwitch = new DigitalInput(RobotMap.ballIntakeLimitSwitchPort);
 
   private final BallIntakeMonitor ballIntakeMonitor = new BallIntakeMonitor(this);

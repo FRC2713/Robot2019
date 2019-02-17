@@ -17,8 +17,8 @@ import static org.iraiders.robot2019.robot.RobotMap.climberLevelUpButton;
 public class ClimbSubsystem extends Subsystem {
   private WPI_TalonSRX backWheel = new WPI_TalonSRX(RobotMap.backWheelTalonPort);
 
-  public final DoubleSolenoid frontPistons = new DoubleSolenoid(RobotMap.climbFrontOpenNodeId, RobotMap.climbFrontCloseNodeId);
-  public final DoubleSolenoid backPistons = new DoubleSolenoid(RobotMap.climbBackOpenNodeId, RobotMap.climbBackCloseNodeId);
+  public final DoubleSolenoid frontPistons = OI.getDoubleSolenoid(RobotMap.climbFrontOpenNodeId, RobotMap.climbFrontCloseNodeId);
+  public final DoubleSolenoid backPistons =  OI.getDoubleSolenoid(RobotMap.climbBackOpenNodeId, RobotMap.climbBackCloseNodeId);
 
 
   public ClimbSubsystem() {

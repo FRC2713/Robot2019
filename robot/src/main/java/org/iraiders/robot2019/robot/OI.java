@@ -1,5 +1,6 @@
 package org.iraiders.robot2019.robot;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -90,11 +91,18 @@ public class OI {
    * @param speed             The current desired speed (usually from the joystick)
    * @param deadbandTolerance The amount of deadband to remove from speed
    * @return The corrected speed
-   * @deprecated {@link edu.wpi.first.wpilibj.drive.RobotDriveBase#applyDeadband(double, double)} has this implemented already
    */
   public static double getDeadband(double speed, double deadbandTolerance) {
     return Math.max(0, // If deadband is greater than abs(speed), do nothing
       Math.abs(speed) - Math.max(deadbandTolerance, 0) // Subtract abs(speed) from larger of deadbandTolerance and 0
     ) * Math.signum(speed); // Restore original sign sign of speed
+  }
+
+  public static DoubleSolenoid getDoubleSolenoid(int forwardChannel, int reverseChannel) {
+    if (reverseChannel > 7) {
+      return new DoubleSolenoid(1, forwardChannel - 7, reverseChannel - 7);
+    }
+
+    return new DoubleSolenoid(forwardChannel, reverseChannel);
   }
 }
