@@ -18,7 +18,7 @@ public class OIDrive extends Command {
   private double lastLeftStickVal = 0;
   private double lastRightStickVal = 0;
   private double deadband = 0.17 ;
-  Ultrasonic ultra = new Ultrasonic(RobotMap.ultraSonicPing,RobotMap.ultraSonicEcho);
+  //Ultrasonic ultra = new Ultrasonic(RobotMap.ultraSonicPing,RobotMap.ultraSonicEcho);
 
   private double joystickChangeLimit;
 
@@ -32,8 +32,11 @@ public class OIDrive extends Command {
     driveSubsystem.roboDrive.setMaxOutput(Robot.prefs.getFloat("OIMaxSpeed", 1));
     joystickChangeLimit = Robot.prefs.getDouble("JoystickChangeLimit", 1f);
 
+    SmartDashboard.putNumber("Snap Scale Value", 1.0);
+    SmartDashboard.putNumber ("PreStopRange", 0.001);
+
     driveSubsystem.roboDrive.setDeadband(deadband-0.1);
-    ultra.setAutomaticMode(true);
+    //ultra.setAutomaticMode(true);
   }
 
   @Override
@@ -51,38 +54,45 @@ public class OIDrive extends Command {
     double rightSnapScalar = 1;
     double arcadeSnapScaler = 1;
 
+    SmartDashboard.putBoolean("LeftLine", !driveSubsystem.leftLine.get()); //invert because ls are inverted
+    SmartDashboard.putBoolean("midLine", !driveSubsystem.midLine.get()); //on testbed green was off line
+    SmartDashboard.putBoolean("rightLine", !driveSubsystem.midLine.get());
 
-    if (driveSubsystem.leftLine.get()) {
-      rightSnapScalar = 1.0 ;
-      leftSnapScalar = SmartDashboard.getNumber("Snap Scale Value", 1.0);
-      arcadeSnapScaler = SmartDashboard.getNumber("Snap Scale Value", 1.0);
-    } else if (driveSubsystem.rightLine.get()) {
-      rightSnapScalar = SmartDashboard.getNumber("Snap Scale Value", 1.0);
-      leftSnapScalar = 1.0 ;
-      arcadeSnapScaler = -SmartDashboard.getNumber("Snap Scale Value", 1.0);
-    } else {
-      rightSnapScalar = 1;
-      leftSnapScalar = 1;
-      arcadeSnapScaler = 1;
-    }
+
+        if (!driveSubsystem.leftLine.get()) {
+          rightSnapScalar = 1.0;
+          leftSnapScalar = SmartDashboard.getNumber("Snap Scale Value", 1.0);
+          arcadeSnapScaler = SmartDashboard.getNumber("Snap Scale Value", 1.0);
+        } else if (!driveSubsystem.rightLine.get()) {
+          rightSnapScalar = SmartDashboard.getNumber("Snap Scale Value", 1.0);
+          leftSnapScalar = 1.0;
+          arcadeSnapScaler = -SmartDashboard.getNumber("Snap Scale Value", 1.0);
+        } else {
+          rightSnapScalar = 1;
+          leftSnapScalar = 1;
+          arcadeSnapScaler = 1;
+        }
 
     if (useTankInsteadOfBradford) {
       measuredLeft = DriveSubsystem.slewLimit(-xbox.getY(GenericHID.Hand.kLeft), lastLeftStickVal, joystickChangeLimit);
-      measuredLeft = (measuredLeft > Math.abs(deadband)) ? measuredLeft + (leftSnapScalar-1) : measuredLeft ;
+      measuredLeft = (measuredLeft > Math.abs(deadband)) ? measuredLeft + (leftSnapScalar-1) : measuredLeft;
       measuredRight = DriveSubsystem.slewLimit(-xbox.getY(GenericHID.Hand.kRight), lastRightStickVal, joystickChangeLimit);
-      measuredRight = (measuredRight > Math.abs(deadband)) ? measuredRight + (rightSnapScalar-1) : measuredRight ;
+      measuredRight = (measuredRight > Math.abs(deadband)) ? measuredRight + (rightSnapScalar-1) : measuredRight;
       driveSubsystem.roboDrive.tankDrive(measuredLeft, measuredRight, true);
     } else {
       measuredLeft = DriveSubsystem.slewLimit(-xbox.getY(GenericHID.Hand.kLeft), lastLeftStickVal, joystickChangeLimit);
       measuredRight = DriveSubsystem.slewLimit(xbox.getX(GenericHID.Hand.kRight), lastRightStickVal, joystickChangeLimit);
       if(measuredLeft > Math.abs(deadband) || measuredRight > Math.abs(deadband)) {
-        measuredRight = measuredRight + ((arcadeSnapScaler < 0) ? arcadeSnapScaler + 1 : arcadeSnapScaler - 1);
+        measuredRight += (measuredRight >= 0) ? ((arcadeSnapScaler < 0) ? arcadeSnapScaler + 1 : arcadeSnapScaler - 1) : -(((arcadeSnapScaler < 0) ? arcadeSnapScaler + 1 : arcadeSnapScaler - 1));
       }
       driveSubsystem.roboDrive.arcadeDrive(measuredLeft, measuredRight, true);
     }
-    if (SmartDashboard.getNumber("Snap Scale Value", 1.0)>1.0&& ultra.getRangeInches() < SmartDashboard.getNumber ("PreStopRange", 0.001))  {
 
-    }
+    //System.out.println("ultra: " + ultra.getRangeInches());
+
+   //if (SmartDashboard.getNumber("Snap Scale Value", 1.0)>1.0&& ultra.getRangeInches() < SmartDashboard.getNumber ("PreStopRange", 0.001))  {
+       //driveSubsystem.roboDrive.stopMotor();
+    //}
   }
 
   @Override

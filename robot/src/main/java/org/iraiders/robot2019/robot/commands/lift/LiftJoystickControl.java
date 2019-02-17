@@ -8,13 +8,11 @@ import org.iraiders.robot2019.robot.subsystems.LiftSubsystem;
 import static org.iraiders.robot2019.robot.OI.leftAttack;
 
 public class LiftJoystickControl extends Command {
-
   private final WPI_TalonSRX motor;
 
-public LiftJoystickControl(LiftSubsystem liftSubsystem){
-
-  motor = liftSubsystem.liftTalon;
-}
+  public LiftJoystickControl(LiftSubsystem liftSubsystem) {
+    motor = liftSubsystem.liftTalon;
+  }
 
   @Override
   protected void execute(){
