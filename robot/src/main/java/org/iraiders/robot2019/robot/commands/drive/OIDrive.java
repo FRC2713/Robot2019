@@ -15,6 +15,7 @@ public class OIDrive extends Command {
 
   private double lastLeftStickVal = 0;
   private double lastRightStickVal = 0;
+  private double deadband = 0.17 ;
 
   private double joystickChangeLimit;
 
@@ -28,7 +29,7 @@ public class OIDrive extends Command {
     driveSubsystem.roboDrive.setMaxOutput(Robot.prefs.getFloat("OIMaxSpeed", 1));
     joystickChangeLimit = Robot.prefs.getDouble("JoystickChangeLimit", 1f);
 
-    driveSubsystem.roboDrive.setDeadband(0.07);
+    driveSubsystem.roboDrive.setDeadband(deadband-0.1);
   }
 
   @Override
@@ -46,25 +47,30 @@ public class OIDrive extends Command {
     double rightSnapScalar = 1;
     double arcadeSnapScaler = 1;
 
+
     if (driveSubsystem.leftLine.get()) {
+      rightSnapScalar = 1.0 ;
       leftSnapScalar = SmartDashboard.getNumber("Snap Scale Value", 1.0);
-      arcadeSnapScaler = -(SmartDashboard.getNumber("Snap Scale Value", 1.0));
+      arcadeSnapScaler = SmartDashboard.getNumber("Snap Scale Value", 1.0);
     } else if (driveSubsystem.rightLine.get()) {
       rightSnapScalar = SmartDashboard.getNumber("Snap Scale Value", 1.0);
-      arcadeSnapScaler = SmartDashboard.getNumber("Snap Scale Value", 1.0);
+      leftSnapScalar = 1.0 ;
+      arcadeSnapScaler = -SmartDashboard.getNumber("Snap Scale Value", 1.0);
     }
 
     if (useTankInsteadOfBradford) {
-      measuredLeft = DriveSubsystem.slewLimit(-xbox.getY(GenericHID.Hand.kLeft), lastLeftStickVal, joystickChangeLimit)*leftSnapScalar;
-      measuredRight = DriveSubsystem.slewLimit(-xbox.getY(GenericHID.Hand.kRight), lastRightStickVal, joystickChangeLimit)*rightSnapScalar;
+      measuredLeft = DriveSubsystem.slewLimit(-xbox.getY(GenericHID.Hand.kLeft), lastLeftStickVal, joystickChangeLimit);
+      measuredLeft = (measuredLeft > Math.abs(deadband)) ? measuredLeft + (leftSnapScalar-1) : measuredLeft ;
+      measuredRight = DriveSubsystem.slewLimit(-xbox.getY(GenericHID.Hand.kRight), lastRightStickVal, joystickChangeLimit);
+      measuredRight = (measuredRight > Math.abs(deadband)) ? measuredRight + (rightSnapScalar-1) : measuredRight ;
       driveSubsystem.roboDrive.tankDrive(measuredLeft, measuredRight, true);
     } else {
       measuredLeft = DriveSubsystem.slewLimit(-xbox.getY(GenericHID.Hand.kLeft), lastLeftStickVal, joystickChangeLimit);
       measuredRight = DriveSubsystem.slewLimit(xbox.getX(GenericHID.Hand.kRight), lastRightStickVal, joystickChangeLimit);
-      if(Math.abs(measuredLeft) >  0.07 && measuredRight == 0) {
-        measuredRight = 1;
+      if(measuredLeft > Math.abs(deadband) || measuredRight > Math.abs(deadband)) {
+        measuredRight = measuredRight + ((arcadeSnapScaler < 0) ? arcadeSnapScaler + 1 : arcadeSnapScaler - 1);
       }
-      driveSubsystem.roboDrive.arcadeDrive(measuredLeft, measuredRight * arcadeSnapScaler, true);
+      driveSubsystem.roboDrive.arcadeDrive(measuredLeft, measuredRight, true);
     }
   }
 
