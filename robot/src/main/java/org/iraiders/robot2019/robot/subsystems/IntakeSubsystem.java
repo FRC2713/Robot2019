@@ -28,11 +28,15 @@ public class IntakeSubsystem extends Subsystem {
 
   private final BallIntakeMonitor ballIntakeMonitor = new BallIntakeMonitor(this);
   public final BallIntakeControlCommand ballIntakeControlCommand = new BallIntakeControlCommand(this);
-  public final BallIntakeJointCommand ballIntakeJointCommand = new BallIntakeJointCommand(this, UP);
+  public final BallIntakeJointCommand ballIntakeJointCommand = new BallIntakeJointCommand(this);
   public final GenericHatch plateExtendCommand = new GenericHatch(this, hatchSolenoid);
   public final GenericHatch hatchExtendCommand = new GenericHatch(this, plateSolenoid);
 
   public IntakeSubsystem() {
+    ballIntakeSolenoid.setName("BallIntakeSolenoid");
+    hatchSolenoid.setName("HatchExtendSolenoid");
+    plateSolenoid.setName("PlateExtendSolenoid");
+
     initControls();
   }
 

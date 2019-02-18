@@ -30,7 +30,7 @@ public class BallIntakeControlCommand extends Command {
         intakeSubsystem.intakeTalon.set(ControlMode.PercentOutput, -intakeSpeed);
         break;
     }
-    SmartDashboard.putString("Ball intake state", currentState.name());
+    SmartDashboard.putString("BallIntakeState", currentState.name());
   }
 
   @Override

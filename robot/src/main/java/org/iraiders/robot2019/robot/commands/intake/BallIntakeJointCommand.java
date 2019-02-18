@@ -2,15 +2,16 @@ package org.iraiders.robot2019.robot.commands.intake;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.iraiders.robot2019.robot.subsystems.IntakeSubsystem;
 
 public class BallIntakeJointCommand extends Command {
   private IntakeSubsystem intakeSubsystem;
   public IntakeSubsystem.IntakeJointPosition position = IntakeSubsystem.IntakeJointPosition.UP;
 
- public BallIntakeJointCommand(IntakeSubsystem intakeSubsystem, IntakeSubsystem.IntakeJointPosition position){
-   this.position = position;
+ public BallIntakeJointCommand(IntakeSubsystem intakeSubsystem) {
    this.intakeSubsystem = intakeSubsystem;
+   update();
  }
 
  private void update() {
@@ -26,6 +27,7 @@ public class BallIntakeJointCommand extends Command {
        intakeSubsystem.ballIntakeControlCommand.setBallIntakeState(BallIntakeControlCommand.BallIntakeState.IN);
        break;
    }
+   SmartDashboard.putString("IntakeJointState", position.name());
  }
 
   public IntakeSubsystem.IntakeJointPosition getIntakeJointPosition(){
