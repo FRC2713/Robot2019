@@ -5,6 +5,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import org.iraiders.robot2019.robot.RobotMap;
 import org.iraiders.robot2019.robot.commands.SimpleMotorCommand;
+import org.iraiders.robot2019.robot.commands.lift.LaserArduinoInterface;
 import org.iraiders.robot2019.robot.commands.lift.LiftJoystickControl;
 
 import static org.iraiders.robot2019.robot.RobotMap.liftDownButton;
@@ -22,7 +23,6 @@ public class LiftSubsystem extends Subsystem {
     liftTalonTwo.set(ControlMode.Follower, RobotMap.liftOneTalonPort);
     liftTalonThree.set(ControlMode.Follower, RobotMap.liftOneTalonPort);
     liftTalonFour.set(ControlMode.Follower, RobotMap.liftOneTalonPort);
-
     initControls();
   }
 
@@ -31,9 +31,14 @@ public class LiftSubsystem extends Subsystem {
     liftDownButton.whileHeld(new SimpleMotorCommand(liftTalon,-.25));
   }
 
+  public void initTeleop() {
+    new LiftJoystickControl(this).start();
+    new LaserArduinoInterface().start();
+  }
+
+
   @Override
   protected void initDefaultCommand() {
-    new LiftJoystickControl(this).start();
   }
 
 

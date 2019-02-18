@@ -27,7 +27,7 @@ public class Robot extends TimedRobot {
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
 
-  
+
   @Override
   public void robotInit() {
     initCamera();
@@ -97,6 +97,7 @@ public class Robot extends TimedRobot {
     }
 
     driveSubsystem.initTeleop();
+    liftSubsystem.initTeleop();
   }
   
   @Override
