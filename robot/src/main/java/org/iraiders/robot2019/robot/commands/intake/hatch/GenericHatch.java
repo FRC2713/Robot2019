@@ -1,7 +1,6 @@
 package org.iraiders.robot2019.robot.commands.intake.hatch;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import org.iraiders.robot2019.robot.commands.intake.BallIntakeControlCommand;
 import org.iraiders.robot2019.robot.subsystems.IntakeSubsystem;
 
 public class GenericHatch {
@@ -33,8 +32,7 @@ public class GenericHatch {
   }
 
   public boolean setPosition(IntakeSubsystem.HatchPosition hp) {
-    if (intakeSubsystem.ballIntakeControlCommand.getBallIntakeState() ==
-      BallIntakeControlCommand.BallIntakeState.OUT) {
+    if (intakeSubsystem.ballIntakeJointCommand.getIntakeJointPosition() == IntakeSubsystem.IntakeJointPosition.DOWN) {
       return false;
     }
     hatchPosition = hp;
