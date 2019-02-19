@@ -1,6 +1,7 @@
 package org.iraiders.robot2019.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 
@@ -51,14 +52,15 @@ public class RobotMap {
   // Buttons
   private static GenericHID buttonBox = OI.arcadeController;
   private static XboxController xboxController = OI.xBoxController;
+  private static Joystick joystick = OI.leftAttack;
 
-  public static JoystickButton liftUpButton = new JoystickButton(buttonBox, 7);
-  public static JoystickButton liftDownButton = new JoystickButton(buttonBox, 3);
-  public static JoystickButton climberLevelUpButton = new JoystickButton(buttonBox, 8);
-  public static JoystickButton climberLevelDownButton = new JoystickButton(buttonBox, 4);
+  //public static JoystickButton liftUpButton = new JoystickButton(buttonBox, 7);
+  //public static JoystickButton liftDownButton = new JoystickButton(buttonBox, 3);
+  public static JoystickButton climberLevelUpButton = new JoystickButton(joystick, 5);
+  public static JoystickButton climberLevelDownButton = new JoystickButton(joystick, 4);
 
-  public static JoystickButton ballIntakeMotorOutButton = new JoystickButton(buttonBox, 1);
-  public static JoystickButton ballIntakeJointToggleButton = new JoystickButton(buttonBox, 5);
-  public static JoystickButton pistonToggleButton = new JoystickButton(buttonBox, 2);
-  public static JoystickButton plateToggleButton = new JoystickButton(buttonBox, 6);
+  public static JoystickButton ballIntakeMotorOutButton = new JoystickButton(joystick, 1);
+  public static JoystickButton ballIntakeJointToggleButton = new JoystickButton(joystick, 3);
+  public static JoystickButton hatchToggleButton = new JoystickButton(joystick, 6);
+  public static JoystickButton plateToggleButton = new JoystickButton(joystick, 7);
 }
