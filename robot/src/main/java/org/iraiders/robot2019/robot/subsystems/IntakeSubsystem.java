@@ -12,6 +12,8 @@ import org.iraiders.robot2019.robot.commands.intake.BallIntakeControlCommand;
 import org.iraiders.robot2019.robot.commands.intake.BallIntakeJointCommand;
 import org.iraiders.robot2019.robot.commands.intake.BallIntakeMonitor;
 import org.iraiders.robot2019.robot.commands.intake.hatch.GenericHatch;
+import org.iraiders.robot2019.robot.commands.intake.hatch.HatchControl;
+import org.iraiders.robot2019.robot.commands.intake.hatch.PlateControl;
 
 import static org.iraiders.robot2019.robot.RobotMap.*;
 import static org.iraiders.robot2019.robot.commands.intake.BallIntakeControlCommand.BallIntakeState.OUT;
@@ -29,15 +31,20 @@ public class IntakeSubsystem extends Subsystem {
   private final BallIntakeMonitor ballIntakeMonitor = new BallIntakeMonitor(this);
   public final BallIntakeControlCommand ballIntakeControlCommand = new BallIntakeControlCommand(this);
   public final BallIntakeJointCommand ballIntakeJointCommand = new BallIntakeJointCommand(this);
-  public final GenericHatch plateExtendCommand = new GenericHatch(this, hatchSolenoid);
-  public final GenericHatch hatchExtendCommand = new GenericHatch(this, plateSolenoid);
+  public final GenericHatch plateExtendCommand = new PlateControl(this, plateSolenoid);
+  public final GenericHatch hatchExtendCommand = new HatchControl(this, hatchSolenoid);
 
   public IntakeSubsystem() {
     ballIntakeSolenoid.setName("BallIntakeSolenoid");
     hatchSolenoid.setName("HatchExtendSolenoid");
     plateSolenoid.setName("PlateExtendSolenoid");
+    intakeTalon.setName("BallIntakeTalon");
 
     initControls();
+  
+    ballIntakeControlCommand.start();
+    ballIntakeMonitor.start();
+    new EncoderReporter(intakeTalon).start();
   }
 
   private void initControls() {
@@ -46,18 +53,16 @@ public class IntakeSubsystem extends Subsystem {
     ballIntakeMotorOutButton.whenPressed(new InstantCommand(() -> this.ballIntakeControlCommand.setBallIntakeState(OUT)));
     ballIntakeMotorOutButton.whenReleased(new InstantCommand(() -> this.ballIntakeControlCommand.setBallIntakeState(STOPPED)));
 
-    pistonToggleButton.whenPressed(new InstantCommand(() -> this.plateExtendCommand.setPosition(HatchPosition.EXTENDED)));
-    pistonToggleButton.whenReleased(new InstantCommand(()-> this.plateExtendCommand.setPosition(HatchPosition.RETRACTED)));
+    plateToggleButton.whenPressed(new InstantCommand(() -> this.plateExtendCommand.setPosition(HatchPosition.EXTENDED)));
+    plateToggleButton.whenReleased(new InstantCommand(()-> this.plateExtendCommand.setPosition(HatchPosition.RETRACTED)));
 
-    plateToggleButton.whenPressed(new InstantCommand(()-> this.hatchExtendCommand.setPosition(HatchPosition.EXTENDED)));
-    plateToggleButton.whenReleased(new InstantCommand(()-> this.hatchExtendCommand.setPosition(HatchPosition.RETRACTED)));
+    pistonToggleButton.whenPressed(new InstantCommand(()-> this.hatchExtendCommand.setPosition(HatchPosition.EXTENDED)));
+    pistonToggleButton.whenReleased(new InstantCommand(()-> this.hatchExtendCommand.setPosition(HatchPosition.RETRACTED)));
   }
 
   @Override
   protected void initDefaultCommand() {
-    ballIntakeControlCommand.start();
-    ballIntakeMonitor.start();
-    new EncoderReporter(intakeTalon).start();
+  
   }
 
   public enum IntakeJointPosition {

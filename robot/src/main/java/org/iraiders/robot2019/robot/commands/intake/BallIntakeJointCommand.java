@@ -18,12 +18,12 @@ public class BallIntakeJointCommand extends Command {
    switch(position) {
      default:
      case UP:
-       intakeSubsystem.ballIntakeSolenoid.set(DoubleSolenoid.Value.kForward);
+       intakeSubsystem.ballIntakeSolenoid.set(DoubleSolenoid.Value.kReverse);
        intakeSubsystem.ballIntakeControlCommand.setBallIntakeState(BallIntakeControlCommand.BallIntakeState.STOPPED);
        break;
 
      case DOWN:
-       intakeSubsystem.ballIntakeSolenoid.set(DoubleSolenoid.Value.kReverse);
+       intakeSubsystem.ballIntakeSolenoid.set(DoubleSolenoid.Value.kForward);
        intakeSubsystem.ballIntakeControlCommand.setBallIntakeState(BallIntakeControlCommand.BallIntakeState.IN);
        break;
    }
@@ -35,8 +35,7 @@ public class BallIntakeJointCommand extends Command {
   }
 
   public boolean setIntakeJointPosition(IntakeSubsystem.IntakeJointPosition ijp){
-    if (intakeSubsystem.hatchExtendCommand.getPosition() == IntakeSubsystem.HatchPosition.EXTENDED
-    || intakeSubsystem.plateExtendCommand.getPosition() == IntakeSubsystem.HatchPosition.EXTENDED) {
+    if (intakeSubsystem.hatchExtendCommand.getPosition() == IntakeSubsystem.HatchPosition.EXTENDED) {
       return false;
     }
     position = ijp;

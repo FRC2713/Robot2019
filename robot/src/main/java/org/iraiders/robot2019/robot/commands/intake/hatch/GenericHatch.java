@@ -1,10 +1,11 @@
 package org.iraiders.robot2019.robot.commands.intake.hatch;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.iraiders.robot2019.robot.subsystems.IntakeSubsystem;
 
-public class GenericHatch {
+public abstract class GenericHatch {
   private final IntakeSubsystem intakeSubsystem;
   private IntakeSubsystem.HatchPosition position = IntakeSubsystem.HatchPosition.RETRACTED;
   private final DoubleSolenoid solenoid;
@@ -19,11 +20,11 @@ public class GenericHatch {
     switch(position) {
       default:
       case EXTENDED:
-        solenoid.set(DoubleSolenoid.Value.kReverse);
+        solenoid.set(DoubleSolenoid.Value.kForward);
         break;
 
       case RETRACTED:
-        solenoid.set(DoubleSolenoid.Value.kForward);
+        solenoid.set(DoubleSolenoid.Value.kReverse);
         break;
     }
 
@@ -35,11 +36,15 @@ public class GenericHatch {
   }
 
   public boolean setPosition(IntakeSubsystem.HatchPosition hp) {
-    if (intakeSubsystem.ballIntakeJointCommand.getIntakeJointPosition() == IntakeSubsystem.IntakeJointPosition.DOWN) {
+    //if (intakeSubsystem.ballIntakeJointCommand.getIntakeJointPosition() == IntakeSubsystem.IntakeJointPosition.DOWN) {
+    if (hp == IntakeSubsystem.HatchPosition.EXTENDED && !isSafe()) {
+      DriverStation.reportWarning(solenoid.getName() + " change PREVENTED for safety reasons", false);
       return false;
     }
     position = hp;
     update();
     return true;
   }
+  
+  public abstract boolean isSafe();
 }
