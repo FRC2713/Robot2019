@@ -32,7 +32,8 @@ public class EncoderReporter extends Command {
   @Override
   protected void execute() {
     for (WPI_TalonSRX talon : talons) {
-      SmartDashboard.putNumber(talon.getDescription(), talon.getSelectedSensorPosition(0));
+      if (talon.isAlive())
+        SmartDashboard.putNumber(talon.getDescription(), talon.getSelectedSensorPosition(0));
     }
   }
   
