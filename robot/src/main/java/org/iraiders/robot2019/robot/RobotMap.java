@@ -24,16 +24,19 @@ public class RobotMap {
   public static final int ballIntakeMotorPort = 10;
 
   // Pneumatics
+  // PCM1
   public static int ballIntakeUpNodeId = 0;
   public static int ballIntakeDownNodeId = 1;
   public static int hatchInNodeId = 2;
   public static int hatchOutNodeId = 3;
   public static int plateCloseNodeId = 4;
   public static int plateOpenNodeId = 5;
-  public static int climbFrontOpenNodeId = 6;
-  public static int climbFrontCloseNodeId = 7;
-  public static int climbBackOpenNodeId = 8;
-  public static int climbBackCloseNodeId = 9;
+  
+  // PCM2
+  public static int climbFrontOpenNodeId = 1 + 7; // PCM2, Slot 0
+  public static int climbFrontCloseNodeId = 2 + 7;
+  public static int climbBackOpenNodeId = 3 + 7;
+  public static int climbBackCloseNodeId = 4 + 7;
 
 
   // Sensors
