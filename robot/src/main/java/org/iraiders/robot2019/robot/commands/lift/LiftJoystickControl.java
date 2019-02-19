@@ -20,7 +20,7 @@ public class LiftJoystickControl extends Command {
     value = OI.getDeadband(leftAttack.getY(), .05);
 
 
-    if (value != 0) motor.set(-(Math.pow(value, 2)));
+    if (value != 0) motor.set(Math.copySign(Math.pow(value, 2), value));
   }
 
 
