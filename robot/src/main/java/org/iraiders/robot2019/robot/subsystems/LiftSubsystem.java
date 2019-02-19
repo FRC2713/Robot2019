@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import org.iraiders.robot2019.robot.RobotMap;
 import org.iraiders.robot2019.robot.commands.feedback.EncoderReporter;
 import org.iraiders.robot2019.robot.commands.lift.LiftJoystickControl;
+import  org.iraiders.robot2019.robot.commands.lift.LaserArduinoInterface;
 
 //Subsystem for elevator arm
 public class LiftSubsystem extends Subsystem {
@@ -35,7 +36,7 @@ public class LiftSubsystem extends Subsystem {
   public void initTeleop() {
     new LiftJoystickControl(this).start();
     new EncoderReporter(FeedbackDevice.CTRE_MagEncoder_Relative, liftTalon).start();
-    //new LaserArduinoInterface().start();
+    new LaserArduinoInterface().start();
   }
 
 

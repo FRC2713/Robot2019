@@ -19,10 +19,10 @@ public class LaserArduinoInterface extends Command {
        distanceInches = Double.parseDouble(port.readString().trim()) * 0.0393701;
     } catch (NumberFormatException e) {
 
-       distanceInches = 0 ;
+       distanceInches = -1 ;
     }
 
-    System.out.println("This is the distance: " + distanceInches);
+    if (distanceInches != -1) System.out.println("This is the distance: " + distanceInches);
   }
 
   @Override
