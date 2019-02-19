@@ -18,6 +18,8 @@ import org.iraiders.robot2019.robot.commands.intake.hatch.PlateControl;
 import static org.iraiders.robot2019.robot.RobotMap.*;
 import static org.iraiders.robot2019.robot.commands.intake.BallIntakeControlCommand.BallIntakeState.OUT;
 import static org.iraiders.robot2019.robot.commands.intake.BallIntakeControlCommand.BallIntakeState.STOPPED;
+import static org.iraiders.robot2019.robot.subsystems.IntakeSubsystem.HatchPosition.EXTENDED;
+import static org.iraiders.robot2019.robot.subsystems.IntakeSubsystem.HatchPosition.RETRACTED;
 import static org.iraiders.robot2019.robot.subsystems.IntakeSubsystem.IntakeJointPosition.DOWN;
 import static org.iraiders.robot2019.robot.subsystems.IntakeSubsystem.IntakeJointPosition.UP;
 
@@ -49,15 +51,10 @@ public class IntakeSubsystem extends Subsystem {
 
   private void initControls() {
     ballIntakeJointToggleButton.whenPressed(new InstantCommand(() -> this.ballIntakeJointCommand.setIntakeJointPosition(this.ballIntakeJointCommand.getIntakeJointPosition() == UP ? DOWN : UP)));
-
+    plateToggleButton.whenPressed(new InstantCommand(() -> this.plateExtendCommand.setPosition(this.plateExtendCommand.getPosition() == RETRACTED ? EXTENDED : RETRACTED)));
+    hatchToggleButton.whenPressed(new InstantCommand(() -> this.hatchExtendCommand.setPosition(this.plateExtendCommand.getPosition() == RETRACTED ? EXTENDED : RETRACTED)));
     ballIntakeMotorOutButton.whenPressed(new InstantCommand(() -> this.ballIntakeControlCommand.setBallIntakeState(OUT)));
     ballIntakeMotorOutButton.whenReleased(new InstantCommand(() -> this.ballIntakeControlCommand.setBallIntakeState(STOPPED)));
-
-    plateToggleButton.whenPressed(new InstantCommand(() -> this.plateExtendCommand.setPosition(HatchPosition.EXTENDED)));
-    plateToggleButton.whenReleased(new InstantCommand(()-> this.plateExtendCommand.setPosition(HatchPosition.RETRACTED)));
-
-    pistonToggleButton.whenPressed(new InstantCommand(()-> this.hatchExtendCommand.setPosition(HatchPosition.EXTENDED)));
-    pistonToggleButton.whenReleased(new InstantCommand(()-> this.hatchExtendCommand.setPosition(HatchPosition.RETRACTED)));
   }
 
   @Override

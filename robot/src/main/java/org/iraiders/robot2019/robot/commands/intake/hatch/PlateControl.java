@@ -11,7 +11,6 @@ public class PlateControl extends GenericHatch {
   
   @Override
   public boolean isSafe() {
-    return Robot.intakeSubsystem.hatchExtendCommand.getPosition() == IntakeSubsystem.HatchPosition.EXTENDED
-      && Robot.intakeSubsystem.ballIntakeJointCommand.getIntakeJointPosition() == IntakeSubsystem.IntakeJointPosition.UP;
+    return Robot.intakeSubsystem.hatchExtendCommand.getPosition() == IntakeSubsystem.HatchPosition.EXTENDED;
   }
 }

@@ -11,6 +11,7 @@ public class HatchControl extends GenericHatch {
   
   @Override
   public boolean isSafe() {
-    return Robot.intakeSubsystem.ballIntakeJointCommand.getIntakeJointPosition() == IntakeSubsystem.IntakeJointPosition.UP;
+    return Robot.intakeSubsystem.ballIntakeJointCommand.getIntakeJointPosition() == IntakeSubsystem.IntakeJointPosition.UP
+      && Robot.intakeSubsystem.plateExtendCommand.getPosition() == IntakeSubsystem.HatchPosition.RETRACTED;
   }
 }

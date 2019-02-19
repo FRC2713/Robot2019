@@ -37,7 +37,7 @@ public abstract class GenericHatch {
 
   public boolean setPosition(IntakeSubsystem.HatchPosition hp) {
     //if (intakeSubsystem.ballIntakeJointCommand.getIntakeJointPosition() == IntakeSubsystem.IntakeJointPosition.DOWN) {
-    if (hp == IntakeSubsystem.HatchPosition.EXTENDED && !isSafe()) {
+    if (!isSafe()) {
       DriverStation.reportWarning(solenoid.getName() + " change PREVENTED for safety reasons", false);
       return false;
     }
