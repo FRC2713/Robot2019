@@ -5,12 +5,8 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import org.iraiders.robot2019.robot.RobotMap;
-import org.iraiders.robot2019.robot.commands.SimpleMotorCommand;
 import org.iraiders.robot2019.robot.commands.feedback.EncoderReporter;
 import org.iraiders.robot2019.robot.commands.lift.LiftJoystickControl;
-
-import static org.iraiders.robot2019.robot.RobotMap.liftDownButton;
-import static org.iraiders.robot2019.robot.RobotMap.liftUpButton;
 
 //Subsystem for elevator arm
 public class LiftSubsystem extends Subsystem {
@@ -32,8 +28,8 @@ public class LiftSubsystem extends Subsystem {
   }
 
   private void initControls(){
-    liftUpButton.whileHeld(new SimpleMotorCommand(liftTalon,-.25));
-    liftDownButton.whileHeld(new SimpleMotorCommand(liftTalon,.25));
+    //liftUpButton.whileHeld(new SimpleMotorCommand(liftTalon,-.25));
+    //liftDownButton.whileHeld(new SimpleMotorCommand(liftTalon,.25));
   }
 
   public void initTeleop() {
