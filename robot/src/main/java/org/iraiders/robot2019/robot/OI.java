@@ -100,9 +100,8 @@ public class OI {
 
   public static DoubleSolenoid getDoubleSolenoid(int forwardChannel, int reverseChannel) {
     if (reverseChannel > 7) {
-      return new DoubleSolenoid(1, forwardChannel - 7, reverseChannel - 7);
+      return new DoubleSolenoid(1, forwardChannel - 8, reverseChannel - 8);
     }
-
     return new DoubleSolenoid(forwardChannel, reverseChannel);
   }
 }
