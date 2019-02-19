@@ -7,12 +7,21 @@ public class LaserArduinoInterface extends Command {
   private SerialPort port = new SerialPort(9600, SerialPort.Port.kUSB);
 
   public LaserArduinoInterface() {
-
+    port.enableTermination();
   }
 
   @Override
   protected void execute(){
-    double distanceInches = Double.parseDouble(port.readString()) * 0.0393701;
+
+    double distanceInches ;
+
+    try {
+       distanceInches = Double.parseDouble(port.readString().trim()) * 0.0393701;
+    } catch (NumberFormatException e) {
+
+       distanceInches = 0 ;
+    }
+
     System.out.println("This is the distance: " + distanceInches);
   }
 
