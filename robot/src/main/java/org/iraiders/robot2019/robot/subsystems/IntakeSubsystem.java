@@ -24,14 +24,14 @@ import static org.iraiders.robot2019.robot.subsystems.IntakeSubsystem.IntakeJoin
 import static org.iraiders.robot2019.robot.subsystems.IntakeSubsystem.IntakeJointPosition.UP;
 
 public class IntakeSubsystem extends Subsystem {
-  public WPI_TalonSRX intakeTalon = new WPI_TalonSRX(RobotMap.ballIntakeMotorPort);
+  public final WPI_TalonSRX intakeTalon = new WPI_TalonSRX(RobotMap.ballIntakeMotorPort);
   public final DoubleSolenoid ballIntakeSolenoid = OI.getDoubleSolenoid(RobotMap.ballIntakeUpNodeId, RobotMap.ballIntakeDownNodeId);
   public final DoubleSolenoid hatchSolenoid = OI.getDoubleSolenoid(RobotMap.hatchInNodeId, RobotMap.hatchOutNodeId);
   public final DoubleSolenoid plateSolenoid = OI.getDoubleSolenoid(RobotMap.plateOpenNodeId, RobotMap.plateCloseNodeId);
   public final DigitalInput ballIntakeLimitSwitch = new DigitalInput(RobotMap.ballIntakeLimitSwitchPort);
 
   private final BallIntakeMonitor ballIntakeMonitor = new BallIntakeMonitor(this);
-  public final BallIntakeControlCommand ballIntakeControlCommand = new BallIntakeControlCommand(this);
+  public BallIntakeControlCommand ballIntakeControlCommand = new BallIntakeControlCommand(this);
   public final BallIntakeJointCommand ballIntakeJointCommand = new BallIntakeJointCommand(this);
   public final GenericHatch plateExtendCommand = new PlateControl(this, plateSolenoid);
   public final GenericHatch hatchExtendCommand = new HatchControl(this, hatchSolenoid);
@@ -41,18 +41,20 @@ public class IntakeSubsystem extends Subsystem {
     hatchSolenoid.setName("HatchExtendSolenoid");
     plateSolenoid.setName("PlateExtendSolenoid");
     intakeTalon.setName("BallIntakeTalon");
-
-    initControls();
+  }
   
+  public void initTeleop() {
     ballIntakeControlCommand.start();
-    ballIntakeMonitor.start();
+    //ballIntakeMonitor.start();
     new EncoderReporter(intakeTalon).start();
+  
+    initControls();
   }
 
   private void initControls() {
     ballIntakeJointToggleButton.whenPressed(new InstantCommand(() -> this.ballIntakeJointCommand.setIntakeJointPosition(this.ballIntakeJointCommand.getIntakeJointPosition() == UP ? DOWN : UP)));
     plateToggleButton.whenPressed(new InstantCommand(() -> this.plateExtendCommand.setPosition(this.plateExtendCommand.getPosition() == RETRACTED ? EXTENDED : RETRACTED)));
-    hatchToggleButton.whenPressed(new InstantCommand(() -> this.hatchExtendCommand.setPosition(this.plateExtendCommand.getPosition() == RETRACTED ? EXTENDED : RETRACTED)));
+    hatchToggleButton.whenPressed(new InstantCommand(() -> this.hatchExtendCommand.setPosition(this.hatchExtendCommand.getPosition() == RETRACTED ? EXTENDED : RETRACTED)));
     ballIntakeMotorOutButton.whenPressed(new InstantCommand(() -> this.ballIntakeControlCommand.setBallIntakeState(OUT)));
     ballIntakeMotorOutButton.whenReleased(new InstantCommand(() -> this.ballIntakeControlCommand.setBallIntakeState(STOPPED)));
   }

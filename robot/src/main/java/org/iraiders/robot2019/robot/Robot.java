@@ -98,6 +98,7 @@ public class Robot extends TimedRobot {
 
     driveSubsystem.initTeleop();
     liftSubsystem.initTeleop();
+    intakeSubsystem.initTeleop();
   }
   
   @Override
