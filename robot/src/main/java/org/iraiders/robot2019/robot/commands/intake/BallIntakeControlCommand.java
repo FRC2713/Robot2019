@@ -7,8 +7,8 @@ import org.iraiders.robot2019.robot.subsystems.IntakeSubsystem;
 
 public class BallIntakeControlCommand extends Command {
   private IntakeSubsystem intakeSubsystem;
-  private BallIntakeState currentState = BallIntakeState.STOPPED;
-  private double intakeSpeed = .4;
+  private BallIntakeState currentState;
+  private double intakeSpeed = 1;
 
   public BallIntakeControlCommand(IntakeSubsystem intakeSubsystem){
     this.intakeSubsystem = intakeSubsystem;
@@ -30,7 +30,6 @@ public class BallIntakeControlCommand extends Command {
         intakeSubsystem.intakeTalon.set(ControlMode.PercentOutput, -intakeSpeed);
         break;
     }
-    SmartDashboard.putString("BallIntakeState", currentState.name());
   }
 
   @Override
@@ -41,6 +40,7 @@ public class BallIntakeControlCommand extends Command {
 
   public boolean setBallIntakeState(BallIntakeState desiredState) {
     currentState = desiredState;
+    SmartDashboard.putString("BallIntakeState", currentState.name());
     return true;
   }
 
