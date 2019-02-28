@@ -173,8 +173,8 @@ green_blur = 1
 orange_blur = 27
 
 # define range of green of retroreflective tape in HSV
-lower_green = np.array([67.98561151079136, 82.55395683453237, 68.79496402877697])
-upper_green = np.array([93.63636363636363, 255.0, 255.0])
+lower_green = np.array([77.69784172661869, 0.0, 220.14388489208633])
+upper_green = np.array([180.0, 27.47474747474745, 255.0])
 #define range of orange from cargo ball in HSV
 lower_orange = np.array([0,193,92])
 upper_orange = np.array([23, 255, 255])
@@ -740,7 +740,7 @@ if __name__ == "__main__":
             processed = frame
         else:
             # Checks if you just want camera for Tape processing , False by default
-            if(networkTable.getBoolean("Tape", False)):
+            if(networkTable.getBoolean("Tape", True)):
                 #Lowers exposure to 0
                 cap.autoExpose = False
                 boxBlur = blurImg(frame, green_blur)
