@@ -2,17 +2,20 @@ package org.iraiders.robot2019.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import org.iraiders.robot2019.robot.RobotMap;
 import org.iraiders.robot2019.robot.commands.drive.OIDrive;
 
 public class DriveSubsystem extends Subsystem {
-  public final WPI_TalonSRX frontLeft = new WPI_TalonSRX(RobotMap.frontLeftTalonPort);
-  private final WPI_TalonSRX backLeft = new WPI_TalonSRX(RobotMap.backLeftTalonPort);
-  public final WPI_TalonSRX frontRight = new WPI_TalonSRX(RobotMap.frontRightTalonPort);
-  private final WPI_TalonSRX backRight = new WPI_TalonSRX(RobotMap.backRightTalonPort);
+  public final CANSparkMax frontLeft = new CANSparkMax(RobotMap.frontLeftTalonPort, CANSparkMaxLowLevel.MotorType.kBrushed);
+  private final CANSparkMax backLeft = new CANSparkMax(RobotMap.backLeftTalonPort, CANSparkMaxLowLevel.MotorType.kBrushed);
+  public final CANSparkMax frontRight = new CANSparkMax(RobotMap.frontRightTalonPort, CANSparkMaxLowLevel.MotorType.kBrushed);
+  private final CANSparkMax backRight = new CANSparkMax(RobotMap.backRightTalonPort, CANSparkMaxLowLevel.MotorType.kBrushed);
 
   public final DigitalInput leftLine = new DigitalInput(RobotMap.leftLineSensorPort);
   public final DigitalInput midLine = new DigitalInput(RobotMap.midLineSensorPort);
@@ -22,8 +25,10 @@ public class DriveSubsystem extends Subsystem {
   public DifferentialDrive roboDrive = new DifferentialDrive(frontLeft, frontRight);
 
   public DriveSubsystem() {
-    backLeft.set(ControlMode.Follower, RobotMap.frontLeftTalonPort);
-    backRight.set(ControlMode.Follower, RobotMap.frontRightTalonPort);
+    //backLeft.set(ControlMode.Follower, RobotMap.frontLeftTalonPort);
+    //backRight.set(ControlMode.Follower, RobotMap.frontRightTalonPort);
+    backLeft.follow(frontLeft);
+    backRight.follow(frontLeft);
   }
 
   public void initTeleop() {
