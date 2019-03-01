@@ -28,7 +28,7 @@ public class DriveSubsystem extends Subsystem {
     //backLeft.set(ControlMode.Follower, RobotMap.frontLeftTalonPort);
     //backRight.set(ControlMode.Follower, RobotMap.frontRightTalonPort);
     backLeft.follow(frontLeft);
-    backRight.follow(frontLeft);
+    backRight.follow(frontRight);
   }
 
   public void initTeleop() {
