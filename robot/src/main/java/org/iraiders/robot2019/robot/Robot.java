@@ -34,8 +34,8 @@ public class Robot extends TimedRobot {
 
     m_oi = new OI();
     driveSubsystem = new DriveSubsystem();
-    liftSubsystem = new LiftSubsystem();
-    intakeSubsystem = new IntakeSubsystem();
+    //liftSubsystem = new LiftSubsystem();
+    //intakeSubsystem = new IntakeSubsystem();
     m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
     // chooser.addOption("My Auto", new MyAutoCommand());
     SmartDashboard.putData("Auto mode", m_chooser);
@@ -97,8 +97,8 @@ public class Robot extends TimedRobot {
     }
 
     driveSubsystem.initTeleop();
-    liftSubsystem.initTeleop();
-    intakeSubsystem.initTeleop();
+    //liftSubsystem.initTeleop();
+    //intakeSubsystem.initTeleop();
   }
   
   @Override

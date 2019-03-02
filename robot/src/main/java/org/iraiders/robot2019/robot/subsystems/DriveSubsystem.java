@@ -48,6 +48,7 @@ public class DriveSubsystem extends Subsystem {
    * @param target The number you eventually want to get to (ie. joystick speed)
    * @param current The current number you are at (so we know what to start at for the increment)
    * @param increment How much to increase current by until current = target
+   *                  
    * @see <a href="https://en.wikipedia.org/wiki/Slew_rate">Wikipedia article on Slew rates</a>
    * @return Adjusted target
    */

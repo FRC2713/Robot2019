@@ -17,7 +17,7 @@ public class OIDrive extends Command {
 
   private double lastLeftStickVal = 0;
   private double lastRightStickVal = 0;
-  private double deadband = 0.17 ;
+  private double deadband = 0.17;
   //Ultrasonic ultra = new Ultrasonic(RobotMap.ultraSonicPing,RobotMap.ultraSonicEcho);
 
   private double joystickChangeLimit;
