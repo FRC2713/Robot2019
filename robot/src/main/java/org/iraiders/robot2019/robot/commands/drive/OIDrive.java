@@ -64,9 +64,9 @@ public class OIDrive extends Command {
     if (useLineTracking) {
       measuredRight = 0;
       if (!driveSubsystem.leftLine.get()) {
-        measuredRight = -SmartDashboard.getNumber("Snap Scale Value", 1.0);
+        measuredRight = -SmartDashboard.getNumber("Snap Scale Value", .1);
       } else if (!driveSubsystem.rightLine.get()) {
-        measuredRight = SmartDashboard.getNumber("Snap Scale Value", 1.0);
+        measuredRight = SmartDashboard.getNumber("Snap Scale Value", .1);
       } else if (!driveSubsystem.midLine.get()) {
         measuredRight = 0;
       }
@@ -78,7 +78,7 @@ public class OIDrive extends Command {
       driveSubsystem.roboDrive.tankDrive(measuredLeft, measuredRight, true);
     } else {
       measuredLeft = DriveSubsystem.slewLimit(-xbox.getY(GenericHID.Hand.kLeft), lastLeftStickVal, joystickChangeLimit);
-      measuredRight = (useLineTracking) ?  DriveSubsystem.slewLimit(measuredRight,lastRightStickVal, joystickChangeLimit) : DriveSubsystem.slewLimit(xbox.getX(GenericHID.Hand.kRight), lastRightStickVal, joystickChangeLimit);
+      measuredRight = (useLineTracking) ? DriveSubsystem.slewLimit(measuredRight, lastRightStickVal, joystickChangeLimit) : DriveSubsystem.slewLimit(xbox.getX(GenericHID.Hand.kRight), lastRightStickVal, joystickChangeLimit);
       driveSubsystem.roboDrive.arcadeDrive(measuredLeft, measuredRight, true);
     }
 
