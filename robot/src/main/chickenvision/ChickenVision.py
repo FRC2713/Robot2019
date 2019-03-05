@@ -11,22 +11,20 @@
 # This is meant to be used in conjuction with WPILib Raspberry Pi image: https://github.com/wpilibsuite/FRCVision-pi-gen
 #----------------------------------------------------------------------------
 
-import json
-import time
-import sys
-from threading import Thread
-
-from cscore import CameraServer, VideoSource
-from networktables import NetworkTablesInstance
 import cv2
-import numpy as np
-from networktables import NetworkTables
-import math
-########### SET RESOLUTION TO 256x144 !!!! ############
-
-
 # import the necessary packages
 import datetime
+import json
+import math
+import numpy as np
+import sys
+from cscore import CameraServer
+from networktables import NetworkTables
+from networktables import NetworkTablesInstance
+from threading import Thread
+
+
+########### SET RESOLUTION TO 256x144 !!!! ############
 
 #Class to examine Frames per second of camera stream. Currently not used.
 class FPS:
@@ -152,8 +150,7 @@ image_width = 256
 image_height = 144
 
 #Lifecam 3000 from datasheet
-#Datasheet: https://dl2jx7zfbtwvr.cloudfront.net/specsheets/WEBC1010.pdf
-diagonalView = math.radians(68.5)
+diagonalView = math.radians(90)
 
 #16:9 aspect ratio
 horizontalAspect = 16
@@ -169,12 +166,12 @@ verticalView = math.atan(math.tan(diagonalView/2) * (verticalAspect / diagonalAs
 H_FOCAL_LENGTH = image_width / (2*math.tan((horizontalView/2)))
 V_FOCAL_LENGTH = image_height / (2*math.tan((verticalView/2)))
 #blurs have to be odd
-green_blur = 1
+green_blur = 3
 orange_blur = 27
 
 # define range of green of retroreflective tape in HSV
-lower_green = np.array([77.69784172661869, 0.0, 220.14388489208633])
-upper_green = np.array([180.0, 27.47474747474745, 255.0])
+lower_green = np.array([74,0,168])
+upper_green = np.array([139, 178, 255])
 #define range of orange from cargo ball in HSV
 lower_orange = np.array([0,193,92])
 upper_orange = np.array([23, 255, 255])
@@ -428,9 +425,9 @@ def findTape(contours, image, centerX, centerY):
 
                     # Appends important info to array
                     if not biggestCnts:
-                         biggestCnts.append([cx, cy, rotation, cnt])
-                    elif [cx, cy, rotation, cnt] not in biggestCnts:
-                         biggestCnts.append([cx, cy, rotation, cnt])
+                         biggestCnts.append([cx, cy, rotation])
+                    elif [cx, cy, rotation] not in biggestCnts:
+                         biggestCnts.append([cx, cy, rotation])
 
 
         # Sorts array based on coordinates (leftmost to rightmost) to make sure contours are adjacent
