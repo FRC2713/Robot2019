@@ -70,9 +70,11 @@ public class OIDrive extends Command {
     if (!driveSubsystem.midLine.get()) {
       lineSensorByte |= 2;
     }
+    
     if (!driveSubsystem.rightLine.get()) {
       lineSensorByte |= 4;
     }
+
     switch (lineSensorByte) {
       case 0:
         measuredRight = 0;
@@ -100,17 +102,6 @@ public class OIDrive extends Command {
         break;
       default:
         break;
-    }
-
-    if (useLineTracking) {
-      measuredRight = 0;
-      if (!driveSubsystem.leftLine.get()) {
-        measuredRight = -SmartDashboard.getNumber("Snap Scale Value", .1);
-      } else if (!driveSubsystem.rightLine.get()) {
-        measuredRight = SmartDashboard.getNumber("Snap Scale Value", .1);
-      } else if (!driveSubsystem.midLine.get()) {
-        measuredRight = 0;
-      }
     }
 
     if (useTankInsteadOfBradford && !useLineTracking) {
