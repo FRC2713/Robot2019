@@ -61,6 +61,47 @@ public class OIDrive extends Command {
     SmartDashboard.putBoolean("midLine", !driveSubsystem.midLine.get()); // on testbed green was off line
     SmartDashboard.putBoolean("rightLine", !driveSubsystem.midLine.get());
 
+    byte lineSensorByte = 0;
+
+    if (!driveSubsystem.leftLine.get()) {
+      lineSensorByte |= 1;
+    }
+
+    if (!driveSubsystem.midLine.get()) {
+      lineSensorByte |= 2;
+    }
+    if (!driveSubsystem.rightLine.get()) {
+      lineSensorByte |= 4;
+    }
+    switch (lineSensorByte) {
+      case 0:
+        measuredRight = 0;
+        break;
+      case 4:
+        measuredRight = SmartDashboard.getNumber("Snap Scale Value", .1);
+        break;
+      case 2:
+        measuredRight = 0;
+        break;
+      case 6:
+        measuredRight = SmartDashboard.getNumber("Snap Scale Value", .1)/2;
+        break;
+      case 1:
+        measuredRight = -SmartDashboard.getNumber("Snap Scale Value", .1);
+        break;
+      case 5:
+        measuredRight = 0;
+        break;
+      case 3:
+        measuredRight = -SmartDashboard.getNumber("Snap Scale Value", .1)/2;
+        break;
+      case 7:
+        measuredRight = 0;
+        break;
+      default:
+        break;
+    }
+
     if (useLineTracking) {
       measuredRight = 0;
       if (!driveSubsystem.leftLine.get()) {
