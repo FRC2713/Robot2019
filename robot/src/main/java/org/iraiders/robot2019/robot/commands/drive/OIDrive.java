@@ -50,7 +50,8 @@ public class OIDrive extends Command {
       OI.rumbleController(xbox, .5, 500);
     }
 
-    if (xbox.getRawButtonPressed(7) && !driveSubsystem.midLine.get()) {
+    if (xbox.getRawButtonPressed(7)) {
+      // TODO only allow turning on tracking when middle line detected
       useLineTracking = !useLineTracking;
       lastRightStickVal = 0;
       lastLeftStickVal = 0;
