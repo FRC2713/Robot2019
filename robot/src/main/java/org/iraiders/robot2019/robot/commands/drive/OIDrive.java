@@ -29,7 +29,7 @@ public class OIDrive extends Command {
   @Override
   protected void initialize() {
     driveSubsystem.roboDrive.setMaxOutput(Robot.prefs.getFloat("OIMaxSpeed", 1));
-    joystickChangeLimit = Robot.prefs.getDouble("JoystickChangeLimit", 1f);
+    joystickChangeLimit = Robot.prefs.getDouble("JoystickChangeLimit", .09);
 
     SmartDashboard.putNumber("Snap Scale Value", 1.0);
     SmartDashboard.putNumber ("PreStopRange", 0.001);
@@ -116,12 +116,6 @@ public class OIDrive extends Command {
 
     lastLeftStickVal = measuredLeft;
     lastRightStickVal = measuredRight;
-
-    //System.out.println("ultra: " + ultra.getRangeInches());
-
-   //if (SmartDashboard.getNumber("Snap Scale Value", 1.0)>1.0&& ultra.getRangeInches() < SmartDashboard.getNumber ("PreStopRange", 0.001))  {
-       //driveSubsystem.roboDrive.stopMotor();
-    //}
   }
 
   @Override
