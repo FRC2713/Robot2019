@@ -52,8 +52,8 @@ public class OIDrive extends Command {
       OI.rumbleController(xbox, .5, 500);
     }
 
-    if (xbox.getRawButtonPressed(7)) {
-      // TODO only allow turning on tracking when middle line detected
+    if (xbox.getRawButtonPressed(7) && (!driveSubsystem.midLine.get() || useLineTracking)) {
+
       useLineTracking = !useLineTracking;
       lastRightStickVal = 0;
       lastLeftStickVal = 0;
@@ -73,7 +73,7 @@ public class OIDrive extends Command {
     if (!driveSubsystem.midLine.get()) {
       lineSensorByte |= 2;
     }
-    
+
     if (!driveSubsystem.rightLine.get()) {
       lineSensorByte |= 4;
     }
@@ -107,13 +107,15 @@ public class OIDrive extends Command {
         break;
     }
 
+    measuredRight *= -1 ;
+
     if (useTankInsteadOfBradford && !useLineTracking) {
       measuredLeft = DriveSubsystem.slewLimit(xbox.getY(GenericHID.Hand.kLeft), lastLeftStickVal, joystickChangeLimit);
       measuredRight = DriveSubsystem.slewLimit(xbox.getY(GenericHID.Hand.kRight), lastRightStickVal, joystickChangeLimit);
       driveSubsystem.roboDrive.tankDrive(measuredLeft, measuredRight, true);
     } else {
       measuredLeft = DriveSubsystem.slewLimit(xbox.getY(GenericHID.Hand.kLeft), lastLeftStickVal, joystickChangeLimit);
-      measuredRight = (useLineTracking) ? DriveSubsystem.slewLimit(-measuredRight, lastRightStickVal, joystickChangeLimit) : DriveSubsystem.slewLimit(-xbox.getX(GenericHID.Hand.kRight), lastRightStickVal, joystickChangeLimit);
+      measuredRight = (useLineTracking) ? DriveSubsystem.slewLimit(measuredRight, lastRightStickVal, joystickChangeLimit) : DriveSubsystem.slewLimit(-xbox.getX(GenericHID.Hand.kRight), lastRightStickVal, joystickChangeLimit);
       driveSubsystem.roboDrive.arcadeDrive(measuredLeft, measuredRight, true);
     }
 
