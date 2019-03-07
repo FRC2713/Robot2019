@@ -32,7 +32,7 @@ public class OIDrive extends Command {
     joystickChangeLimit = Robot.prefs.getDouble("JoystickChangeLimit", 1f);
 
     SmartDashboard.putNumber("Snap Scale Value", 1.0);
-    SmartDashboard.putNumber ("PreStopRange", 0.001);
+    SmartDashboard.putNumber("PreStopRange", 0.001);
 
     driveSubsystem.roboDrive.setDeadband(deadband);
     //ultra.setAutomaticMode(true);
@@ -105,12 +105,12 @@ public class OIDrive extends Command {
     }
 
     if (useTankInsteadOfBradford && !useLineTracking) {
-      measuredLeft = DriveSubsystem.slewLimit(-xbox.getY(GenericHID.Hand.kLeft), lastLeftStickVal, joystickChangeLimit);
-      measuredRight = DriveSubsystem.slewLimit(-xbox.getY(GenericHID.Hand.kRight), lastRightStickVal, joystickChangeLimit);
+      measuredLeft = DriveSubsystem.slewLimit(xbox.getY(GenericHID.Hand.kLeft), lastLeftStickVal, joystickChangeLimit);
+      measuredRight = DriveSubsystem.slewLimit(xbox.getY(GenericHID.Hand.kRight), lastRightStickVal, joystickChangeLimit);
       driveSubsystem.roboDrive.tankDrive(measuredLeft, measuredRight, true);
     } else {
-      measuredLeft = DriveSubsystem.slewLimit(-xbox.getY(GenericHID.Hand.kLeft), lastLeftStickVal, joystickChangeLimit);
-      measuredRight = (useLineTracking) ? DriveSubsystem.slewLimit(measuredRight, lastRightStickVal, joystickChangeLimit) : DriveSubsystem.slewLimit(xbox.getX(GenericHID.Hand.kRight), lastRightStickVal, joystickChangeLimit);
+      measuredLeft = DriveSubsystem.slewLimit(xbox.getY(GenericHID.Hand.kLeft), lastLeftStickVal, joystickChangeLimit);
+      measuredRight = (useLineTracking) ? DriveSubsystem.slewLimit(measuredRight, lastRightStickVal, joystickChangeLimit) : DriveSubsystem.slewLimit(-xbox.getX(GenericHID.Hand.kRight), lastRightStickVal, joystickChangeLimit);
       driveSubsystem.roboDrive.arcadeDrive(measuredLeft, measuredRight, true);
     }
 
