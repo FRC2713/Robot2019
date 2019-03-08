@@ -18,7 +18,7 @@ public class OIDrive extends Command {
   private double lastRightStickVal = 0;
   private double deadband = 0.07;
 
-  private double defaultSnapValue = 0.34;
+  private double defaultSnapValue = 0.62;
   //Ultrasonic ultra = new Ultrasonic(RobotMap.ultraSonicPing,RobotMap.ultraSonicEcho);
 
   private double joystickChangeLimit;
@@ -33,7 +33,7 @@ public class OIDrive extends Command {
     driveSubsystem.roboDrive.setMaxOutput(Robot.prefs.getFloat("OIMaxSpeed", 1));
     joystickChangeLimit = Robot.prefs.getDouble("JoystickChangeLimit", .09);
 
-    SmartDashboard.putNumber("Snap Scale Value", defaultSnapValue);
+    SmartDashboard.putNumber("Snap Scale Value", SmartDashboard.getNumber("Snap Scale Value", defaultSnapValue));
     SmartDashboard.putNumber("PreStopRange", 0.001);
 
     driveSubsystem.roboDrive.setDeadband(deadband);
