@@ -1,20 +1,18 @@
 package org.iraiders.robot2019.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import org.iraiders.robot2019.robot.RobotMap;
 import org.iraiders.robot2019.robot.commands.drive.OIDrive;
+import org.iraiders.robot2019.robot.commands.drive.VisionDrive;
 
 public class DriveSubsystem extends Subsystem {
-  public final CANSparkMax frontLeft = new CANSparkMax(RobotMap.frontLeftTalonPort, CANSparkMaxLowLevel.MotorType.kBrushed);
+  private final CANSparkMax frontLeft = new CANSparkMax(RobotMap.frontLeftTalonPort, CANSparkMaxLowLevel.MotorType.kBrushed);
   private final CANSparkMax backLeft = new CANSparkMax(RobotMap.backLeftTalonPort, CANSparkMaxLowLevel.MotorType.kBrushed);
-  public final CANSparkMax frontRight = new CANSparkMax(RobotMap.frontRightTalonPort, CANSparkMaxLowLevel.MotorType.kBrushed);
+  private final CANSparkMax frontRight = new CANSparkMax(RobotMap.frontRightTalonPort, CANSparkMaxLowLevel.MotorType.kBrushed);
   private final CANSparkMax backRight = new CANSparkMax(RobotMap.backRightTalonPort, CANSparkMaxLowLevel.MotorType.kBrushed);
 
   public final DigitalInput leftLine = new DigitalInput(RobotMap.leftLineSensorPort);
@@ -22,6 +20,7 @@ public class DriveSubsystem extends Subsystem {
   public final DigitalInput rightLine = new DigitalInput(RobotMap.rightLineSensorPort);
 
   private OIDrive oiDrive;
+  private VisionDrive visionDrive;
   public DifferentialDrive roboDrive = new DifferentialDrive(frontLeft, frontRight);
 
   public DriveSubsystem() {
@@ -33,7 +32,12 @@ public class DriveSubsystem extends Subsystem {
 
   public void initTeleop() {
     oiDrive = new OIDrive(this);
+    visionDrive = new VisionDrive(this);
     oiDrive.start();
+
+    RobotMap.visionToggleButton.cancelWhenPressed(oiDrive);
+    RobotMap.visionToggleButton.whenReleased(oiDrive);
+    RobotMap.visionToggleButton.whileHeld(visionDrive);
   }
 
   @Override

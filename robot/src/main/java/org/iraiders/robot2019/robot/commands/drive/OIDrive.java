@@ -17,6 +17,8 @@ public class OIDrive extends Command {
   private double lastLeftStickVal = 0;
   private double lastRightStickVal = 0;
   private double deadband = 0.07;
+
+  private double defaultSnapValue = 0.34;
   //Ultrasonic ultra = new Ultrasonic(RobotMap.ultraSonicPing,RobotMap.ultraSonicEcho);
 
   private double joystickChangeLimit;
@@ -31,8 +33,8 @@ public class OIDrive extends Command {
     driveSubsystem.roboDrive.setMaxOutput(Robot.prefs.getFloat("OIMaxSpeed", 1));
     joystickChangeLimit = Robot.prefs.getDouble("JoystickChangeLimit", .09);
 
-    SmartDashboard.putNumber("Snap Scale Value", 1.0);
-    SmartDashboard.putNumber ("PreStopRange", 0.001);
+    SmartDashboard.putNumber("Snap Scale Value", defaultSnapValue);
+    SmartDashboard.putNumber("PreStopRange", 0.001);
 
     driveSubsystem.roboDrive.setDeadband(deadband);
     //ultra.setAutomaticMode(true);
@@ -50,7 +52,8 @@ public class OIDrive extends Command {
       OI.rumbleController(xbox, .5, 500);
     }
 
-    if (xbox.getRawButtonPressed(7) && !driveSubsystem.midLine.get()) {
+    if (xbox.getRawButtonPressed(7) && (!driveSubsystem.midLine.get() || useLineTracking)) {
+
       useLineTracking = !useLineTracking;
       lastRightStickVal = 0;
       lastLeftStickVal = 0;
@@ -70,7 +73,7 @@ public class OIDrive extends Command {
     if (!driveSubsystem.midLine.get()) {
       lineSensorByte |= 2;
     }
-    
+
     if (!driveSubsystem.rightLine.get()) {
       lineSensorByte |= 4;
     }
@@ -80,22 +83,22 @@ public class OIDrive extends Command {
         measuredRight = 0;
         break;
       case 4:
-        measuredRight = SmartDashboard.getNumber("Snap Scale Value", .1);
+        measuredRight = SmartDashboard.getNumber("Snap Scale Value", defaultSnapValue);
         break;
       case 2:
         measuredRight = 0;
         break;
       case 6:
-        measuredRight = SmartDashboard.getNumber("Snap Scale Value", .1)/2;
+        measuredRight = SmartDashboard.getNumber("Snap Scale Value", defaultSnapValue)/2;
         break;
       case 1:
-        measuredRight = -SmartDashboard.getNumber("Snap Scale Value", .1);
+        measuredRight = -SmartDashboard.getNumber("Snap Scale Value", defaultSnapValue);
         break;
       case 5:
         measuredRight = 0;
         break;
       case 3:
-        measuredRight = -SmartDashboard.getNumber("Snap Scale Value", .1)/2;
+        measuredRight = -SmartDashboard.getNumber("Snap Scale Value", defaultSnapValue)/2;
         break;
       case 7:
         measuredRight = 0;
@@ -104,13 +107,15 @@ public class OIDrive extends Command {
         break;
     }
 
+    measuredRight *= -1 ;
+
     if (useTankInsteadOfBradford && !useLineTracking) {
-      measuredLeft = DriveSubsystem.slewLimit(-xbox.getY(GenericHID.Hand.kLeft), lastLeftStickVal, joystickChangeLimit);
-      measuredRight = DriveSubsystem.slewLimit(-xbox.getY(GenericHID.Hand.kRight), lastRightStickVal, joystickChangeLimit);
+      measuredLeft = DriveSubsystem.slewLimit(xbox.getY(GenericHID.Hand.kLeft), lastLeftStickVal, joystickChangeLimit);
+      measuredRight = DriveSubsystem.slewLimit(xbox.getY(GenericHID.Hand.kRight), lastRightStickVal, joystickChangeLimit);
       driveSubsystem.roboDrive.tankDrive(measuredLeft, measuredRight, true);
     } else {
-      measuredLeft = DriveSubsystem.slewLimit(-xbox.getY(GenericHID.Hand.kLeft), lastLeftStickVal, joystickChangeLimit);
-      measuredRight = (useLineTracking) ? DriveSubsystem.slewLimit(measuredRight, lastRightStickVal, joystickChangeLimit) : DriveSubsystem.slewLimit(xbox.getX(GenericHID.Hand.kRight), lastRightStickVal, joystickChangeLimit);
+      measuredLeft = DriveSubsystem.slewLimit(xbox.getY(GenericHID.Hand.kLeft), lastLeftStickVal, joystickChangeLimit);
+      measuredRight = (useLineTracking) ? DriveSubsystem.slewLimit(measuredRight, lastRightStickVal, joystickChangeLimit) : DriveSubsystem.slewLimit(-xbox.getX(GenericHID.Hand.kRight), lastRightStickVal, joystickChangeLimit);
       driveSubsystem.roboDrive.arcadeDrive(measuredLeft, measuredRight, true);
     }
 
