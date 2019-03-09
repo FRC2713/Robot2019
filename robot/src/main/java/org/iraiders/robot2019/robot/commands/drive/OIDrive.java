@@ -22,6 +22,8 @@ public class OIDrive extends Command {
   private double joystickChangeLimit;
 
   public OIDrive(DriveSubsystem driveSubsystem) {
+    this.driveSubsystem = driveSubsystem;
+    requires(driveSubsystem);
     driveSubsystem.roboDrive.setMaxOutput(Robot.prefs.getFloat("OIMaxSpeed", 1));
     joystickChangeLimit = Robot.prefs.getDouble("JoystickChangeLimit", .09);
 
