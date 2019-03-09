@@ -40,6 +40,6 @@ public class VisionDrive extends PIDCommand {
 
   @Override
   protected boolean isFinished() {
-    return false;
+    return cv.getEntry("tapeYaw").getNumber(0).doubleValue() == 0;
   }
 }

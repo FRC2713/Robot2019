@@ -10,6 +10,7 @@ import org.iraiders.robot2019.robot.RobotMap;
 import org.iraiders.robot2019.robot.commands.drive.LineTrackingCommand;
 import org.iraiders.robot2019.robot.commands.drive.OIDrive;
 import org.iraiders.robot2019.robot.commands.drive.VisionDrive;
+import org.iraiders.robot2019.robot.commands.drive.VisionLineTackingCommand;
 
 public class DriveSubsystem extends Subsystem {
   private final CANSparkMax frontLeft = new CANSparkMax(RobotMap.frontLeftTalonPort, CANSparkMaxLowLevel.MotorType.kBrushed);
@@ -24,6 +25,7 @@ public class DriveSubsystem extends Subsystem {
   private OIDrive oiDrive;
   private VisionDrive visionDrive;
   private LineTrackingCommand linetracking;
+  private VisionLineTackingCommand visiontrack;
   public DifferentialDrive roboDrive = new DifferentialDrive(frontLeft, frontRight);
 
   public DriveSubsystem() {
@@ -37,17 +39,18 @@ public class DriveSubsystem extends Subsystem {
     oiDrive = new OIDrive(this);
     visionDrive = new VisionDrive(this);
     linetracking = new LineTrackingCommand(this);
+    visiontrack = new VisionLineTackingCommand(this, linetracking, visionDrive);
     oiDrive.start();
 
     RobotMap.visionToggleButton.cancelWhenPressed(oiDrive);
-    RobotMap.visionToggleButton.cancelWhenPressed(linetracking);
+    RobotMap.visionToggleButton.cancelWhenPressed(visiontrack);
     RobotMap.visionToggleButton.whenReleased(oiDrive);
     RobotMap.visionToggleButton.whileHeld(visionDrive);
 
     RobotMap.lineTrackingToggle.cancelWhenPressed(oiDrive);
     RobotMap.lineTrackingToggle.cancelWhenPressed(visionDrive);
     RobotMap.lineTrackingToggle.whenReleased(oiDrive);
-    RobotMap.lineTrackingToggle.whileHeld(linetracking);
+    RobotMap.lineTrackingToggle.whileHeld(visiontrack);
   }
 
   @Override

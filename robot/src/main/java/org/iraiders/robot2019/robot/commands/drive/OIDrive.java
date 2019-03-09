@@ -10,7 +10,7 @@ import org.iraiders.robot2019.robot.subsystems.DriveSubsystem;
 
 public class OIDrive extends Command {
   private DriveSubsystem driveSubsystem;
-  private XboxController xbox = OI.xBoxController;
+  public XboxController xbox = OI.xBoxController;
   private boolean useTankInsteadOfBradford = false;
 
   private double lastLeftStickVal = 0;
