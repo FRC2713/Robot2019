@@ -13,8 +13,8 @@ import edu.wpi.first.wpilibj.buttons.JoystickButton;
  */
 public class RobotMap {
   // Motors
-  public static final int frontLeftTalonPort = 2;
-  public static final int backLeftTalonPort = 1;
+  public static final int frontLeftTalonPort = 1;
+  public static final int backLeftTalonPort = 2;
   public static final int frontRightTalonPort = 3;
   public static final int backRightTalonPort = 4;
   public static final int liftOneTalonPort = 5;
@@ -41,7 +41,6 @@ public class RobotMap {
 
 
   // Sensors
-
   public static int ballIntakeLimitSwitchPort = 1;
   public static int leftLineSensorPort = 2;
   public static int midLineSensorPort = 3;
@@ -64,4 +63,7 @@ public class RobotMap {
 
   public static JoystickButton hatchToggleButton = new JoystickButton(joystick, 6);
   public static JoystickButton plateToggleButton = new JoystickButton(joystick, 7);
+
+  public static JoystickButton visionToggleButton = new JoystickButton(xboxController, 6); // Right Xbox Bumper (5 is left)
+  public static JoystickButton lineTrackingToggle = new JoystickButton(xboxController, 5);
 }
