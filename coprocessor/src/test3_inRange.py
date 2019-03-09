@@ -3,7 +3,7 @@ from coprocessor.src.stream import WebcamVideoStream
 import numpy as np
 def nothing(x):
     pass
-vs = WebcamVideoStream()
+vs = WebcamVideoStream().start()
 cv2.namedWindow('image')
 h = 78
 s = 106
