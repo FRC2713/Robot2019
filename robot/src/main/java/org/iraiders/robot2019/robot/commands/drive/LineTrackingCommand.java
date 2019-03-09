@@ -8,8 +8,6 @@ import org.iraiders.robot2019.robot.OI;
 import org.iraiders.robot2019.robot.Robot;
 import org.iraiders.robot2019.robot.subsystems.DriveSubsystem;
 
-import static org.iraiders.robot2019.robot.Robot.driveSubsystem;
-
 public class LineTrackingCommand extends Command {
 
   private XboxController xbox = OI.xBoxController;
@@ -26,15 +24,17 @@ public class LineTrackingCommand extends Command {
     requires(driveSubsystem);
   }
 
-  @Override protected void initialize() {
+  @Override
+  protected void initialize() {
     driveSubsystem.roboDrive.setMaxOutput(Robot.prefs.getFloat("OIMaxSpeed", 1));
     joystickChangeLimit = Robot.prefs.getDouble("JoystickChangeLimit", .09);
 
     SmartDashboard.putNumber("Snap Scale Value", SmartDashboard.getNumber("Snap Scale Value", defaultSnapValue));
 
     driveSubsystem.roboDrive.setDeadband(deadband);
-  }
 
+    OI.rumbleController(xbox, .5, 500);
+  }
 
   @Override
   protected void execute() {
@@ -85,6 +85,9 @@ public class LineTrackingCommand extends Command {
       default:
         break;
     }
+
+
+        measuredTurn *= -1; //make sure we are going the right direction
 
         measuredLeft = DriveSubsystem.slewLimit(xbox.getY(GenericHID.Hand.kLeft), lastLeftStickVal, joystickChangeLimit);
         measuredTurn = DriveSubsystem.slewLimit(measuredTurn, lastRightStickVal, joystickChangeLimit);
