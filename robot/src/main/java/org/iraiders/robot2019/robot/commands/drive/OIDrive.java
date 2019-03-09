@@ -46,6 +46,9 @@ public class OIDrive extends Command {
       lastLeftStickVal = 0;
       OI.rumbleController(xbox, .5, 500);
     }
+    SmartDashboard.putBoolean("LeftLine", !driveSubsystem.leftLine.get());
+    SmartDashboard.putBoolean("midLine", !driveSubsystem.midLine.get());
+    SmartDashboard.putBoolean("rightLine", !driveSubsystem.midLine.get());
 
     if (useTankInsteadOfBradford ) {
       measuredLeft = DriveSubsystem.slewLimit(xbox.getY(GenericHID.Hand.kLeft), lastLeftStickVal, joystickChangeLimit);
