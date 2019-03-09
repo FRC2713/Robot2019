@@ -41,6 +41,10 @@ public class LineTrackingCommand extends Command {
     double measuredLeft;
     double measuredTurn = 0;
 
+    SmartDashboard.putBoolean("LeftLine", !driveSubsystem.leftLine.get());
+    SmartDashboard.putBoolean("midLine", !driveSubsystem.midLine.get());
+    SmartDashboard.putBoolean("rightLine", !driveSubsystem.midLine.get());
+
 
     byte lineSensorByte = 0;
 
