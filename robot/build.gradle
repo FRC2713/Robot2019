@@ -8,10 +8,6 @@ def includeDesktopSupport = true // Enable Desktop Simulation support
 
 sourceCompatibility = 1.11
 
-repositories {
-  maven { url 'http://devsite.ctr-electronics.com/maven/release/' }
-}
-
 deploy {
   targets {
     roboRIO("roborio") {
