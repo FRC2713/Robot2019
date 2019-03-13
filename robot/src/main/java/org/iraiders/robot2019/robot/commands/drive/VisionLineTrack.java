@@ -23,22 +23,22 @@ public class VisionLineTrack extends Command {
     //if(lineTrackingCommand.lineSensorByte == 7){
     //visionDrive.start();
     if (visionDrive.cv.getEntry("tapeDetected").getBoolean(false) && lineTrackingCommand.lineSensorByte == 7) {
-      visionTrackerByte = 1;
+      visionTrackerByte |= 1;
 
     }
 
     if (visionDrive.cv.getEntry("tapeDetected").getBoolean(false) == false && lineTrackingCommand.lineSensorByte != 7) {
-      visionTrackerByte = 2;
+      visionTrackerByte |= 2;
 
     }
 
     if (visionDrive.cv.getEntry("tapeDetected").getBoolean(false) && lineTrackingCommand.lineSensorByte != 7) {
-      visionTrackerByte = 3;
+      visionTrackerByte |= 4;
 
     }
 
     if (visionDrive.cv.getEntry("tapeDetected").getBoolean(false) == false && lineTrackingCommand.lineSensorByte == 7) {
-      visionTrackerByte = 0;
+      visionTrackerByte |= 8;
 
     }
 
