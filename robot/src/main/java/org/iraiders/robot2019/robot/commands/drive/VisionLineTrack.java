@@ -38,7 +38,7 @@ public class VisionLineTrack extends Command {
     }
 
     if (visionDrive.cv.getEntry("tapeDetected").getBoolean(false) == false && lineTrackingCommand.lineSensorByte == 7) {
-      visionTrackerByte |= 8;
+      visionTrackerByte |= 0;
 
     }
 
@@ -52,7 +52,7 @@ public class VisionLineTrack extends Command {
       case 2:
         lineTrackingCommand.start();
         visionDrive.isFinished();
-      case 3:
+      case 4:
         lineTrackingCommand.start();
       default: break;
 
