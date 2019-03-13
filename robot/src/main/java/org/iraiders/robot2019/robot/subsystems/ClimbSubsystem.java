@@ -32,7 +32,7 @@ public class ClimbSubsystem extends Subsystem {
     ClimbFollowDrive climbFollowDrive = new ClimbFollowDrive(Robot.driveSubsystem, this);
 
     RobotMap.climberLevelButton.whenPressed(new InstantCommand(() -> this.climbPiston.set(this.climbPiston.get() == kForward ? kReverse : kForward)));
-    RobotMap.climberLevelButton.whileHeld(climbFollowDrive);
+    RobotMap.climberLevelButton.toggleWhenPressed(climbFollowDrive);
   }
 
   @Override
