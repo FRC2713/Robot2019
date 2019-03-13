@@ -42,5 +42,5 @@ jobs:
       - run: ./gradlew test
 
       - store_test_results:
-          path: robot/test-results
+          path: robot/build/test-results
 
