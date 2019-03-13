@@ -44,3 +44,6 @@ jobs:
       - store_test_results:
           path: robot/build/test-results
 
+      - store_artifacts:
+          path: robot/build/libs
+
