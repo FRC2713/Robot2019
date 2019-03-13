@@ -36,7 +36,6 @@ public class VisionDrive extends PIDCommand {
 
   @Override
   protected void usePIDOutput(double output) {
-    DriverStation.reportWarning(String.valueOf(output), false);
     ds.roboDrive.arcadeDrive(OI.xBoxController.getY(GenericHID.Hand.kLeft), output, false);
   }
 

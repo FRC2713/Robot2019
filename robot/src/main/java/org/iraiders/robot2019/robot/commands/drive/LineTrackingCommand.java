@@ -19,8 +19,6 @@ public class LineTrackingCommand extends Command {
   private double defaultSnapValue = 0.62;
   private double joystickChangeLimit;
 
-  public byte lineSensorByte = 0;
-
   public LineTrackingCommand(DriveSubsystem driveSubsystem) {
     this.driveSubsystem = driveSubsystem;
     requires(driveSubsystem);
@@ -42,6 +40,8 @@ public class LineTrackingCommand extends Command {
   protected void execute() {
     double measuredLeft;
     double measuredTurn = 0;
+
+    byte lineSensorByte = 0;
 
     if (!driveSubsystem.leftLine.get()) {
       lineSensorByte |= 1;
@@ -85,17 +85,16 @@ public class LineTrackingCommand extends Command {
         break;
     }
 
+    measuredTurn *= -1; //make sure we are going the right direction
 
-        measuredTurn *= -1; //make sure we are going the right direction
+    measuredLeft = DriveSubsystem.slewLimit(xbox.getY(GenericHID.Hand.kLeft), lastLeftStickVal, joystickChangeLimit);
+    measuredTurn = DriveSubsystem.slewLimit(measuredTurn, lastRightStickVal, joystickChangeLimit);
+    driveSubsystem.roboDrive.arcadeDrive(measuredLeft, measuredTurn, true);
 
-        measuredLeft = DriveSubsystem.slewLimit(xbox.getY(GenericHID.Hand.kLeft), lastLeftStickVal, joystickChangeLimit);
-        measuredTurn = DriveSubsystem.slewLimit(measuredTurn, lastRightStickVal, joystickChangeLimit);
-        driveSubsystem.roboDrive.arcadeDrive(measuredLeft, measuredTurn, true);
+    lastLeftStickVal = measuredLeft;
+    lastRightStickVal = measuredTurn;
 
-        lastLeftStickVal = measuredLeft;
-        lastRightStickVal = measuredTurn;
-
-    }
+  }
 
   @Override
   protected void end() { driveSubsystem.roboDrive.stopMotor(); }
