@@ -19,6 +19,8 @@ public class LineTrackingCommand extends Command {
   private double defaultSnapValue = 0.62;
   private double joystickChangeLimit;
 
+  public byte lineSensorByte = 0;
+
   public LineTrackingCommand(DriveSubsystem driveSubsystem) {
     this.driveSubsystem = driveSubsystem;
     requires(driveSubsystem);
@@ -40,13 +42,6 @@ public class LineTrackingCommand extends Command {
   protected void execute() {
     double measuredLeft;
     double measuredTurn = 0;
-
-    SmartDashboard.putBoolean("LeftLine", !driveSubsystem.leftLine.get());
-    SmartDashboard.putBoolean("midLine", !driveSubsystem.midLine.get());
-    SmartDashboard.putBoolean("rightLine", !driveSubsystem.midLine.get());
-
-
-    byte lineSensorByte = 0;
 
     if (!driveSubsystem.leftLine.get()) {
       lineSensorByte |= 1;

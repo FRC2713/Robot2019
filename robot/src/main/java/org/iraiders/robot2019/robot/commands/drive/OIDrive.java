@@ -24,6 +24,13 @@ public class OIDrive extends Command {
   public OIDrive(DriveSubsystem driveSubsystem) {
     this.driveSubsystem = driveSubsystem;
     requires(driveSubsystem);
+    driveSubsystem.roboDrive.setMaxOutput(Robot.prefs.getFloat("OIMaxSpeed", 1));
+    joystickChangeLimit = Robot.prefs.getDouble("JoystickChangeLimit", .09);
+
+    SmartDashboard.putNumber("PreStopRange", 0.001);
+
+    driveSubsystem.roboDrive.setDeadband(deadband);
+    //ultra.setAutomaticMode(true);
   }
 
   @Override
@@ -38,7 +45,7 @@ public class OIDrive extends Command {
   @Override
   protected void execute() {
     double measuredLeft;
-    double measuredRight = 0;
+    double measuredRight;
 
     if (xbox.getRawButtonPressed(8)) {
       useTankInsteadOfBradford = !useTankInsteadOfBradford;
@@ -46,6 +53,9 @@ public class OIDrive extends Command {
       lastLeftStickVal = 0;
       OI.rumbleController(xbox, .5, 500);
     }
+    SmartDashboard.putBoolean("LeftLine", !driveSubsystem.leftLine.get());
+    SmartDashboard.putBoolean("midLine", !driveSubsystem.midLine.get());
+    SmartDashboard.putBoolean("rightLine", !driveSubsystem.midLine.get());
 
     if (useTankInsteadOfBradford ) {
       measuredLeft = DriveSubsystem.slewLimit(xbox.getY(GenericHID.Hand.kLeft), lastLeftStickVal, joystickChangeLimit);

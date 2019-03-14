@@ -39,4 +39,11 @@ jobs:
           key: v1-dependencies-{{ checksum "build.gradle" }}
 
       # run tests!
-      - run: ./gradlew test
+      - run: ./gradlew clean build test
+
+      - store_test_results:
+          path: robot/build/test-results
+
+      - store_artifacts:
+          path: robot/build/libs
+

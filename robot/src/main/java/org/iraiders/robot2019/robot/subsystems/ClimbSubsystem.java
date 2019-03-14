@@ -2,47 +2,41 @@ package org.iraiders.robot2019.robot.subsystems;
 
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.command.InstantCommand;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import org.iraiders.robot2019.robot.OI;
+import org.iraiders.robot2019.robot.Robot;
 import org.iraiders.robot2019.robot.RobotMap;
-import org.iraiders.robot2019.robot.commands.SimpleMotorCommand;
-import org.iraiders.robot2019.robot.commands.climb.BackClimbCommand;
-import org.iraiders.robot2019.robot.commands.climb.FrontClimbCommand;
+import org.iraiders.robot2019.robot.commands.climb.ClimbArmControl;
+import org.iraiders.robot2019.robot.commands.climb.ClimbFollowDrive;
 
-import static org.iraiders.robot2019.robot.RobotMap.climberLevelDownButton;
-import static org.iraiders.robot2019.robot.RobotMap.climberLevelUpButton;
+import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.kForward;
+import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.kReverse;
 
 public class ClimbSubsystem extends Subsystem {
-  private WPI_TalonSRX backWheel = new WPI_TalonSRX(RobotMap.backWheelTalonPort);
+  public CANSparkMax leftLArm = new CANSparkMax(RobotMap.leftLArmPort, CANSparkMaxLowLevel.MotorType.kBrushless);
+  private CANSparkMax rightLArm = new CANSparkMax(RobotMap.rightLArmPort, CANSparkMaxLowLevel.MotorType.kBrushless);
+  public WPI_TalonSRX climberPistonMotor = new WPI_TalonSRX(RobotMap.climberPistonMotorPort);
 
-  public final DoubleSolenoid frontPistons = OI.getDoubleSolenoid(RobotMap.climbFrontOpenNodeId, RobotMap.climbFrontCloseNodeId);
-  public final DoubleSolenoid backPistons =  OI.getDoubleSolenoid(RobotMap.climbBackOpenNodeId, RobotMap.climbBackCloseNodeId);
+  public final DoubleSolenoid climbPiston = OI.getDoubleSolenoid(RobotMap.climbFrontOpenNodeId, RobotMap.climbFrontCloseNodeId);
 
+  public void initTeleop() {
+    rightLArm.follow(leftLArm);
+    rightLArm.setIdleMode(CANSparkMax.IdleMode.kBrake);
+    leftLArm.setIdleMode(CANSparkMax.IdleMode.kBrake);
 
-  public ClimbSubsystem() {
-    initControls();
-  }
+    new ClimbArmControl(this).start();
+    ClimbFollowDrive climbFollowDrive = new ClimbFollowDrive(Robot.driveSubsystem, this);
 
-  private void initControls() {
-    GenericHID buttonBox = OI.arcadeController;
-
-    climberLevelUpButton.whileHeld(new FrontClimbCommand(this, ClimberLevel.UP));
-    climberLevelUpButton.whileHeld(new BackClimbCommand(this, ClimberLevel.UP));
-    climberLevelUpButton.whileHeld(new SimpleMotorCommand(backWheel, .3));
-
-    climberLevelDownButton.whileHeld(new FrontClimbCommand(this, ClimberLevel.DOWN));
-    climberLevelDownButton.whileHeld(new BackClimbCommand(this, ClimberLevel.DOWN));
+    RobotMap.climberLevelButton.whenPressed(new InstantCommand(() -> this.climbPiston.set(this.climbPiston.get() == kForward ? kReverse : kForward)));
+    RobotMap.climberLevelButton.toggleWhenPressed(climbFollowDrive);
   }
 
   @Override
   protected void initDefaultCommand() {
-
-  }
-
-  public enum ClimberLevel {
-    UP, DOWN
 
   }
 }

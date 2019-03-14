@@ -11,7 +11,9 @@ import org.iraiders.robot2019.robot.subsystems.DriveSubsystem;
 public class VisionDrive extends PIDCommand {
   private DriveSubsystem ds;
 
-  private NetworkTable cv = NetworkTableInstance.getDefault().getTable("ChickenVision");
+  public NetworkTable cv = NetworkTableInstance.getDefault().getTable("ChickenVision");
+
+  public boolean tapeDetected;
 
   public VisionDrive(DriveSubsystem driveSubsystem) {
     super(.03,0,0);
@@ -26,7 +28,7 @@ public class VisionDrive extends PIDCommand {
 
   @Override
   protected double returnPIDInput() {
-    boolean tapeDetected = cv.getEntry("tapeDetected").getBoolean(false);
+     tapeDetected = cv.getEntry("tapeDetected").getBoolean(false);
     if (!tapeDetected) return 0; // If the tape isn't detected don't do anything
 
     return cv.getEntry("tapeYaw").getNumber(0).doubleValue();

@@ -21,8 +21,10 @@ public class RobotMap {
   public static final int liftTwoTalonPort = 6;
   public static final int liftThreeTalonPort = 7;
   public static final int liftFourTalonPort = 9;
-  public static final int backWheelTalonPort = 11;
   public static final int ballIntakeMotorPort = 10;
+  public static final int leftLArmPort = 11;
+  public static final int rightLArmPort = 12;
+  public static final int climberPistonMotorPort = 13;
 
   // Pneumatics
   // PCM1
@@ -36,8 +38,6 @@ public class RobotMap {
   // PCM2
   public static int climbFrontOpenNodeId = 1 + 7; // PCM2, Slot 0
   public static int climbFrontCloseNodeId = 2 + 7;
-  public static int climbBackOpenNodeId = 3 + 7;
-  public static int climbBackCloseNodeId = 4 + 7;
 
 
   // Sensors
@@ -55,8 +55,8 @@ public class RobotMap {
 
   //public static JoystickButton liftUpButton = new JoystickButton(buttonBox, 7);
   //public static JoystickButton liftDownButton = new JoystickButton(buttonBox, 3);
-  public static JoystickButton climberLevelUpButton = new JoystickButton(joystick, 5);
-  public static JoystickButton climberLevelDownButton = new JoystickButton(joystick, 4);
+  public static JoystickButton climberArmButton = new JoystickButton(joystick, 8);
+  public static JoystickButton climberLevelButton = new JoystickButton(joystick, 9);
 
   public static JoystickButton ballIntakeMotorOutButton = new JoystickButton(joystick, 1);
   public static JoystickButton ballIntakeJointToggleButton = new JoystickButton(joystick, 3);
