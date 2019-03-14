@@ -613,34 +613,61 @@ def findTarget(rectborders, frame=-1):
                     theta = math.acos(rat)
                     degrees = theta * 180 / math.pi
                     print("correction: " + str(degrees) + " deg")
-                    networkTable.putNumber("correctionAngle", degrees)
-                  distance = round((d1 + d2) / 2, 2)
-                  pairs.append([r,r2])
-                  #print(distance)
+
+                    distance = round((d1 + d2) / 2, 2)
+                    pairs.append([r,r2])
+                    #print(distance)
+
+                    centerOfTarget = ((cx1 + cx2) / 2, (cy1 + cy2) / 2)
+                    centerX = frame.shape[1]/2 - 0.5
+                    yawToTarget = calculateYaw(centerOfTarget[0], centerX, H_FOCAL_LENGTH)
+                    global updater
+                    updater.addValues(True,distance,degrees,yawToTarget)
 
 
 
-                  centerOfTarget = ((cx1 + cx2) / 2, (cy1 + cy2) / 2)
-                  centerX = frame.shape[1]/2 - 0.5
-                  yawToTarget = calculateYaw(centerOfTarget[0], centerX, H_FOCAL_LENGTH)
-                  networkTable.putNumber("tapeYaw", yawToTarget)
-                  networkTable.putNumber("distance", distance)
-
-
-  if len(pairs) > 0:
-    networkTable.putBoolean("tapeDetected", True)
-    print("Target Found")
-  else:
-    networkTable.putBoolean("tapeDetected", False)
   return frame
 
-class networkTablesUpdater():
-  def __init__(self):
+class NetworkTablesUpdater():
+  def __init__(self, networkTable):
+    self.reset()
+    self.table = networkTable
+
+  def reset(self):
     self.foundTarget = []
     self.distances = []
     self.correctionAngles = []
     self.yaws = []
-    
+
+  def addValues(self, foundTarget, distances, correctionAngle, yaw):
+    self.foundTarget.append(foundTarget)
+    self.distances.append(distances)
+    self.correctionAngles.append(correctionAngle)
+    self.yaws.append(yaw)
+    self.update()
+
+  def update(self): # tries to average last 6 values
+    self.table.putNumber("VideoTimestamp", timestamp)
+    if self.foundTarget.count(True) > 5:
+      if np.std(self.distances) < 3 and np.std(self.yaws) < 3:
+        ca = np.average(self.correctionAngles)
+        dist = np.average(self.distances)
+        yaw = np.average(self.yaws)
+        self.table.putNumber("tapeYaw", yaw)
+        self.table.putNumber("distance", dist)
+        self.table.putNumber("correctionAngle", ca)
+        self.table.putBoolean("tapeDetected", True)
+        print("Target Found")
+      else:
+        self.table.putNumber("tapeYaw", 0)
+        self.table.putNumber("distance", -1)
+        self.table.putNumber("correctionAngle", -1)
+        self.table.putBoolean("tapeDetected", False)
+      self.reset()
+
+
+
+
 # Checks if tape contours are worthy based off of contour area and (not currently) hull area
 def checkContours(cntSize, hullSize):
   return cntSize > (image_width / 6)
@@ -858,6 +885,7 @@ if __name__ == "__main__":
   ntinst = NetworkTablesInstance.getDefault()
   # Name of network table - this is how it communicates with robot. IMPORTANT
   networkTable = NetworkTables.getTable('ChickenVision')
+  updater = NetworkTablesUpdater(networkTable)
 
   if server:
     print("Setting up NetworkTables server")
@@ -922,7 +950,7 @@ if __name__ == "__main__":
         threshold = threshold_video(lower_orange, upper_orange, boxBlur)
         processed = findCargo(frame, threshold)
     # Puts timestamp of camera on netowrk tables
-    networkTable.putNumber("VideoTimestamp", timestamp)
+
     streamViewer.frame = processed
     # update the FPS counter
     fps.update()
