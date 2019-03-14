@@ -241,6 +241,7 @@ def findTargets(frame, mask):
   if len(rectborders) != 0:
 
     image = findTarget(rectborders, image)
+
   # Shows the contours overlayed on the original video
   return image
 
@@ -364,7 +365,6 @@ def findBall(contours, image, centerX, centerY):
 
     return image
 
-
 # Draws Contours and finds center and yaw of vision targets
 # centerX is center x coordinate of image
 # centerY is center y coordinate of image
@@ -442,7 +442,7 @@ def findTape(contours, image, centerX, centerY):
           cv2.rectangle(image, (rx, ry), (rx + rw, ry + rh), (23, 184, 80), 1)
 
           cv2.circle(image, center, radius, (23, 184, 80), 1)
-          distance = str(round(distance_to_camera(height)))
+          distance = str(round(distanceToCameraFromHeight(height)))
 
           cv2.putText(image, distance, (cx, cy), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 60))
           # Appends important info to array
@@ -545,99 +545,87 @@ def anglesInRange(angle1,angle2):
   else:
     return False
 
-def findTarget(rectborders, frame=-1):
+def ratiosInRange(ratio1,ratio2):
   sim_ratio = 3
-  sim_angle = 10
+  if (ratio2 < ratio1 + sim_ratio and ratio2 > ratio1 - sim_ratio):
+    return True
+  else:
+    return False
+def findTarget(rectborders, frame=-1):
+
   pairs = []
 
   for r in rectborders:
 
     if isCorrectShape(r):
 
-      width1 = r[1][0]
-      height1 = r[1][1]
+      height1 = max(r[1])
+      width1 = min(r[1])
       ratio1 = round(height1 / width1, 2)
-      tilt1 = translateRotation(round(r[2], 1), width1, height1)
+      tilt1 = translateRotation(round(r[2], 1), r[1][0], r[1][1])
 
       cx1 = r[0][0]
       cy1 = r[0][1]
-
-      if ratio1 < 1:
-        ratio1 = 1 / ratio1
-        width1 = r[1][1]
-        height1 = r[1][0]
-        cv2.putText(frame, "switched", (int(cx1), int(cy1 + 10)),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.4, RED, 1)
 
       for r2 in rectborders:
         if r == r2 or haveSameCoordinates(r, r2):
           break
         elif isCorrectShape(r2):
-          drawBox(frame, r, WHITE)
-          drawBox(frame, r2, WHITE)
-
           width2 = r[1][0]
           height2 = r2[1][1]
-          ratio2 = round(height2 / width2, 2)
+
           tilt2 = translateRotation(round(r2[2], 1), width2, height2)
           if (np.sign(tilt1) != np.sign(tilt2)):
             cx2 = r2[0][0]
             cy2 = r2[0][1]
 
-            if ratio2 < 1:
-              ratio2 = 1 / ratio2
-              width2 = r2[1][1]
-              height2 = r2[1][0]
-              cv2.putText(frame, "switched", (int(cx2), int(cy2 + 10)),
-                          cv2.FONT_HERSHEY_SIMPLEX, 0.4, RED, 1)
-
+            height2 = max(r2[1])
+            width2 = min(r2[1])
+            ratio2 = round(height2 / width2, 2)
             avg_width = (width1 + width2) / 2
             avg_height = (height1 + height2) / 2
 
             offset = math.sqrt((cy2 - cy1) ** 2 + (cx2 - cx1) ** 2)
 
-            cv2.putText(frame, "R1", (int(cx2), int(cy2)),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.4, RED, 1)
-            cv2.putText(frame, "R2", (int(cx1), int(cy1)),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.4, RED, 1)
-
             if offset < 7 * avg_width or offset < 2.3 * avg_height:
-              drawBox(frame, r, YELLOW)
-              drawBox(frame, r2, YELLOW)
 
-              if (ratio2 < ratio1 + sim_ratio and ratio2 > ratio1 - sim_ratio):
-                drawBox(frame, r, BLUE)
-                drawBox(frame, r2, BLUE)
-
-
-                cv2.putText(frame, "angle: " + str(round(tilt2, 0)) + "deg", (int(cx2), int(cy2 + 60)),
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.4, BLUE, 1)
-                cv2.putText(frame, "angle: " + str(round(tilt1, 0)) + "deg", (int(cx1), int(cy1 + 60)),
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.4, BLUE, 1)
-
+              if ratiosInRange(ratio1,ratio2):
 
                 if anglesInRange(tilt1, tilt2):
-                  distance = (distance_to_camera(offset) / 12)  # in feet
-                  if type(frame) != int:
+                  #distance = distanceToCameraFromHeight(offset)
+                  tapes = [[cx1, height1], [cx2, height2]]
+                  tapes.sort(key=lambda x: math.fabs(x[0]))
+                  d1 = distanceToCameraFromHeight(tapes[0][1])
+                  d2 = distanceToCameraFromHeight(tapes[1][1])
+                  print(d1, d2)
+                  if(d1 > 4) and (d2 > 4):
+                    T = 11.313 #actual target width in inches
+                    ac = (d1**2 + d2**2 - T**2)/(2*d1*d2)
+                    if(ac>1):
+                      alpha = 0
+                    else:
+                      alpha = math.acos(ac)/2
+                    rat = 2*d1*math.sin(alpha)/T
+                    if rat > 1:
+                      rat = 1
+                    elif rat < -1:
+                      rat = -1
+                    theta = math.acos(rat)
+                    degrees = theta * 180 / math.pi
+                    print("correction: " + str(degrees) + " deg")
+                    networkTable.putNumber("correctionAngle", degrees)
+                  distance = round((d1 + d2) / 2, 2)
+                  pairs.append([r,r2])
+                  #print(distance)
 
-                    cv2.putText(frame, "angle: " + str(round(tilt2, 0)) + "deg", (int(cx2), int(cy2 + 60)),
-                                cv2.FONT_HERSHEY_SIMPLEX, 0.4, WHITE, 1)
-                    cv2.putText(frame, "angle: " + str(round(tilt1, 0)) + "deg", (int(cx1), int(cy1 + 60)),
-                                cv2.FONT_HERSHEY_SIMPLEX, 0.4, WHITE, 1)
-                    cv2.line(frame, (int(cx2), int(cy2)), (int(cx1), int(cy1)), YELLOW, 1)
-                    # Display Distance
-                    cv2.putText(frame, "%.2fft" % distance, (frame.shape[1] - 200, frame.shape[0] - 100),
-                                cv2.FONT_HERSHEY_SIMPLEX, 2.0, YELLOW, 3)
-                    cv2.putText(frame, "angle: " + str(round(tilt1, 0)) + "deg", (int(cx1), int(cy1 + 60)),
-                                cv2.FONT_HERSHEY_SIMPLEX, 0.4, WHITE, 1)
-                    drawBox(frame, r, PURPLE)
-                    drawBox(frame, r2, PURPLE)
-                  pairs.append([r, r2])
-                  print(distance)
+
+
                   centerOfTarget = ((cx1 + cx2) / 2, (cy1 + cy2) / 2)
                   centerX = frame.shape[1]/2 - 0.5
                   yawToTarget = calculateYaw(centerOfTarget[0], centerX, H_FOCAL_LENGTH)
                   networkTable.putNumber("tapeYaw", yawToTarget)
+                  networkTable.putNumber("distance", distance)
+
 
   if len(pairs) > 0:
     networkTable.putBoolean("tapeDetected", True)
@@ -646,7 +634,13 @@ def findTarget(rectborders, frame=-1):
     networkTable.putBoolean("tapeDetected", False)
   return frame
 
-
+class networkTablesUpdater():
+  def __init__(self):
+    self.foundTarget = []
+    self.distances = []
+    self.correctionAngles = []
+    self.yaws = []
+    
 # Checks if tape contours are worthy based off of contour area and (not currently) hull area
 def checkContours(cntSize, hullSize):
   return cntSize > (image_width / 6)
@@ -693,8 +687,8 @@ def calculateDistance(heightOfCamera, heightOfTarget, pitch):
   return distance
 
 
-def distance_to_camera(pixHeight):
-  return (460 * H_FOCAL_LENGTH) / pixHeight
+def distanceToCameraFromHeight(pixHeight):
+  return (5.33 * H_FOCAL_LENGTH) / pixHeight
 
 
 # Uses trig and focal length of camera to find yaw.
