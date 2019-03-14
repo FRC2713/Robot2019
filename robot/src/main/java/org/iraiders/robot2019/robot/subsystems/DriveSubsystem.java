@@ -9,6 +9,7 @@ import org.iraiders.robot2019.robot.RobotMap;
 import org.iraiders.robot2019.robot.commands.drive.LineTrackingCommand;
 import org.iraiders.robot2019.robot.commands.drive.OIDrive;
 import org.iraiders.robot2019.robot.commands.drive.VisionDrive;
+import org.iraiders.robot2019.robot.commands.drive.VisionLineTrack;
 
 public class DriveSubsystem extends Subsystem {
   public final CANSparkMax frontLeft = new CANSparkMax(RobotMap.frontLeftTalonPort, CANSparkMaxLowLevel.MotorType.kBrushed);
@@ -21,8 +22,9 @@ public class DriveSubsystem extends Subsystem {
   public final DigitalInput rightLine = new DigitalInput(RobotMap.rightLineSensorPort);
 
   private OIDrive oiDrive;
-  private VisionDrive visionDrive;
-  private LineTrackingCommand linetracking;
+  public LineTrackingCommand lineTracking;
+  public VisionDrive visionDrive;
+  private VisionLineTrack visionLineTrack;
   public DifferentialDrive roboDrive = new DifferentialDrive(frontLeft, frontRight);
 
   public DriveSubsystem() {
@@ -30,23 +32,27 @@ public class DriveSubsystem extends Subsystem {
     //backRight.set(ControlMode.Follower, RobotMap.frontRightTalonPort);
     backLeft.follow(frontLeft);
     backRight.follow(frontRight);
+
+    oiDrive = new OIDrive(this);
+    visionDrive = new VisionDrive(this);
+    lineTracking = new LineTrackingCommand(this);
+    visionLineTrack = new VisionLineTrack(this);
   }
 
   public void initTeleop() {
-    oiDrive = new OIDrive(this);
-    visionDrive = new VisionDrive(this);
-    linetracking = new LineTrackingCommand(this);
     oiDrive.start();
 
-    RobotMap.visionToggleButton.cancelWhenPressed(oiDrive);
-    RobotMap.visionToggleButton.cancelWhenPressed(linetracking);
-    RobotMap.visionToggleButton.whenReleased(oiDrive);
-    RobotMap.visionToggleButton.whileHeld(visionDrive);
+    //RobotMap.visionToggleButton.cancelWhenPressed(oiDrive);
+    //RobotMap.visionToggleButton.cancelWhenPressed(lineTracking);
+    //RobotMap.visionToggleButton.whenReleased(oiDrive);
+    //RobotMap.visionToggleButton.whileHeld(visionDrive);
 
-    RobotMap.lineTrackingToggle.cancelWhenPressed(oiDrive);
-    RobotMap.lineTrackingToggle.cancelWhenPressed(visionDrive);
-    RobotMap.lineTrackingToggle.whenReleased(oiDrive);
-    RobotMap.lineTrackingToggle.whileHeld(linetracking);
+    //RobotMap.lineTrackingToggle.cancelWhenPressed(oiDrive);
+    //RobotMap.lineTrackingToggle.cancelWhenPressed(visionDrive);
+    //RobotMap.lineTrackingToggle.whenReleased(oiDrive);
+    //RobotMap.lineTrackingToggle.whileHeld(lineTracking);
+
+    RobotMap.lineRangeToggle.toggleWhenPressed(visionLineTrack);
   }
 
   @Override

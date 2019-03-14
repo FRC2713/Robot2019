@@ -9,7 +9,6 @@ import org.iraiders.robot2019.robot.Robot;
 import org.iraiders.robot2019.robot.subsystems.DriveSubsystem;
 
 public class LineTrackingCommand extends Command {
-
   private XboxController xbox = OI.xBoxController;
   private double lastLeftStickVal = 0;
   private double lastRightStickVal = 0;
@@ -18,6 +17,8 @@ public class LineTrackingCommand extends Command {
 
   private double defaultSnapValue = 0.62;
   private double joystickChangeLimit;
+
+  public byte lineSensorByte = 0;
 
   public LineTrackingCommand(DriveSubsystem driveSubsystem) {
     this.driveSubsystem = driveSubsystem;
@@ -40,8 +41,6 @@ public class LineTrackingCommand extends Command {
   protected void execute() {
     double measuredLeft;
     double measuredTurn = 0;
-
-    byte lineSensorByte = 0;
 
     if (!driveSubsystem.leftLine.get()) {
       lineSensorByte |= 1;

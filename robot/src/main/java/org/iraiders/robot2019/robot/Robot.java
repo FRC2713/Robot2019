@@ -4,6 +4,7 @@ package org.iraiders.robot2019.robot;
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -118,6 +119,11 @@ public class Robot extends TimedRobot {
     liftSubsystem.initTeleop();
     intakeSubsystem.initTeleop();
     climbSubsystem.initTeleop();
+
+    DriverStation.reportWarning("           __\n" +
+      "      (___()'`;\n" +
+      "      /,    /`\n" +
+      "jgs   \\\\\"--\\\\", false);
 
     subsystemControlsStarted = true;
   }
