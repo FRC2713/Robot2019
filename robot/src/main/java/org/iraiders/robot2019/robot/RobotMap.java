@@ -53,8 +53,8 @@ public class RobotMap {
   private static XboxController xboxController = OI.xBoxController;
   private static Joystick joystick = OI.leftAttack;
 
-  //public static JoystickButton liftUpButton = new JoystickButton(buttonBox, 7);
-  //public static JoystickButton liftDownButton = new JoystickButton(buttonBox, 3);
+  public static JoystickButton climberArmManualDown = new JoystickButton(joystick, 5);
+  public static JoystickButton getClimberArmManualUp = new JoystickButton(joystick, 4);
   public static JoystickButton climberArmButton = new JoystickButton(joystick, 8);
   public static JoystickButton climberLevelButton = new JoystickButton(joystick, 9);
 

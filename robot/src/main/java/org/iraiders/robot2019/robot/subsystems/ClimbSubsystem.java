@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import org.iraiders.robot2019.robot.OI;
 import org.iraiders.robot2019.robot.Robot;
 import org.iraiders.robot2019.robot.RobotMap;
+import org.iraiders.robot2019.robot.commands.SimpleMotorCommand;
 import org.iraiders.robot2019.robot.commands.climb.ClimbArmControl;
 import org.iraiders.robot2019.robot.commands.climb.ClimbFollowDrive;
 
@@ -27,6 +28,9 @@ public class ClimbSubsystem extends Subsystem {
     rightLArm.follow(leftLArm);
     rightLArm.setIdleMode(CANSparkMax.IdleMode.kBrake);
     leftLArm.setIdleMode(CANSparkMax.IdleMode.kBrake);
+    
+    RobotMap.climberArmManualDown.whileHeld(new SimpleMotorCommand(leftLArm, .5));
+    RobotMap.getClimberArmManualUp.whileHeld(new SimpleMotorCommand(leftLArm, -.5));
 
     new ClimbArmControl(this).start();
     ClimbFollowDrive climbFollowDrive = new ClimbFollowDrive(Robot.driveSubsystem, this);
