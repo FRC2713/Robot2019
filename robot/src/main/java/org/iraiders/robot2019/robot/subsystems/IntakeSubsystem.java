@@ -47,6 +47,8 @@ public class IntakeSubsystem extends Subsystem {
     ballIntakeControlCommand.start();
     //ballIntakeMonitor.start();
     new EncoderReporter(intakeTalon).start();
+    
+    intakeTalon.configContinuousCurrentLimit(100); // TODO tune, this is Jack's random suggestion
   
     initControls();
   }
