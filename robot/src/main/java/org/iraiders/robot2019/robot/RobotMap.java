@@ -64,7 +64,6 @@ public class RobotMap {
   public static JoystickButton hatchToggleButton = new JoystickButton(joystick, 6);
   public static JoystickButton plateToggleButton = new JoystickButton(joystick, 7);
 
-  //public static JoystickButton visionToggleButton = new JoystickButton(xboxController, 6); // Right Xbox Bumper (5 is left)
-  //public static JoystickButton lineTrackingToggle = new JoystickButton(xboxController, 5);
-  public static JoystickButton lineRangeToggle = new JoystickButton(xboxController, 6);
+  public static JoystickButton unifiedTrackingToggle = new JoystickButton(xboxController, 6); // Right Xbox Bumper (5 is left)
+  public static JoystickButton lineTrackingToggle = new JoystickButton(xboxController, 5);
 }

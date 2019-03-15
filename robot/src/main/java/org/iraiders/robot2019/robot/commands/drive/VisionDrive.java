@@ -2,7 +2,6 @@ package org.iraiders.robot2019.robot.commands.drive;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.command.PIDCommand;
 import org.iraiders.robot2019.robot.OI;
@@ -28,7 +27,7 @@ public class VisionDrive extends PIDCommand {
 
   @Override
   protected double returnPIDInput() {
-     tapeDetected = cv.getEntry("tapeDetected").getBoolean(false);
+    tapeDetected = cv.getEntry("tapeDetected").getBoolean(false);
     if (!tapeDetected) return 0; // If the tape isn't detected don't do anything
 
     return cv.getEntry("tapeYaw").getNumber(0).doubleValue();

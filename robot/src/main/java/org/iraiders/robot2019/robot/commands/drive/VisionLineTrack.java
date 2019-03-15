@@ -16,6 +16,7 @@ public class VisionLineTrack extends Command {
   protected void initialize() {
     driveSubsystem.visionDrive.start();
     driveSubsystem.lineTracking.start();
+    driveSubsystem.lineTracking.snapScaleValue = 0; // Prevent Line Tracking Command from moving the robot
   }
 
   @Override
@@ -24,22 +25,23 @@ public class VisionLineTrack extends Command {
     byte lineSensorByte = driveSubsystem.lineTracking.lineSensorByte;
 
     // Tape detected & Line Sensors all detected or all not detected
-    if (tapeDetected && (lineSensorByte == 7 || lineSensorByte == 0) ) {
+    if (tapeDetected && (lineSensorByte == 7 || lineSensorByte == 0)) {
       visionTrackerByte |= 1;
     }
 
-    //Tape not detected & 1 or 2 Line Sensors detected
+    // Tape not detected & 1 or 2 Line Sensors detected
     if (!tapeDetected && !(lineSensorByte == 7 || lineSensorByte == 0)) {
       visionTrackerByte |= 2;
     }
 
-    //Tape detected & 1 or 2 Line Sensors detected
+    // Tape detected & 1 or 2 Line Sensors detected
     if (tapeDetected && !(lineSensorByte == 7 || lineSensorByte == 0)) {
       visionTrackerByte |= 4;
     }
 
-    //Tape & Line Sensors not detected
-    if (!driveSubsystem.visionDrive.cv.getEntry("tapeDetected").getBoolean(false) && driveSubsystem.lineTracking.lineSensorByte == 7) {
+    // Tape & Line Sensors not detected
+    // TODO should the line sensor bite here match the others?
+    if (!tapeDetected && lineSensorByte == 7) {
       visionTrackerByte |= 0;
     }
 

@@ -12,6 +12,9 @@ import org.iraiders.robot2019.robot.commands.drive.VisionDrive;
 import org.iraiders.robot2019.robot.commands.drive.VisionLineTrack;
 
 public class DriveSubsystem extends Subsystem {
+  private static final boolean SEPERATE_TRACKING_OPTIONS = false;
+  private static final double DEADBAND = 0.07;
+  
   public final CANSparkMax frontLeft = new CANSparkMax(RobotMap.frontLeftTalonPort, CANSparkMaxLowLevel.MotorType.kBrushed);
   private final CANSparkMax backLeft = new CANSparkMax(RobotMap.backLeftTalonPort, CANSparkMaxLowLevel.MotorType.kBrushed);
   private final CANSparkMax frontRight = new CANSparkMax(RobotMap.frontRightTalonPort, CANSparkMaxLowLevel.MotorType.kBrushed);
@@ -32,6 +35,8 @@ public class DriveSubsystem extends Subsystem {
     //backRight.set(ControlMode.Follower, RobotMap.frontRightTalonPort);
     backLeft.follow(frontLeft);
     backRight.follow(frontRight);
+  
+    roboDrive.setDeadband(DriveSubsystem.DEADBAND);
 
     oiDrive = new OIDrive(this);
     visionDrive = new VisionDrive(this);
@@ -41,18 +46,22 @@ public class DriveSubsystem extends Subsystem {
 
   public void initTeleop() {
     oiDrive.start();
-
-    //RobotMap.visionToggleButton.cancelWhenPressed(oiDrive);
-    //RobotMap.visionToggleButton.cancelWhenPressed(lineTracking);
-    //RobotMap.visionToggleButton.whenReleased(oiDrive);
-    //RobotMap.visionToggleButton.whileHeld(visionDrive);
-
-    //RobotMap.lineTrackingToggle.cancelWhenPressed(oiDrive);
-    //RobotMap.lineTrackingToggle.cancelWhenPressed(visionDrive);
-    //RobotMap.lineTrackingToggle.whenReleased(oiDrive);
-    //RobotMap.lineTrackingToggle.whileHeld(lineTracking);
-
-    RobotMap.lineRangeToggle.toggleWhenPressed(visionLineTrack);
+    
+    if (SEPERATE_TRACKING_OPTIONS) {
+      // Start Vision drive, cancel OI and Line Tracking
+      RobotMap.unifiedTrackingToggle.cancelWhenPressed(oiDrive);
+      RobotMap.unifiedTrackingToggle.cancelWhenPressed(lineTracking);
+      RobotMap.unifiedTrackingToggle.whenReleased(oiDrive);
+      RobotMap.unifiedTrackingToggle.whileHeld(visionDrive);
+  
+      // Start
+      RobotMap.lineTrackingToggle.cancelWhenPressed(oiDrive);
+      RobotMap.lineTrackingToggle.cancelWhenPressed(visionDrive);
+      RobotMap.lineTrackingToggle.whenReleased(oiDrive);
+      RobotMap.lineTrackingToggle.whileHeld(lineTracking);
+    } else {
+      RobotMap.unifiedTrackingToggle.toggleWhenPressed(visionLineTrack);
+    }
   }
 
   @Override

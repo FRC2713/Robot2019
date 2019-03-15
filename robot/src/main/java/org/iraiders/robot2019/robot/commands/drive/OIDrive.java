@@ -15,7 +15,6 @@ public class OIDrive extends Command {
 
   private double lastLeftStickVal = 0;
   private double lastRightStickVal = 0;
-  private double deadband = 0.07;
 
   //Ultrasonic ultra = new Ultrasonic(RobotMap.ultraSonicPing,RobotMap.ultraSonicEcho);
 
@@ -24,14 +23,12 @@ public class OIDrive extends Command {
   public OIDrive(DriveSubsystem driveSubsystem) {
     this.driveSubsystem = driveSubsystem;
     requires(driveSubsystem);
-    driveSubsystem.roboDrive.setMaxOutput(Robot.prefs.getFloat("OIMaxSpeed", 1));
     joystickChangeLimit = Robot.prefs.getDouble("JoystickChangeLimit", .09);
   }
 
   @Override
   protected void initialize() {
-    SmartDashboard.putNumber("PreStopRange", 0.001);
-    driveSubsystem.roboDrive.setDeadband(deadband);
+    driveSubsystem.roboDrive.setMaxOutput(Robot.prefs.getFloat("OIMaxSpeed", 1));
     //ultra.setAutomaticMode(true);
   }
 
