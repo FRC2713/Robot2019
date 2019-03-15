@@ -30,7 +30,7 @@ public class ClimbSubsystem extends Subsystem {
     leftLArm.setIdleMode(CANSparkMax.IdleMode.kBrake);
     
     RobotMap.climberArmManualDown.whileHeld(new SimpleMotorCommand(leftLArm, .5));
-    RobotMap.getClimberArmManualUp.whileHeld(new SimpleMotorCommand(leftLArm, -.5));
+    RobotMap.climberArmManualUp.whileHeld(new SimpleMotorCommand(leftLArm, -.5));
 
     new ClimbArmControl(this).start();
     ClimbFollowDrive climbFollowDrive = new ClimbFollowDrive(Robot.driveSubsystem, this);
