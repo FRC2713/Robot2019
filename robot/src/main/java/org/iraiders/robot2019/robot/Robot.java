@@ -1,6 +1,8 @@
 package org.iraiders.robot2019.robot;
 
 
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.revrobotics.CANSparkMax;
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
@@ -126,5 +128,19 @@ public class Robot extends TimedRobot {
       "jgs   \\\\\"--\\\\", false);
 
     subsystemControlsStarted = true;
+  }
+  
+  public static void initializeTalonDefaults(WPI_TalonSRX... talons) {
+    for (WPI_TalonSRX talon : talons) {
+      talon.enableCurrentLimit(true);
+      talon.configContinuousCurrentLimit(RobotMap.MAX_MOTOR_STALL_AMPS);
+      talon.configPeakCurrentLimit(RobotMap.MAX_MOTOR_FREE_AMPS);
+    }
+  }
+  
+  public static void initializeSparkDefaults(CANSparkMax... sparks) {
+    for (CANSparkMax spark : sparks) {
+      spark.setSmartCurrentLimit(RobotMap.MAX_MOTOR_STALL_AMPS, RobotMap.MAX_MOTOR_FREE_AMPS);
+    }
   }
 }

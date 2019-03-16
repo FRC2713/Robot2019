@@ -5,6 +5,7 @@ import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import org.iraiders.robot2019.robot.Robot;
 import org.iraiders.robot2019.robot.RobotMap;
 import org.iraiders.robot2019.robot.commands.drive.LineTrackingCommand;
 import org.iraiders.robot2019.robot.commands.drive.OIDrive;
@@ -12,13 +13,10 @@ import org.iraiders.robot2019.robot.commands.drive.VisionDrive;
 import org.iraiders.robot2019.robot.commands.drive.VisionLineTrack;
 
 public class DriveSubsystem extends Subsystem {
-  private static final boolean SEPERATE_TRACKING_OPTIONS = false;
-  private static final double DEADBAND = 0.07;
-  
-  public final CANSparkMax frontLeft = new CANSparkMax(RobotMap.frontLeftTalonPort, CANSparkMaxLowLevel.MotorType.kBrushed);
-  private final CANSparkMax backLeft = new CANSparkMax(RobotMap.backLeftTalonPort, CANSparkMaxLowLevel.MotorType.kBrushed);
-  private final CANSparkMax frontRight = new CANSparkMax(RobotMap.frontRightTalonPort, CANSparkMaxLowLevel.MotorType.kBrushed);
-  private final CANSparkMax backRight = new CANSparkMax(RobotMap.backRightTalonPort, CANSparkMaxLowLevel.MotorType.kBrushed);
+  public final CANSparkMax frontLeft = new CANSparkMax(RobotMap.frontLeftTalonPort, CANSparkMaxLowLevel.MotorType.kBrushless);
+  private final CANSparkMax backLeft = new CANSparkMax(RobotMap.backLeftTalonPort, CANSparkMaxLowLevel.MotorType.kBrushless);
+  private final CANSparkMax frontRight = new CANSparkMax(RobotMap.frontRightTalonPort, CANSparkMaxLowLevel.MotorType.kBrushless);
+  private final CANSparkMax backRight = new CANSparkMax(RobotMap.backRightTalonPort, CANSparkMaxLowLevel.MotorType.kBrushless);
 
   public final DigitalInput leftLine = new DigitalInput(RobotMap.leftLineSensorPort);
   public final DigitalInput midLine = new DigitalInput(RobotMap.midLineSensorPort);
@@ -31,12 +29,14 @@ public class DriveSubsystem extends Subsystem {
   public DifferentialDrive roboDrive = new DifferentialDrive(frontLeft, frontRight);
 
   public DriveSubsystem() {
+    Robot.initializeSparkDefaults(frontLeft, frontRight, backLeft, backRight);
+    
     //backLeft.set(ControlMode.Follower, RobotMap.frontLeftTalonPort);
     //backRight.set(ControlMode.Follower, RobotMap.frontRightTalonPort);
     backLeft.follow(frontLeft);
     backRight.follow(frontRight);
   
-    roboDrive.setDeadband(DriveSubsystem.DEADBAND);
+    roboDrive.setDeadband(RobotMap.DEADBAND);
 
     oiDrive = new OIDrive(this);
     visionDrive = new VisionDrive(this);
@@ -47,7 +47,7 @@ public class DriveSubsystem extends Subsystem {
   public void initTeleop() {
     oiDrive.start();
     
-    if (SEPERATE_TRACKING_OPTIONS) {
+    if (RobotMap.SEPERATE_TRACKING_OPTIONS) {
       // Start Vision drive, cancel OI and Line Tracking
       RobotMap.unifiedTrackingToggle.cancelWhenPressed(oiDrive);
       RobotMap.unifiedTrackingToggle.cancelWhenPressed(lineTracking);

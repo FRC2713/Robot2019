@@ -1,10 +1,12 @@
 package org.iraiders.robot2019.robot.subsystems;
 
 
+import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import org.iraiders.robot2019.robot.OI;
@@ -22,9 +24,18 @@ public class ClimbSubsystem extends Subsystem {
   private CANSparkMax rightLArm = new CANSparkMax(RobotMap.rightLArmPort, CANSparkMaxLowLevel.MotorType.kBrushless);
   public WPI_TalonSRX climberPistonMotor = new WPI_TalonSRX(RobotMap.climberPistonMotorPort);
 
-  public final DoubleSolenoid climbPiston = OI.getDoubleSolenoid(RobotMap.climbFrontOpenNodeId, RobotMap.climbFrontCloseNodeId);
+  private final DoubleSolenoid climbPiston = OI.getDoubleSolenoid(RobotMap.climbFrontOpenNodeId, RobotMap.climbFrontCloseNodeId);
 
   public void initTeleop() {
+    DriverStation.reportWarning("Default SparkMax Stall & Free current limit:" + leftLArm.getParameterInt(CANSparkMaxLowLevel.ConfigParameter.kSmartCurrentStallLimit) + " & " + leftLArm.getParameterInt(CANSparkMaxLowLevel.ConfigParameter.kSmartCurrentFreeLimit), false);
+    TalonSRXConfiguration cf = new TalonSRXConfiguration();
+    climberPistonMotor.getAllConfigs(cf);
+    DriverStation.reportWarning("Default Talon Stall limits : " + cf.continuousCurrentLimit + " continuous, " + cf.peakCurrentLimit + " peak (" + cf.peakCurrentDuration + ")", false);
+  
+    Robot.initializeSparkDefaults(leftLArm);
+    Robot.initializeSparkDefaults(rightLArm);
+    Robot.initializeTalonDefaults(climberPistonMotor);
+    
     rightLArm.follow(leftLArm);
     rightLArm.setIdleMode(CANSparkMax.IdleMode.kBrake);
     leftLArm.setIdleMode(CANSparkMax.IdleMode.kBrake);
