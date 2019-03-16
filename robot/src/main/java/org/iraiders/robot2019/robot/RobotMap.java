@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj.buttons.JoystickButton;
  */
 public class RobotMap {
   // Config
-  public static final boolean SEPERATE_TRACKING_OPTIONS = false;
+  public static final boolean SEPERATE_TRACKING_OPTIONS = true;
   public static final int MAX_MOTOR_FREE_AMPS = 80;
   public static final int MAX_MOTOR_STALL_AMPS = 40;
   public static final double DEADBAND = 0.07;
