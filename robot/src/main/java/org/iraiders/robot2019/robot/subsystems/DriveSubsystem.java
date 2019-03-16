@@ -5,7 +5,6 @@ import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import org.iraiders.robot2019.robot.Robot;
 import org.iraiders.robot2019.robot.RobotMap;
 import org.iraiders.robot2019.robot.commands.drive.LineTrackingCommand;
 import org.iraiders.robot2019.robot.commands.drive.OIDrive;
@@ -29,7 +28,7 @@ public class DriveSubsystem extends Subsystem {
   public DifferentialDrive roboDrive = new DifferentialDrive(frontLeft, frontRight);
 
   public DriveSubsystem() {
-    Robot.initializeSparkDefaults(frontLeft, frontRight, backLeft, backRight);
+    //Robot.initializeSparkDefaults(frontLeft, frontRight, backLeft, backRight);
     
     //backLeft.set(ControlMode.Follower, RobotMap.frontLeftTalonPort);
     //backRight.set(ControlMode.Follower, RobotMap.frontRightTalonPort);
