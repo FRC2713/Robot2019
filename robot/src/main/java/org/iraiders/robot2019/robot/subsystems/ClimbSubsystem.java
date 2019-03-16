@@ -37,6 +37,7 @@ public class ClimbSubsystem extends Subsystem {
     Robot.initializeTalonDefaults(climberPistonMotor);
     
     rightLArm.follow(leftLArm);
+    rightLArm.setInverted(true);
     rightLArm.setIdleMode(CANSparkMax.IdleMode.kBrake);
     leftLArm.setIdleMode(CANSparkMax.IdleMode.kBrake);
     
