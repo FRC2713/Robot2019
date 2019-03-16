@@ -41,6 +41,7 @@ public class IntakeSubsystem extends Subsystem {
     hatchSolenoid.setName("HatchExtendSolenoid");
     plateSolenoid.setName("PlateExtendSolenoid");
     intakeTalon.setName("BallIntakeTalon");
+    intakeTalon.setInverted(true);
   }
   
   public void initTeleop() {
