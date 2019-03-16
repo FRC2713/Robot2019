@@ -16,7 +16,7 @@ public class RobotMap {
   public static final boolean SEPERATE_TRACKING_OPTIONS = true;
   public static final int MAX_MOTOR_FREE_AMPS = 80;
   public static final int MAX_MOTOR_STALL_AMPS = 40;
-  public static final double DEADBAND = 0.07;
+  public static final double DEADBAND = 0.04;
   
   // Motors
   public static final int frontLeftTalonPort = 1;
