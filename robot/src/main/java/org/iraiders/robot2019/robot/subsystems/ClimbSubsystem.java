@@ -37,14 +37,14 @@ public class ClimbSubsystem extends Subsystem {
     Robot.initializeTalonDefaults(climberPistonMotor);
     
     rightLArm.follow(leftLArm);
-    rightLArm.setInverted(true);
+    //rightLArm.setInverted(true);
     rightLArm.setIdleMode(CANSparkMax.IdleMode.kBrake);
     leftLArm.setIdleMode(CANSparkMax.IdleMode.kBrake);
     
     RobotMap.climberArmManualDown.whileHeld(new SimpleMotorCommand(leftLArm, .5));
     RobotMap.climberArmManualUp.whileHeld(new SimpleMotorCommand(leftLArm, -.5));
 
-    new ClimbArmControl(this).start();
+    //new ClimbArmControl(this).start();
     ClimbFollowDrive climbFollowDrive = new ClimbFollowDrive(Robot.driveSubsystem, this);
 
     RobotMap.climberLevelButton.whenPressed(new InstantCommand(() -> this.climbPiston.set(this.climbPiston.get() == kForward ? kReverse : kForward)));
