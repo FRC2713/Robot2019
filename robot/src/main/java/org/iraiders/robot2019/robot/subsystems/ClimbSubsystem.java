@@ -27,22 +27,24 @@ public class ClimbSubsystem extends Subsystem {
   private final DoubleSolenoid climbPiston = OI.getDoubleSolenoid(RobotMap.climbFrontOpenNodeId, RobotMap.climbFrontCloseNodeId);
 
   public void initTeleop() {
-    DriverStation.reportWarning("Default SparkMax Stall & Free current limit:" + leftLArm.getParameterInt(CANSparkMaxLowLevel.ConfigParameter.kSmartCurrentStallLimit) + " & " + leftLArm.getParameterInt(CANSparkMaxLowLevel.ConfigParameter.kSmartCurrentFreeLimit), false);
-    TalonSRXConfiguration cf = new TalonSRXConfiguration();
-    climberPistonMotor.getAllConfigs(cf);
-    DriverStation.reportWarning("Default Talon Stall limits : " + cf.continuousCurrentLimit + " continuous, " + cf.peakCurrentLimit + " peak (" + cf.peakCurrentDuration + ")", false);
+    //DriverStation.reportWarning("Default SparkMax Stall & Free current limit:" + leftLArm.getParameterInt(CANSparkMaxLowLevel.ConfigParameter.kSmartCurrentStallLimit) + " & " + leftLArm.getParameterInt(CANSparkMaxLowLevel.ConfigParameter.kSmartCurrentFreeLimit), false);
+    //TalonSRXConfiguration cf = new TalonSRXConfiguration();
+    //climberPistonMotor.getAllConfigs(cf);
+    //DriverStation.reportWarning("Default Talon Stall limits : " + cf.continuousCurrentLimit + " continuous, " + cf.peakCurrentLimit + " peak (" + cf.peakCurrentDuration + ")", false);
   
-    Robot.initializeSparkDefaults(leftLArm);
-    Robot.initializeSparkDefaults(rightLArm);
-    Robot.initializeTalonDefaults(climberPistonMotor);
-    
-    rightLArm.follow(leftLArm);
+    //Robot.initializeSparkDefaults(leftLArm);
+    //Robot.initializeSparkDefaults(rightLArm);
+    //Robot.initializeTalonDefaults(climberPistonMotor);
+
     //rightLArm.setInverted(true);
+    //rightLArm.follow(leftLArm);
     rightLArm.setIdleMode(CANSparkMax.IdleMode.kBrake);
     leftLArm.setIdleMode(CANSparkMax.IdleMode.kBrake);
     
     RobotMap.climberArmManualDown.whileHeld(new SimpleMotorCommand(leftLArm, .5));
+    RobotMap.climberArmManualDown.whileHeld(new SimpleMotorCommand(rightLArm, -.5));
     RobotMap.climberArmManualUp.whileHeld(new SimpleMotorCommand(leftLArm, -.5));
+    RobotMap.climberArmManualUp.whileHeld(new SimpleMotorCommand(rightLArm, .5));
 
     //new ClimbArmControl(this).start();
     ClimbFollowDrive climbFollowDrive = new ClimbFollowDrive(Robot.driveSubsystem, this);
