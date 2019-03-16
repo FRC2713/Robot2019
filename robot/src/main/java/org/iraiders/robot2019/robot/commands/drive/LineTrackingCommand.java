@@ -13,7 +13,7 @@ public class LineTrackingCommand extends Command {
   private double lastLeftStickVal = 0;
   private double lastRightStickVal = 0;
   private DriveSubsystem driveSubsystem;
-  
+
   public double snapScaleValue = 0;
   private double joystickChangeLimit;
 
@@ -28,7 +28,7 @@ public class LineTrackingCommand extends Command {
   protected void initialize() {
     driveSubsystem.roboDrive.setMaxOutput(Robot.prefs.getFloat("OIMaxSpeed", 1));
     joystickChangeLimit = Robot.prefs.getDouble("JoystickChangeLimit", .09);
-  
+
     snapScaleValue = SmartDashboard.getNumber("Snap Scale Value", 0.62);
     SmartDashboard.putNumber("Snap Scale Value", snapScaleValue); // In case it's vanished from the dashboard
 
@@ -39,7 +39,7 @@ public class LineTrackingCommand extends Command {
   protected void execute() {
     double measuredLeft;
     double measuredTurn = 0;
-    
+
     lineSensorByte = 0;
 
     if (!driveSubsystem.leftLine.get()) {
@@ -53,32 +53,41 @@ public class LineTrackingCommand extends Command {
     if (!driveSubsystem.rightLine.get()) {
       lineSensorByte |= 4;
     }
-    
+
     if (snapScaleValue == 0) return; // Don't move if disabled
 
 
     switch (lineSensorByte) {
+      // No line sensors are detected
       case 0:
         measuredTurn = 0;
         break;
+      // Just right line sensor detected
       case 4:
         measuredTurn = snapScaleValue;
         break;
+      // Just middle line sensor detected (error)
       case 2:
         measuredTurn = 0;
         break;
+      // Middle and right line sensor detected
       case 6:
         measuredTurn = snapScaleValue / 2;
         break;
+      // left line sensor detected
       case 1:
         measuredTurn = -snapScaleValue;
         break;
+      // Left and right line sensors detected (error)
       case 5:
         measuredTurn = 0;
         break;
+      // Left and middle sensors detected
       case 3:
         measuredTurn = -snapScaleValue / 2;
         break;
+
+      // All line sensors detected
       case 7:
         measuredTurn = 0;
         break;
@@ -97,8 +106,12 @@ public class LineTrackingCommand extends Command {
   }
 
   @Override
-  protected void end() { driveSubsystem.roboDrive.stopMotor(); }
+  protected void end() {
+    driveSubsystem.roboDrive.stopMotor();
+  }
 
   @Override
-  protected boolean isFinished() { return false; }
+  protected boolean isFinished() {
+    return false;
+  }
 }
