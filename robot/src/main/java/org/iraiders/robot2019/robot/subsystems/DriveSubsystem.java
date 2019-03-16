@@ -5,6 +5,7 @@ import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import org.iraiders.robot2019.robot.Robot;
 import org.iraiders.robot2019.robot.RobotMap;
 import org.iraiders.robot2019.robot.commands.drive.LineTrackingCommand;
 import org.iraiders.robot2019.robot.commands.drive.OIDrive;
@@ -28,14 +29,10 @@ public class DriveSubsystem extends Subsystem {
   public DifferentialDrive roboDrive = new DifferentialDrive(frontLeft, frontRight);
 
   public DriveSubsystem() {
-    //Robot.initializeSparkDefaults(frontLeft, frontRight, backLeft, backRight);
+    Robot.initializeSparkDefaults(frontLeft, frontRight, backLeft, backRight);
     
     //backLeft.set(ControlMode.Follower, RobotMap.frontLeftTalonPort);
     //backRight.set(ControlMode.Follower, RobotMap.frontRightTalonPort);
-    backLeft.follow(frontLeft);
-    backRight.follow(frontRight);
-  
-    roboDrive.setDeadband(RobotMap.DEADBAND);
 
     oiDrive = new OIDrive(this);
     visionDrive = new VisionDrive(this);
@@ -44,15 +41,22 @@ public class DriveSubsystem extends Subsystem {
   }
 
   public void initTeleop() {
+    backLeft.follow(frontLeft);
+    backRight.follow(frontRight);
+
+    roboDrive.setDeadband(RobotMap.DEADBAND);
+
     oiDrive.start();
-    
+  }
+
+  public void initControls() {
     if (RobotMap.SEPERATE_TRACKING_OPTIONS) {
       // Start Vision drive, cancel OI and Line Tracking
       RobotMap.unifiedTrackingToggle.cancelWhenPressed(oiDrive);
       RobotMap.unifiedTrackingToggle.cancelWhenPressed(lineTracking);
       RobotMap.unifiedTrackingToggle.whenReleased(oiDrive);
       RobotMap.unifiedTrackingToggle.whileHeld(visionDrive);
-  
+
       // Start
       RobotMap.lineTrackingToggle.cancelWhenPressed(oiDrive);
       RobotMap.lineTrackingToggle.cancelWhenPressed(visionDrive);

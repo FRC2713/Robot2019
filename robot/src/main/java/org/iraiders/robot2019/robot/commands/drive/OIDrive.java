@@ -23,11 +23,11 @@ public class OIDrive extends Command {
   public OIDrive(DriveSubsystem driveSubsystem) {
     this.driveSubsystem = driveSubsystem;
     requires(driveSubsystem);
-    joystickChangeLimit = Robot.prefs.getDouble("JoystickChangeLimit", .09);
   }
 
   @Override
   protected void initialize() {
+    joystickChangeLimit = Robot.prefs.getDouble("JoystickChangeLimit", .09);
     driveSubsystem.roboDrive.setMaxOutput(Robot.prefs.getFloat("OIMaxSpeed", 1));
     //ultra.setAutomaticMode(true);
   }

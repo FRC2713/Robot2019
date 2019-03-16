@@ -82,6 +82,7 @@ public class Robot extends TimedRobot {
     //  m_autonomousCommand.start();
     //}
 
+    startSubsystems();
     initSubsystemControl();
   }
   
@@ -100,6 +101,7 @@ public class Robot extends TimedRobot {
     //  m_autonomousCommand.cancel();
     //}
 
+    startSubsystems();
     initSubsystemControl();
   }
   
@@ -113,13 +115,20 @@ public class Robot extends TimedRobot {
   public void testPeriodic() {
   }
 
-  private void initSubsystemControl() {
-    if (subsystemControlsStarted) return;
-
+  private void startSubsystems() {
     driveSubsystem.initTeleop();
     liftSubsystem.initTeleop();
     intakeSubsystem.initTeleop();
     climbSubsystem.initTeleop();
+  }
+
+  private void initSubsystemControl() {
+    if (subsystemControlsStarted) return;
+
+    driveSubsystem.initControls();
+    liftSubsystem.initControls();
+    intakeSubsystem.initControls();
+    climbSubsystem.initControls();
 
     subsystemControlsStarted = true;
   }

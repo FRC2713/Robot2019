@@ -6,8 +6,8 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import org.iraiders.robot2019.robot.OI;
+import org.iraiders.robot2019.robot.Robot;
 import org.iraiders.robot2019.robot.RobotMap;
-import org.iraiders.robot2019.robot.commands.feedback.EncoderReporter;
 import org.iraiders.robot2019.robot.commands.intake.BallIntakeControlCommand;
 import org.iraiders.robot2019.robot.commands.intake.BallIntakeJointCommand;
 import org.iraiders.robot2019.robot.commands.intake.BallIntakeMonitor;
@@ -47,14 +47,12 @@ public class IntakeSubsystem extends Subsystem {
   public void initTeleop() {
     ballIntakeControlCommand.start();
     //ballIntakeMonitor.start();
-    new EncoderReporter(intakeTalon).start();
-    
-    intakeTalon.configContinuousCurrentLimit(100); // TODO tune, this is Jack's random suggestion
-  
-    initControls();
+    //new EncoderReporter(intakeTalon).start();
+
+    Robot.initializeTalonDefaults(intakeTalon);
   }
 
-  private void initControls() {
+  public void initControls() {
     ballIntakeJointToggleButton.whenPressed(new InstantCommand(() -> this.ballIntakeJointCommand.setIntakeJointPosition(this.ballIntakeJointCommand.getIntakeJointPosition() == UP ? DOWN : UP)));
     plateToggleButton.whenPressed(new InstantCommand(() -> this.plateExtendCommand.setPosition(this.plateExtendCommand.getPosition() == RETRACTED ? EXTENDED : RETRACTED)));
     hatchToggleButton.whenPressed(new InstantCommand(() -> this.hatchExtendCommand.setPosition(this.hatchExtendCommand.getPosition() == RETRACTED ? EXTENDED : RETRACTED)));
