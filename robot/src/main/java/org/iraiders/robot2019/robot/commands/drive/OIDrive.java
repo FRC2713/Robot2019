@@ -8,6 +8,8 @@ import org.iraiders.robot2019.robot.OI;
 import org.iraiders.robot2019.robot.Robot;
 import org.iraiders.robot2019.robot.subsystems.DriveSubsystem;
 
+import static org.iraiders.robot2019.robot.commands.drive.EngageTurbo.REGULAR_SPEED;
+
 public class OIDrive extends Command {
   private DriveSubsystem driveSubsystem;
   private XboxController xbox = OI.xBoxController;
@@ -28,7 +30,7 @@ public class OIDrive extends Command {
   @Override
   protected void initialize() {
     joystickChangeLimit = Robot.prefs.getDouble("JoystickChangeLimit", .09);
-    driveSubsystem.roboDrive.setMaxOutput(Robot.prefs.getFloat("OIMaxSpeed", 1));
+    driveSubsystem.roboDrive.setMaxOutput(Robot.prefs.getFloat("OIMaxSpeed", REGULAR_SPEED));
     //ultra.setAutomaticMode(true);
   }
 

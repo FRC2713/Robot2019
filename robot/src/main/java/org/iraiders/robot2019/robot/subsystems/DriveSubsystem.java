@@ -7,10 +7,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import org.iraiders.robot2019.robot.Robot;
 import org.iraiders.robot2019.robot.RobotMap;
-import org.iraiders.robot2019.robot.commands.drive.LineTrackingCommand;
-import org.iraiders.robot2019.robot.commands.drive.OIDrive;
-import org.iraiders.robot2019.robot.commands.drive.VisionDrive;
-import org.iraiders.robot2019.robot.commands.drive.VisionLineTrack;
+import org.iraiders.robot2019.robot.commands.drive.*;
 
 public class DriveSubsystem extends Subsystem {
   public final CANSparkMax frontLeft = new CANSparkMax(RobotMap.frontLeftTalonPort, CANSparkMaxLowLevel.MotorType.kBrushless);
@@ -65,6 +62,8 @@ public class DriveSubsystem extends Subsystem {
     } else {
       RobotMap.unifiedTrackingToggle.toggleWhenPressed(visionLineTrack);
     }
+
+    RobotMap.turboSpeed.whileHeld(new EngageTurbo(this));
   }
 
   @Override
