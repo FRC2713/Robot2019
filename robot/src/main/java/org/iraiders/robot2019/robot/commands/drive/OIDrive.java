@@ -8,6 +8,8 @@ import org.iraiders.robot2019.robot.OI;
 import org.iraiders.robot2019.robot.Robot;
 import org.iraiders.robot2019.robot.subsystems.DriveSubsystem;
 
+import java.io.Writer;
+
 import static org.iraiders.robot2019.robot.commands.drive.EngageTurbo.REGULAR_SPEED;
 
 public class OIDrive extends Command {
@@ -22,6 +24,8 @@ public class OIDrive extends Command {
 
   private double joystickChangeLimit;
 
+  Writer writer;
+
   public OIDrive(DriveSubsystem driveSubsystem) {
     this.driveSubsystem = driveSubsystem;
     requires(driveSubsystem);
@@ -31,6 +35,12 @@ public class OIDrive extends Command {
   protected void initialize() {
     joystickChangeLimit = Robot.prefs.getDouble("JoystickChangeLimit", .09);
     driveSubsystem.roboDrive.setMaxOutput(Robot.prefs.getFloat("OIMaxSpeed", REGULAR_SPEED));
+    /*
+    try {
+      writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(Timer.getFPGATimestamp() + ".txt"), StandardCharsets.UTF_8));
+    } catch (IOException e) {
+      e.printStackTrace();
+    }*/
     //ultra.setAutomaticMode(true);
   }
 
@@ -58,6 +68,14 @@ public class OIDrive extends Command {
       measuredLeft = DriveSubsystem.slewLimit(xbox.getY(GenericHID.Hand.kLeft), lastLeftStickVal, joystickChangeLimit);
       measuredRight = DriveSubsystem.slewLimit(-xbox.getX(GenericHID.Hand.kRight), lastRightStickVal, joystickChangeLimit);
       driveSubsystem.roboDrive.arcadeDrive(-measuredLeft, measuredRight, true);
+
+      /*
+      try {
+        writer.write(Timer.getFPGATimestamp() + "measuredLeft" + measuredLeft + " measuredRight" + measuredRight + " rawXRight" + -xbox.getX(GenericHID.Hand.kRight));
+      } catch (IOException ex) {
+        ex.printStackTrace();
+      }
+      */
     }
 
     lastLeftStickVal = measuredLeft;
@@ -67,6 +85,7 @@ public class OIDrive extends Command {
   @Override
   protected void end() {
     driveSubsystem.roboDrive.stopMotor();
+    //try {writer.close();} catch (Exception ex) {/*ignore*/}
   }
 
   @Override
