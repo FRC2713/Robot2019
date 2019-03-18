@@ -85,7 +85,7 @@ public class DriveSubsystem extends Subsystem {
   public static double slewLimit(double target, double current, double increment) {
     increment = Math.abs(increment); // Professionally validating user input right here 👌
     double change = target - current;
-    if (Math.abs(current) > Math.abs(target)) return target; // Always slow down immediately for safety concerns
+    //if (Math.abs(current) > Math.abs(target)) return target; // Always slow down immediately for safety concerns
     if (change > increment) { change = increment; }
     else if (change < -increment) { change = -increment; }
     return current + change;

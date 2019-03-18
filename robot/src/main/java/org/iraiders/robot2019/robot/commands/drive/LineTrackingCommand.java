@@ -1,5 +1,6 @@
 package org.iraiders.robot2019.robot.commands.drive;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.command.Command;
@@ -26,6 +27,7 @@ public class LineTrackingCommand extends Command {
 
   @Override
   protected void initialize() {
+    DriverStation.reportWarning("Started LineTracking", false);
     driveSubsystem.roboDrive.setMaxOutput(Robot.prefs.getFloat("OIMaxSpeed", 1));
     joystickChangeLimit = Robot.prefs.getDouble("JoystickChangeLimit", .09);
 
@@ -108,6 +110,7 @@ public class LineTrackingCommand extends Command {
   @Override
   protected void end() {
     driveSubsystem.roboDrive.stopMotor();
+    DriverStation.reportWarning("Stopped LineTracking", false);
   }
 
   @Override
