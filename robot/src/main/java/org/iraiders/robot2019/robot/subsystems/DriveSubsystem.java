@@ -26,7 +26,7 @@ public class DriveSubsystem extends Subsystem {
   public DifferentialDrive roboDrive = new DifferentialDrive(frontLeft, frontRight);
 
   public DriveSubsystem() {
-    Robot.initializeSparkDefaults(frontLeft, frontRight, backLeft, backRight);
+    Robot.initializeSparkDefaults(frontLeft, backLeft);
     
     //backLeft.set(ControlMode.Follower, RobotMap.frontLeftTalonPort);
     //backRight.set(ControlMode.Follower, RobotMap.frontRightTalonPort);
