@@ -3,7 +3,7 @@ apply plugin: "edu.wpi.first.GradleRIO"
 
 def TEAM = 2713
 def ENTRY_CLASS = "org.iraiders.robot2019.robot.Main"
-def DEBUG = project.hasProperty('debugBuild')
+def DEBUG = System.getenv("debugBuild") == "true"
 def includeDesktopSupport = true // Enable Desktop Simulation support
 
 sourceCompatibility = 1.11

@@ -82,7 +82,6 @@ public class Robot extends TimedRobot {
     //  m_autonomousCommand.start();
     //}
 
-    startSubsystems();
     initSubsystemControl();
   }
   
@@ -101,7 +100,6 @@ public class Robot extends TimedRobot {
     //  m_autonomousCommand.cancel();
     //}
 
-    startSubsystems();
     initSubsystemControl();
   }
   
@@ -129,6 +127,8 @@ public class Robot extends TimedRobot {
     liftSubsystem.initControls();
     intakeSubsystem.initControls();
     climbSubsystem.initControls();
+
+    startSubsystems();
 
     subsystemControlsStarted = true;
   }
