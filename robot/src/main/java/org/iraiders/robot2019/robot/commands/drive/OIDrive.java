@@ -60,7 +60,7 @@ public class OIDrive extends Command {
 
     SmartDashboard.putBoolean("LeftLine", !driveSubsystem.leftLine.get());
     SmartDashboard.putBoolean("midLine", !driveSubsystem.midLine.get());
-    SmartDashboard.putBoolean("rightLine", !driveSubsystem.midLine.get());
+    SmartDashboard.putBoolean("rightLine", !driveSubsystem.rightLine.get());
 
     if (useTankInsteadOfBradford) {
       measuredLeft = DriveSubsystem.slewLimit(xbox.getY(GenericHID.Hand.kLeft), lastLeftStickVal, joystickChangeLimit);
