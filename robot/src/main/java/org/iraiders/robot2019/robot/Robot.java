@@ -82,7 +82,6 @@ public class Robot extends TimedRobot {
     //  m_autonomousCommand.start();
     //}
 
-    startSubsystems();
     initSubsystemControl();
   }
   
@@ -101,7 +100,6 @@ public class Robot extends TimedRobot {
     //  m_autonomousCommand.cancel();
     //}
 
-    startSubsystems();
     initSubsystemControl();
   }
   
@@ -123,6 +121,8 @@ public class Robot extends TimedRobot {
   }
 
   private void initSubsystemControl() {
+    startSubsystems();
+
     if (subsystemControlsStarted) return;
 
     driveSubsystem.initControls();

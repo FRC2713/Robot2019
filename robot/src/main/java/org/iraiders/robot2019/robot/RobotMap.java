@@ -17,7 +17,7 @@ public class RobotMap {
   public static final int MAX_MOTOR_FREE_AMPS = 80;
   public static final int MAX_MOTOR_STALL_AMPS = 40;
   public static final double DEADBAND = 0.04;
-  
+
   // Motors
   public static final int frontLeftTalonPort = 1;
   public static final int backLeftTalonPort = 2;
@@ -47,12 +47,13 @@ public class RobotMap {
 
 
   // Sensors
-  public static int ballIntakeLimitSwitchPort = 1;
-  public static int leftLineSensorPort = 2;
-  public static int midLineSensorPort = 3;
-  public static int rightLineSensorPort = 4;
+  public static int ballIntakeLimitSwitchPort = 0;
+  public static int leftLineSensorPort = 1;
+  public static int midLineSensorPort = 2;
+  public static int rightLineSensorPort = 3;
   public static int ultraSonicPing = 5;
   public static int ultraSonicEcho = 6;
+  public static int lineSenseAnalog = 7;
 
   // Buttons
   private static GenericHID buttonBox = OI.arcadeController;
@@ -73,5 +74,6 @@ public class RobotMap {
   public static JoystickButton unifiedTrackingToggle = new JoystickButton(xboxController, 6); // Right Xbox Bumper (5 is left)
   public static JoystickButton lineTrackingToggle = new JoystickButton(xboxController, 4); // Y button
   public static JoystickButton turboSpeed = new JoystickButton(xboxController, 5);
+  public static JoystickButton swapDriveMode = new JoystickButton(xboxController, 7);
 
 }

@@ -2,6 +2,7 @@ package org.iraiders.robot2019.robot.commands.drive;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.command.PIDCommand;
 import org.iraiders.robot2019.robot.OI;
@@ -24,6 +25,11 @@ public class VisionDrive extends PIDCommand {
     this.getPIDController().setInputRange(-22, 22); // Max and min yaw we have ever detected
     this.getPIDController().setOutputRange(-.75, .75); // 75% max speed
   }
+  
+  @Override
+  protected void initialize() {
+    DriverStation.reportWarning("Started VisionDrive command", false);
+  }
 
   @Override
   protected double returnPIDInput() {
@@ -36,6 +42,11 @@ public class VisionDrive extends PIDCommand {
   @Override
   protected void usePIDOutput(double output) {
     ds.roboDrive.arcadeDrive(OI.xBoxController.getY(GenericHID.Hand.kLeft), output, false);
+  }
+  
+  @Override
+  protected void end() {
+    DriverStation.reportWarning("Stopped VisionDrive command", false);
   }
 
   @Override

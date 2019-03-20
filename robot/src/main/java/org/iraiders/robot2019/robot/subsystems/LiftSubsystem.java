@@ -15,6 +15,8 @@ public class LiftSubsystem extends Subsystem {
   private final WPI_TalonSRX liftTalonTwo = new WPI_TalonSRX(RobotMap.liftTwoTalonPort);
   private final WPI_TalonSRX liftTalonThree = new WPI_TalonSRX(RobotMap.liftThreeTalonPort);
   private final WPI_TalonSRX liftTalonFour = new WPI_TalonSRX(RobotMap.liftFourTalonPort);
+  
+  private final LiftJoystickControl liftJoystickControl = new LiftJoystickControl(this);
 
   public LiftSubsystem() {
     Robot.initializeTalonDefaults(liftTalon, liftTalonTwo, liftTalonThree, liftTalonFour);
@@ -32,7 +34,7 @@ public class LiftSubsystem extends Subsystem {
   }
 
   public void initTeleop() {
-    new LiftJoystickControl(this).start();
+    liftJoystickControl.start();
     //new EncoderReporter(FeedbackDevice.CTRE_MagEncoder_Relative, liftTalon).start();
     //new LaserArduinoInterface().start();
   }
