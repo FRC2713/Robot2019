@@ -35,7 +35,7 @@ public class OIDrive extends Command {
   @Override
   protected void initialize() {
     DriverStation.reportWarning("Starting OIDrive", false);
-    joystickChangeLimit = Robot.prefs.getDouble("JoystickChangeLimit", .04);
+    joystickChangeLimit = Robot.prefs.getDouble("JoystickChangeLimit", .09);
     driveSubsystem.roboDrive.setMaxOutput(Robot.prefs.getFloat("OIMaxSpeed", REGULAR_SPEED));
     /*
     try {
@@ -51,25 +51,29 @@ public class OIDrive extends Command {
     double measuredLeft;
     double measuredRight;
 
-    if (xbox.getRawButtonPressed(8)) {
+    if (xbox.getRawButtonPressed(7)) {
       useTankInsteadOfBradford = !useTankInsteadOfBradford;
       lastRightStickVal = 0;
       lastLeftStickVal = 0;
       OI.rumbleController(xbox, .5, 500);
     }
 
-    SmartDashboard.putBoolean("LeftLine", !driveSubsystem.leftLine.get());
-    SmartDashboard.putBoolean("midLine", !driveSubsystem.midLine.get());
-    SmartDashboard.putBoolean("rightLine", !driveSubsystem.rightLine.get());
+    SmartDashboard.putBoolean("LeftLine", driveSubsystem.leftLine.getValue());
+    SmartDashboard.putBoolean("midLine", driveSubsystem.midLine.getValue());
+    SmartDashboard.putBoolean("rightLine", driveSubsystem.rightLine.getValue());
 
     if (useTankInsteadOfBradford) {
+      /*
       measuredLeft = DriveSubsystem.slewLimit(xbox.getY(GenericHID.Hand.kLeft), lastLeftStickVal, joystickChangeLimit);
       measuredRight = DriveSubsystem.slewLimit(xbox.getY(GenericHID.Hand.kRight), lastRightStickVal, joystickChangeLimit);
-      driveSubsystem.roboDrive.tankDrive(measuredLeft, measuredRight, true);
+      driveSubsystem.roboDrive.tankDrive(measuredLeft, measuredRight, true);*/
+      measuredLeft = xbox.getY(GenericHID.Hand.kLeft);
+      measuredRight = -xbox.getX(GenericHID.Hand.kRight);
+      driveSubsystem.roboDrive.curvatureDrive(measuredLeft, measuredRight, false);
     } else {
       measuredLeft = DriveSubsystem.slewLimit(xbox.getY(GenericHID.Hand.kLeft), lastLeftStickVal, joystickChangeLimit);
       measuredRight = DriveSubsystem.slewLimit(-xbox.getX(GenericHID.Hand.kRight), lastRightStickVal, joystickChangeLimit);
-      driveSubsystem.roboDrive.arcadeDrive(-measuredLeft, measuredRight, true);
+      driveSubsystem.roboDrive.arcadeDrive(measuredLeft, measuredRight, true);
 
       /*
       try {

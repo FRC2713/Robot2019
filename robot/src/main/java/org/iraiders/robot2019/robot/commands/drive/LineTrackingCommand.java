@@ -6,7 +6,6 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.iraiders.robot2019.robot.OI;
-import org.iraiders.robot2019.robot.Robot;
 import org.iraiders.robot2019.robot.subsystems.DriveSubsystem;
 
 public class LineTrackingCommand extends Command {
@@ -16,7 +15,7 @@ public class LineTrackingCommand extends Command {
   private DriveSubsystem driveSubsystem;
 
   public double snapScaleValue = 0;
-  private double joystickChangeLimit;
+  private double joystickChangeLimit = .09;
 
   public byte lineSensorByte = 0;
 
@@ -28,13 +27,9 @@ public class LineTrackingCommand extends Command {
   @Override
   protected void initialize() {
     DriverStation.reportWarning("Started LineTracking", false);
-    driveSubsystem.roboDrive.setMaxOutput(Robot.prefs.getFloat("OIMaxSpeed", 1));
-    joystickChangeLimit = Robot.prefs.getDouble("JoystickChangeLimit", .09);
 
     snapScaleValue = SmartDashboard.getNumber("Snap Scale Value", 0.62);
     SmartDashboard.putNumber("Snap Scale Value", snapScaleValue); // In case it's vanished from the dashboard
-
-    OI.rumbleController(xbox, .5, 500);
   }
 
   @Override
@@ -44,15 +39,15 @@ public class LineTrackingCommand extends Command {
 
     lineSensorByte = 0;
 
-    if (!driveSubsystem.leftLine.get()) {
+    if (!driveSubsystem.leftLine.getValue()) {
       lineSensorByte |= 1;
     }
 
-    if (!driveSubsystem.midLine.get()) {
+    if (!driveSubsystem.midLine.getValue()) {
       lineSensorByte |= 2;
     }
 
-    if (!driveSubsystem.rightLine.get()) {
+    if (!driveSubsystem.rightLine.getValue()) {
       lineSensorByte |= 4;
     }
 
@@ -96,8 +91,6 @@ public class LineTrackingCommand extends Command {
       default:
         break;
     }
-
-    measuredTurn *= -1; //make sure we are going the right direction
 
     measuredLeft = DriveSubsystem.slewLimit(xbox.getY(GenericHID.Hand.kLeft), lastLeftStickVal, joystickChangeLimit);
     measuredTurn = DriveSubsystem.slewLimit(measuredTurn, lastRightStickVal, joystickChangeLimit);

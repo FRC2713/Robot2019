@@ -2,9 +2,9 @@ package org.iraiders.robot2019.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import org.iraiders.robot2019.robot.LineSensorAnalog;
 import org.iraiders.robot2019.robot.Robot;
 import org.iraiders.robot2019.robot.RobotMap;
 import org.iraiders.robot2019.robot.commands.drive.*;
@@ -15,9 +15,12 @@ public class DriveSubsystem extends Subsystem {
   private final CANSparkMax frontRight = new CANSparkMax(RobotMap.frontRightTalonPort, CANSparkMaxLowLevel.MotorType.kBrushless);
   private final CANSparkMax backRight = new CANSparkMax(RobotMap.backRightTalonPort, CANSparkMaxLowLevel.MotorType.kBrushless);
 
-  public final DigitalInput leftLine = new DigitalInput(RobotMap.leftLineSensorPort);
+ /* public final DigitalInput leftLine = new DigitalInput(RobotMap.leftLineSensorPort);
   public final DigitalInput midLine = new DigitalInput(RobotMap.midLineSensorPort);
-  public final DigitalInput rightLine = new DigitalInput(RobotMap.rightLineSensorPort);
+  public final DigitalInput rightLine = new DigitalInput(RobotMap.rightLineSensorPort);*/
+ public final LineSensorAnalog leftLine = new LineSensorAnalog(RobotMap.leftLineSensorPort);
+  public final LineSensorAnalog midLine = new LineSensorAnalog(RobotMap.midLineSensorPort);
+  public final LineSensorAnalog rightLine = new LineSensorAnalog(RobotMap.rightLineSensorPort);
 
   private OIDrive oiDrive;
   public LineTrackingCommand lineTracking;
@@ -85,7 +88,7 @@ public class DriveSubsystem extends Subsystem {
   public static double slewLimit(double target, double current, double increment) {
     increment = Math.abs(increment); // Professionally validating user input right here 👌
     double change = target - current;
-    //if (Math.abs(current) > Math.abs(target)) return target; // Always slow down immediately for safety concerns
+    if (Math.abs(current) > Math.abs(target)) return target; // Always slow down immediately for safety concerns
     if (change > increment) { change = increment; }
     else if (change < -increment) { change = -increment; }
     return current + change;

@@ -122,7 +122,7 @@ public class Robot extends TimedRobot {
 
   private void initSubsystemControl() {
     startSubsystems();
-    
+
     if (subsystemControlsStarted) return;
 
     driveSubsystem.initControls();

@@ -6,8 +6,8 @@ import org.iraiders.robot2019.robot.subsystems.DriveSubsystem;
 
 public class EngageTurbo extends Command {
   private DriveSubsystem driveSubsystem;
-  private final float TURBO_SPEED = .75f;
-  public static final float REGULAR_SPEED = .40f;
+  private final float TURBO_SPEED = 1f;
+  public static final float REGULAR_SPEED = .8f;
 
   public EngageTurbo(DriveSubsystem driveSubsystem) {
     this.driveSubsystem = driveSubsystem;
