@@ -121,14 +121,14 @@ public class Robot extends TimedRobot {
   }
 
   private void initSubsystemControl() {
+    startSubsystems();
+    
     if (subsystemControlsStarted) return;
 
     driveSubsystem.initControls();
     liftSubsystem.initControls();
     intakeSubsystem.initControls();
     climbSubsystem.initControls();
-
-    startSubsystems();
 
     subsystemControlsStarted = true;
   }
