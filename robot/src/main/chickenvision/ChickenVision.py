@@ -365,155 +365,9 @@ def findBall(contours, image, centerX, centerY):
 
     return image
 
-# Draws Contours and finds center and yaw of vision targets
-# centerX is center x coordinate of image
-# centerY is center y coordinate of image
-def findTape(contours, image, centerX, centerY):
-  screenHeight, screenWidth, channels = image.shape;
-  # Seen vision targets (correct angle, adjacent to each other)
-  targets = []
-
-  if len(contours) >= 2:
-    # Sort contours by area size (biggest to smallest)
-    cntsSorted = sorted(contours, key=lambda x: cv2.contourArea(x), reverse=True)
-
-    biggestCnts = []
-    for cnt in cntsSorted:
-      # Get moments of contour; mainly for centroid
-      M = cv2.moments(cnt)
-      # Get convex hull (bounding polygon on contour)
-      hull = cv2.convexHull(cnt)
-      # Calculate Contour area
-      cntArea = cv2.contourArea(cnt)
-      # calculate area of convex hull
-      hullArea = cv2.contourArea(hull)
-      # Filters contours based off of size
-      if (checkContours(cntArea, hullArea)):
-        ### MOSTLY DRAWING CODE, BUT CALCULATES IMPORTANT INFO ###
-        # Gets the centeroids of contour
-        if M["m00"] != 0:
-          cx = int(M["m10"] / M["m00"])
-          cy = int(M["m01"] / M["m00"])
-        else:
-          cx, cy = 0, 0
-        if (len(biggestCnts) < 13):
-          #### CALCULATES ROTATION OF CONTOUR BY FITTING ELLIPSE ##########
-          rotation = getEllipseRotation(image, cnt)
-
-          # Calculates yaw of contour (horizontal position in degrees)
-          yaw = calculateYaw(cx, centerX, H_FOCAL_LENGTH)
-          # Calculates yaw of contour (horizontal position in degrees)
-          pitch = calculatePitch(cy, centerY, V_FOCAL_LENGTH)
-
-          ##### DRAWS CONTOUR######
-          # Gets rotated bounding rectangle of contour
-          rect = cv2.minAreaRect(cnt)
-          height = rect[1][1]
-          # Creates box around that rectangle
-          box = cv2.boxPoints(rect)
-          # Not exactly sure
-          box = np.int0(box)
-          # Draws rotated rectangle
-          cv2.drawContours(image, [box], 0, (23, 184, 80), 3)
-
-          # Calculates yaw of contour (horizontal position in degrees)
-          yaw = calculateYaw(cx, centerX, H_FOCAL_LENGTH)
-          # Calculates yaw of contour (horizontal position in degrees)
-          pitch = calculatePitch(cy, centerY, V_FOCAL_LENGTH)
-
-          # Draws a vertical white line passing through center of contour
-          cv2.line(image, (cx, screenHeight), (cx, 0), (255, 255, 255))
-          # Draws a white circle at center of contour
-          cv2.circle(image, (cx, cy), 6, (255, 255, 255))
-
-          # Draws the contours
-          cv2.drawContours(image, [cnt], 0, (23, 184, 80), 1)
-
-          # Gets the (x, y) and radius of the enclosing circle of contour
-          (x, y), radius = cv2.minEnclosingCircle(cnt)
-          # Rounds center of enclosing circle
-          center = (int(x), int(y))
-          # Rounds radius of enclosning circle
-          radius = int(radius)
-          # Makes bounding rectangle of contour
-          rx, ry, rw, rh = cv2.boundingRect(cnt)
-          boundingRect = cv2.boundingRect(cnt)
-          # Draws countour of bounding rectangle and enclosing circle in green
-          cv2.rectangle(image, (rx, ry), (rx + rw, ry + rh), (23, 184, 80), 1)
-
-          cv2.circle(image, center, radius, (23, 184, 80), 1)
-          distance = str(round(distanceToCameraFromHeight(height)))
-
-          cv2.putText(image, distance, (cx, cy), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 60))
-          # Appends important info to array
-          if not biggestCnts:
-            biggestCnts.append([cx, cy, rotation, distance])
-          elif [cx, cy, rotation] not in biggestCnts:
-            biggestCnts.append([cx, cy, rotation, distance])
-
-    # Sorts array based on coordinates (leftmost to rightmost) to make sure contours are adjacent
-    biggestCnts = sorted(biggestCnts, key=lambda x: x[0])
-    # Target Checking
-    for i in range(len(biggestCnts) - 1):
-      # Rotation of two adjacent contours
-      tilt1 = biggestCnts[i][2]
-      tilt2 = biggestCnts[i + 1][2]
-
-      # x coords of contours
-      cx1 = biggestCnts[i][0]
-      cx2 = biggestCnts[i + 1][0]
-
-      cy1 = biggestCnts[i][1]
-      cy2 = biggestCnts[i + 1][1]
-
-      # If contour angles are opposite
-      if (np.sign(tilt1) != np.sign(tilt2)):
-        centerOfTarget = math.floor((cx1 + cx2) / 2)
-        # ellipse negative tilt means rotated to right
-        # Note: if using rotated rect (min area rectangle)
-        #      negative tilt means rotated to left
-        # If left contour rotation is tilted to the left then skip iteration
-        if (tilt1 > 0):
-          if (cx1 < cx2):
-            continue
-        # If left contour rotation is tilted to the left then skip iteration
-        if (tilt2 > 0):
-          if (cx2 < cx1):
-            continue
-        # Angle from center of camera to target (what you should pass into gyro)
-        yawToTarget = calculateYaw(centerOfTarget, centerX, H_FOCAL_LENGTH)
-        # Make sure no duplicates, then append
-        print(biggestCnts[i][3], biggestCnts[i + 1][3])
-        if not targets:
-          targets.append([centerOfTarget, yawToTarget])
-        elif [centerOfTarget, yawToTarget] not in targets:
-          targets.append([centerOfTarget, yawToTarget])
-  # Check if there are targets seen
-  if (len(targets) > 0):
-    # pushes that it sees vision target to network tables
-    networkTable.putBoolean("tapeDetected", True)
-    # Sorts targets based on x coords to break any angle tie
-    targets.sort(key=lambda x: math.fabs(x[0]))
-    finalTarget = min(targets, key=lambda x: math.fabs(x[1]))
-    # Puts the yaw on screen
-    # Draws yaw of target + line where center of target is
-    cv2.putText(image, "Yaw: " + str(finalTarget[1]), (40, 40), cv2.FONT_HERSHEY_COMPLEX, .6,
-                (255, 255, 255))
-    cv2.line(image, (finalTarget[0], screenHeight), (finalTarget[0], 0), (255, 0, 0), 2)
-
-    currentAngleError = finalTarget[1]
-    # pushes vision target angle to network tables
-    networkTable.putNumber("tapeYaw", currentAngleError)
-  else:
-    # pushes that it deosn't see vision target to network tables
-    networkTable.putBoolean("tapeDetected", False)
-
-  cv2.line(image, (round(centerX), screenHeight), (round(centerX), 0), (255, 255, 255), 2)
-
-  return image
 
 def isCorrectShape(rect):
-  if rect[1][0] > 6 and rect[1][1] > 6:
+  if rect[1][0] > 2 and rect[1][1] > 2:
     correct_ratio = 5.5 / 2.0  # 5.5" by 2" tape strip
     err = 5
     width = rect[1][0]
@@ -538,9 +392,10 @@ def drawBox(frame, rect, color=(255,0,0)):
   cv2.drawContours(frame, [box], -1, color, 1)
 
 def anglesInRange(angle1,angle2):
+
   angles = (abs(angle1), abs(angle2))
   e = 15
-  if 151 + e > (sum(angles)) > 151 - e:
+  if 151 + e > (max(angles) + 90 - min(angles)) > 151 - e:
     return True
   else:
     return False
@@ -551,9 +406,8 @@ def ratiosInRange(ratio1,ratio2):
     return True
   else:
     return False
-def findTarget(rectborders, frame=-1):
 
-  pairs = []
+def findTarget(rectborders, frame=-1):
 
   for r in rectborders:
 
@@ -571,58 +425,55 @@ def findTarget(rectborders, frame=-1):
         if r == r2 or haveSameCoordinates(r, r2):
           break
         elif isCorrectShape(r2):
+          #print("close")
           width2 = r[1][0]
           height2 = r2[1][1]
 
           tilt2 = translateRotation(round(r2[2], 1), width2, height2)
-          if (np.sign(tilt1) != np.sign(tilt2)):
-            cx2 = r2[0][0]
-            cy2 = r2[0][1]
 
-            height2 = max(r2[1])
-            width2 = min(r2[1])
-            ratio2 = round(height2 / width2, 2)
-            avg_width = (width1 + width2) / 2
-            avg_height = (height1 + height2) / 2
 
-            offset = math.sqrt((cy2 - cy1) ** 2 + (cx2 - cx1) ** 2)
+          cx2 = r2[0][0]
+          cy2 = r2[0][1]
 
-            if offset < 7 * avg_width or offset < 2.3 * avg_height:
+          height2 = max(r2[1])
+          width2 = min(r2[1])
+          ratio2 = round(height2 / width2, 2)
+          avg_width = (width1 + width2) / 2
+          avg_height = (height1 + height2) / 2
 
-              if ratiosInRange(ratio1,ratio2):
+          offset = (cy2 - cy1) ** 2 + (cx2 - cx1) ** 2
 
-                if anglesInRange(tilt1, tilt2):
-                  #distance = distanceToCameraFromHeight(offset)
-                  tapes = [[cx1, height1], [cx2, height2]]
-                  tapes.sort(key=lambda x: math.fabs(x[0]))
-                  d1 = distanceToCameraFromHeight(tapes[0][1])
-                  d2 = distanceToCameraFromHeight(tapes[1][1])
-                  print(d1, d2)
-                  if(d1 > 4) and (d2 > 4):
-                    T = 11.313 #actual target width in inches
-                    ac = (d1**2 + d2**2 - T**2)/(2*d1*d2)
-                    if(ac>1):
-                      alpha = 0
-                    else:
-                      alpha = math.acos(ac)/2
-                    rat = 2*d1*math.sin(alpha)/T
-                    if rat > 1:
-                      rat = 1
-                    elif rat < -1:
-                      rat = -1
-                    theta = math.acos(rat)
-                    degrees = theta * 180 / math.pi
-                    print("correction: " + str(degrees) + " deg")
+          if offset < (7 * avg_width) ** 2 or offset < (2.3 * avg_height) ** 2 :
 
-                    distance = round((d1 + d2) / 2, 2)
-                    pairs.append([r,r2])
-                    #print(distance)
+            if ratiosInRange(ratio1,ratio2):
 
-                    centerOfTarget = ((cx1 + cx2) / 2, (cy1 + cy2) / 2)
-                    centerX = frame.shape[1]/2 - 0.5
-                    yawToTarget = calculateYaw(centerOfTarget[0], centerX, H_FOCAL_LENGTH)
-                    global updater
-                    updater.addValues(True,distance,degrees,yawToTarget)
+              if anglesInRange(tilt1, tilt2):
+                #distance = distanceToCameraFromHeight(offset)
+                tapes = [[cx1, height1], [cx2, height2]]
+                tapes.sort(key=lambda x: math.fabs(x[0]))
+                d1 = distanceToCameraFromHeight(tapes[0][1])
+                d2 = distanceToCameraFromHeight(tapes[1][1])
+                #print(d1, d2)
+                if(d1 > 4) and (d2 > 4):
+                  T = 11.313 #actual target width in inches
+                  ac = (d1**2 + d2**2 - T**2)/(2*d1*d2)
+                  if(ac>1):
+                    alpha = 0
+                  else:
+                    alpha = math.acos(ac)/2
+                  rat = 2*d1*math.sin(alpha)/T
+                  if rat > 1:
+                    rat = 1
+                  elif rat < -1:
+                    rat = -1
+                  theta = math.acos(rat)
+                  degrees = theta * 180 / math.pi
+                  distance = round((d1 + d2) / 2, 2)
+                  centerOfTarget = ((cx1 + cx2) / 2, (cy1 + cy2) / 2)
+                  centerX = frame.shape[1]/2 - 0.5
+                  yawToTarget = calculateYaw(centerOfTarget[0], centerX, H_FOCAL_LENGTH)
+                  global updater
+                  updater.addValues(distance,degrees,yawToTarget)
 
 
 
@@ -634,21 +485,21 @@ class NetworkTablesUpdater():
     self.table = networkTable
 
   def reset(self):
-    self.foundTarget = []
+    self.detections = 0
     self.distances = []
     self.correctionAngles = []
     self.yaws = []
 
-  def addValues(self, foundTarget, distances, correctionAngle, yaw):
-    self.foundTarget.append(foundTarget)
-    self.distances.append(distances)
+  def addValues(self, distance, correctionAngle, yaw):
+    self.detections += 1
+    self.distances.append(distance)
     self.correctionAngles.append(correctionAngle)
     self.yaws.append(yaw)
     self.update()
 
   def update(self): # tries to average last 6 values
     self.table.putNumber("VideoTimestamp", timestamp)
-    if self.foundTarget.count(True) > 5:
+    if self.detections > 9:
       if np.std(self.distances) < 3 and np.std(self.yaws) < 3:
         ca = np.average(self.correctionAngles)
         dist = np.average(self.distances)
@@ -657,7 +508,7 @@ class NetworkTablesUpdater():
         self.table.putNumber("distance", dist)
         self.table.putNumber("correctionAngle", ca)
         self.table.putBoolean("tapeDetected", True)
-        print("Target Found")
+        print("dist:", str(dist), "yaw:", str(yaw), "ca:", str(ca))
       else:
         self.table.putNumber("tapeYaw", 0)
         self.table.putNumber("distance", -1)
@@ -680,38 +531,15 @@ def checkBall(cntSize, cntAspectRatio):
 
 # Forgot how exactly it works, but it works!
 def translateRotation(rotation, width, height):
+  """
   if (width < height):
-    rotation = -1 * (rotation - 90)
+    pass
+    #rotation = 90 - rotation
+  """
   if (rotation > 90):
-    rotation = -1 * (rotation - 180)
+    rotation = 180 - rotation
   rotation *= -1
   return round(rotation)
-
-
-def calculateDistance(heightOfCamera, heightOfTarget, pitch):
-  heightOfTargetFromCamera = heightOfTarget - heightOfCamera
-
-  # Uses trig and pitch to find distance to target
-  '''
-  d = distance
-  h = height between camera and target
-  a = angle = pitch
-
-  tan a = h/d (opposite over adjacent)
-
-  d = h / tan a
-
-                       .
-                      /|
-                     / |
-                    /  |h
-                   /a  |
-            camera -----
-                     d
-  '''
-  distance = math.fabs(heightOfTargetFromCamera / math.tan(math.radians(pitch)))
-
-  return distance
 
 
 def distanceToCameraFromHeight(pixHeight):
