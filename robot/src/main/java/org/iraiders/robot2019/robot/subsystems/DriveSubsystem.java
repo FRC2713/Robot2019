@@ -8,6 +8,7 @@ import org.iraiders.robot2019.robot.LineSensorAnalog;
 import org.iraiders.robot2019.robot.Robot;
 import org.iraiders.robot2019.robot.RobotMap;
 import org.iraiders.robot2019.robot.commands.drive.*;
+import org.iraiders.robot2019.robot.commands.feedback.LineTrackingReporter;
 
 public class DriveSubsystem extends Subsystem {
   public final CANSparkMax frontLeft = new CANSparkMax(RobotMap.frontLeftTalonPort, CANSparkMaxLowLevel.MotorType.kBrushless);
@@ -26,6 +27,7 @@ public class DriveSubsystem extends Subsystem {
   public LineTrackingCommand lineTracking;
   public VisionDrive visionDrive;
   private VisionLineTrack visionLineTrack;
+  private LineTrackingReporter lineTrackingReporter;
   public DifferentialDrive roboDrive = new DifferentialDrive(frontLeft, frontRight);
 
   public DriveSubsystem() {
@@ -38,6 +40,7 @@ public class DriveSubsystem extends Subsystem {
     visionDrive = new VisionDrive(this);
     lineTracking = new LineTrackingCommand(this);
     visionLineTrack = new VisionLineTrack(this);
+    lineTrackingReporter = new LineTrackingReporter(this);
   }
 
   public void initTeleop() {
@@ -47,6 +50,7 @@ public class DriveSubsystem extends Subsystem {
     roboDrive.setDeadband(RobotMap.DEADBAND);
 
     oiDrive.start();
+    lineTrackingReporter.start();
   }
 
   public void initControls() {
