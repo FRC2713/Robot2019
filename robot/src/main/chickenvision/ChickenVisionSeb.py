@@ -527,7 +527,7 @@ class NetworkTablesUpdater():
 
 
 def generatePath(dist, yaw, ca):
-
+  pass
 
 # Checks if tape contours are worthy based off of contour area and (not currently) hull area
 def checkContours(cntSize, hullSize):
