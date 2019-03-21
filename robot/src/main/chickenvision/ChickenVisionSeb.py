@@ -504,6 +504,7 @@ class NetworkTablesUpdater():
 
     self.table.putNumber("VideoTimestamp", timestamp)
     if self.iter >= 12:
+      self.iter = 0
       if self.detections >= 10 and np.std(self.distances) < 3 and np.std(self.yaws) < 3:
         ca = np.average(self.correctionAngles)
         dist = np.average(self.distances)
