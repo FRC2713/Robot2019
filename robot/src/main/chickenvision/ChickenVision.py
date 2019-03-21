@@ -186,8 +186,8 @@ green_blur = 3
 orange_blur = 27
 
 # define range of green of retroreflective tape in HSV
-lower_green = np.array([74, 0, 168])
-upper_green = np.array([139, 178, 255])
+lower_green = np.array([55, 0, 245])
+upper_green = np.array([107, 95, 255])
 # define range of orange from cargo ball in HSV
 lower_orange = np.array([0, 193, 92])
 upper_orange = np.array([23, 255, 255])
@@ -386,13 +386,14 @@ def haveSameCoordinates(rect1, rect2):
   else:
     return False
 
-def drawBox(frame, rect, color=(255,0,0)):
+
+def drawBox(frame, rect, color=(255, 0, 0)):
   box = cv2.boxPoints(rect)
   box = np.array(box).reshape((-1, 1, 2)).astype(np.int32)
   cv2.drawContours(frame, [box], -1, color, 1)
 
-def anglesInRange(angle1,angle2):
 
+def anglesInRange(angle1, angle2):
   angles = (abs(angle1), abs(angle2))
   e = 15
   if 151 + e > (max(angles) + 90 - min(angles)) > 151 - e:
@@ -400,15 +401,16 @@ def anglesInRange(angle1,angle2):
   else:
     return False
 
-def ratiosInRange(ratio1,ratio2):
+
+def ratiosInRange(ratio1, ratio2):
   sim_ratio = 3
   if (ratio2 < ratio1 + sim_ratio and ratio2 > ratio1 - sim_ratio):
     return True
   else:
     return False
 
-def findTarget(rectborders, frame=-1):
 
+def findTarget(rectborders, frame=-1):
   for r in rectborders:
 
     if isCorrectShape(r):
@@ -425,12 +427,11 @@ def findTarget(rectborders, frame=-1):
         if r == r2 or haveSameCoordinates(r, r2):
           break
         elif isCorrectShape(r2):
-          #print("close")
+          # print("close")
           width2 = r[1][0]
           height2 = r2[1][1]
 
           tilt2 = translateRotation(round(r2[2], 1), width2, height2)
-
 
           cx2 = r2[0][0]
           cy2 = r2[0][1]
@@ -443,25 +444,25 @@ def findTarget(rectborders, frame=-1):
 
           offset = (cy2 - cy1) ** 2 + (cx2 - cx1) ** 2
 
-          if offset < (7 * avg_width) ** 2 or offset < (2.3 * avg_height) ** 2 :
+          if offset < (7 * avg_width) ** 2 or offset < (2.3 * avg_height) ** 2:
 
-            if ratiosInRange(ratio1,ratio2):
+            if ratiosInRange(ratio1, ratio2):
 
               if anglesInRange(tilt1, tilt2):
-                #distance = distanceToCameraFromHeight(offset)
+                # distance = distanceToCameraFromHeight(offset)
                 tapes = [[cx1, height1], [cx2, height2]]
                 tapes.sort(key=lambda x: math.fabs(x[0]))
                 d1 = distanceToCameraFromHeight(tapes[0][1])
                 d2 = distanceToCameraFromHeight(tapes[1][1])
-                #print(d1, d2)
-                if(d1 > 4) and (d2 > 4):
-                  T = 11.313 #actual target width in inches
-                  ac = (d1**2 + d2**2 - T**2)/(2*d1*d2)
-                  if(ac>1):
+                # print(d1, d2)
+                if (d1 > 4) and (d2 > 4):
+                  T = 11.313  # actual target width in inches
+                  ac = (d1 ** 2 + d2 ** 2 - T ** 2) / (2 * d1 * d2)
+                  if (ac > 1):
                     alpha = 0
                   else:
-                    alpha = math.acos(ac)/2
-                  rat = 2*d1*math.sin(alpha)/T
+                    alpha = math.acos(ac) / 2
+                  rat = 2 * d1 * math.sin(alpha) / T
                   if rat > 1:
                     rat = 1
                   elif rat < -1:
@@ -470,14 +471,13 @@ def findTarget(rectborders, frame=-1):
                   degrees = theta * 180 / math.pi
                   distance = round((d1 + d2) / 2, 2)
                   centerOfTarget = ((cx1 + cx2) / 2, (cy1 + cy2) / 2)
-                  centerX = frame.shape[1]/2 - 0.5
+                  centerX = frame.shape[1] / 2 - 0.5
                   yawToTarget = calculateYaw(centerOfTarget[0], centerX, H_FOCAL_LENGTH)
                   global updater
-                  updater.addValues(distance,degrees,yawToTarget)
-
-
+                  updater.addValues(distance, degrees, yawToTarget)
 
   return frame
+
 
 class NetworkTablesUpdater():
   def __init__(self, networkTable):
@@ -497,7 +497,7 @@ class NetworkTablesUpdater():
     self.yaws.append(yaw)
     self.update()
 
-  def update(self): # tries to average last 6 values
+  def update(self):  # tries to average last 6 values
     self.table.putNumber("VideoTimestamp", timestamp)
     if self.detections > 9:
       if np.std(self.distances) < 3 and np.std(self.yaws) < 3:
@@ -509,6 +509,7 @@ class NetworkTablesUpdater():
         self.table.putNumber("correctionAngle", ca)
         self.table.putBoolean("tapeDetected", True)
         print("dist:", str(dist), "yaw:", str(yaw), "ca:", str(ca))
+
       else:
         self.table.putNumber("tapeYaw", 0)
         self.table.putNumber("distance", -1)
@@ -517,6 +518,7 @@ class NetworkTablesUpdater():
       self.reset()
 
 
+def generatePath(dist, yaw, ca):
 
 
 # Checks if tape contours are worthy based off of contour area and (not currently) hull area
