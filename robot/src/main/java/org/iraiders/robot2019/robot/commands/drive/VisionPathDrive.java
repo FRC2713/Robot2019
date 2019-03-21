@@ -5,16 +5,17 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.command.Command;
 import org.iraiders.robot2019.robot.subsystems.DriveSubsystem;
 
-public class visionPathDrive extends Command {
+public class VisionPathDrive extends Command {
   private DriveSubsystem driveSubsystem;
   public NetworkTable vt = NetworkTableInstance.getDefault().getTable("ChickenVision");
   
   public boolean tapeDetected;
   
-  public visionPathDrive(DriveSubsystem driveSubsystem){
-    this.driveSubsystem = drivesubsystem;
+  public VisionPathDrive(DriveSubsystem driveSubsystem){
+    this.driveSubsystem = driveSubsystem;
     requires(driveSubsystem);
   }
+  
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
@@ -28,14 +29,15 @@ public class visionPathDrive extends Command {
     double turn;
     boolean targetFound = vt.getEntry("tapeDetected").getBoolean(false);
     double distance = vt.getEntry("distance").getDouble(-1);
-    speed = ;
+    //speed = ;
     
-    this.driveSubsystem.roboDrive.arcadeDrive(speed,turn);
+    //this.driveSubsystem.roboDrive.arcadeDrive(speed,turn);
   }
   
   // Called once after isFinished returns true
   @Override
   protected void end() {
+  
   }
   
   @Override

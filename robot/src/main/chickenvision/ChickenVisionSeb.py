@@ -11,17 +11,18 @@
 # This is meant to be used in conjuction with WPILib Raspberry Pi image: https://github.com/wpilibsuite/FRCVision-pi-gen
 # ----------------------------------------------------------------------------
 
-import cv2
 # import the necessary packages
 import datetime
 import json
 import math
-import numpy as np
 import sys
+from threading import Thread
+
+import cv2
+import numpy as np
 from cscore import CameraServer
 from networktables import NetworkTables
 from networktables import NetworkTablesInstance
-from threading import Thread
 
 BLACK = (0, 0, 0)
 RED = (0, 0, 255)
@@ -182,7 +183,7 @@ verticalView = math.atan(math.tan(diagonalView / 2) * (verticalAspect / diagonal
 H_FOCAL_LENGTH = image_width / (2 * math.tan((horizontalView / 2)))
 V_FOCAL_LENGTH = image_height / (2 * math.tan((verticalView / 2)))
 # blurs have to be odd
-green_blur = 3
+green_blur = 1
 orange_blur = 27
 
 # define range of green of retroreflective tape in HSV
