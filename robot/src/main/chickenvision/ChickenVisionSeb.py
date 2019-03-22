@@ -461,6 +461,8 @@ def findTarget(rectborders, frame=-1):
                   ac = (d1 ** 2 + d2 ** 2 - T ** 2) / (2 * d1 * d2)
                   if (ac > 1):
                     alpha = 0
+                  elif (ac < -1):
+                    alpha = math.pi
                   else:
                     alpha = math.acos(ac) / 2
                   rat = 2 * d1 * math.sin(alpha) / T
@@ -469,7 +471,13 @@ def findTarget(rectborders, frame=-1):
                   elif rat < -1:
                     rat = -1
                   theta = math.acos(rat)
-                  degrees = theta * 180 / math.pi
+
+                  degrees = (theta * 180 / math.pi)
+                  if d1 > d2:
+                    degrees = 90 - degrees
+                  else:
+                    degrees = 90 + degrees
+
                   distance = round((d1 + d2) / 2, 2)
                   centerOfTarget = ((cx1 + cx2) / 2, (cy1 + cy2) / 2)
                   centerX = frame.shape[1] / 2 - 0.5
@@ -485,6 +493,8 @@ class NetworkTablesUpdater():
   def __init__(self, networkTable):
     self.reset()
     self.table = networkTable
+    self.pathHandler = PathHandler(self)
+
 
   def reset(self):
     self.detections = 0
@@ -503,9 +513,9 @@ class NetworkTablesUpdater():
   def update(self):  # tries to average last 6 values
 
     self.table.putNumber("VideoTimestamp", timestamp)
-    if self.iter >= 12:
+    if self.iter >= 8:
       self.iter = 0
-      if self.detections >= 10 and np.std(self.distances) < 3 and np.std(self.yaws) < 3:
+      if self.detections >= 5 and np.std(self.distances) < 3 and np.std(self.yaws) < 3:
         ca = np.average(self.correctionAngles)
         dist = np.average(self.distances)
         yaw = np.average(self.yaws)
@@ -513,21 +523,87 @@ class NetworkTablesUpdater():
         self.table.putNumber("distance", dist)
         self.table.putNumber("correctionAngle", ca)
         self.table.putBoolean("tapeDetected", True)
+        if(not self.pathHandler.running):
+          self.pathHandler.start(dist,ca)
+        self.pathHandler.update(dist,yaw)
         print("dist:", str(dist), "yaw:", str(yaw), "ca:", str(ca))
-        self.reset()
+
       else:
         self.table.putNumber("tapeYaw", 0)
         self.table.putNumber("distance", -1)
         self.table.putNumber("correctionAngle", -1)
         self.table.putBoolean("tapeDetected", False)
+        self.pathHandler.end()
+        print("not found")
+      self.reset()
     self.iter+=1
 
+  def sendPathCommand(self, speed, rotation, stage=0):
+    self.table.putBoolean("followPath", True)
+    self.table.putNumber("pathSpeed", speed)
+    self.table.putNumber("pathRotation", rotation)
+    self.table.putNumber("pathStage", stage)
+
+  def endPath(self):
+    self.table.putBoolean("followPath", False)
+    self.table.putNumber("pathSpeed", -1)
+    self.table.putNumber("pathRotation", -1)
+    self.table.putNumber("pathStage", -1)
 
 
 
 
-def generatePath(dist, yaw, ca):
-  pass
+class PathHandler():
+  def __init__(self, updater):
+    self.running = False
+    self.stage = -1
+    self.speed = 0
+    self.rotation = 0
+    self.bankingLeft = True
+    self.minSpeed = 0
+    self.updater = updater
+  def start(self, dist, ca):
+    self.running = True
+    self.speed = self.minSpeed + dist / 50
+    if(ca < 90):
+      #Rotate robot counter clockwise
+      self.rotation = -1
+      self.bankingLeft = True
+    elif(ca > 90):
+      #Rotate robot clockwise
+      self.rotation = 1
+      self.bankingLeft = False
+  def update(self, dist=-1, yaw=-1):
+    if dist > 16: # after 16 inches, target is not visible
+      if self.bankingLeft:
+        if yaw >= 20:
+          #bank Right
+          self.rotation = 0.2
+        elif yaw <= 19:
+          self.rotation = -0.2
+        else:
+          self.rotaion = 0
+      else:
+        if yaw <= -20:
+          #bank Right
+          self.rotation = -0.2
+        elif yaw >= -19:
+          self.rotation = 0.2
+        else:
+          self.rotaion = 0
+
+      self.speed = self.minSpeed + dist / 50
+      self.updater.sendPathCommand(self.speed, self.rotation, 0)
+    else:
+      self.speed = self.minSpeed
+      self.updater.sendPathCommand(self.speed, 0, 1)
+      self.end()
+
+  def end(self):
+    self.updater.endPath()
+    self.running = False
+
+
 
 # Checks if tape contours are worthy based off of contour area and (not currently) hull area
 def checkContours(cntSize, hullSize):
