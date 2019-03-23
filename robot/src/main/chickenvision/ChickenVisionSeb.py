@@ -493,7 +493,6 @@ class NetworkTablesUpdater():
   def __init__(self, networkTable):
     self.reset()
     self.table = networkTable
-    self.pathHandler = PathHandler(self)
 
 
   def reset(self):
@@ -523,9 +522,16 @@ class NetworkTablesUpdater():
         self.table.putNumber("distance", dist)
         self.table.putNumber("correctionAngle", ca)
         self.table.putBoolean("tapeDetected", True)
-        if(not self.pathHandler.running):
-          self.pathHandler.start(dist,ca)
-        self.pathHandler.update(dist,yaw)
+        if (ca < 90):
+          # Rotate robot counter clockwise
+          self.rotation = -1
+          self.bankingLeft = True
+        elif (ca > 90):
+          # Rotate robot clockwise
+          self.rotation = 1
+          self.bankingLeft = False
+        self.table.putBoolean("bankingLeft", self.bankingLeft)
+
         print("dist:", str(dist), "yaw:", str(yaw), "ca:", str(ca))
 
       else:
@@ -533,77 +539,9 @@ class NetworkTablesUpdater():
         self.table.putNumber("distance", -1)
         self.table.putNumber("correctionAngle", -1)
         self.table.putBoolean("tapeDetected", False)
-        self.pathHandler.end()
         print("not found")
       self.reset()
     self.iter+=1
-
-  def sendPathCommand(self, speed, rotation, stage=0):
-    self.table.putBoolean("followPath", True)
-    self.table.putNumber("pathSpeed", speed)
-    self.table.putNumber("pathRotation", rotation)
-    self.table.putNumber("pathStage", stage)
-
-  def endPath(self):
-    self.table.putBoolean("followPath", False)
-    self.table.putNumber("pathSpeed", -1)
-    self.table.putNumber("pathRotation", -1)
-    self.table.putNumber("pathStage", -1)
-
-
-
-
-class PathHandler():
-  def __init__(self, updater):
-    self.running = False
-    self.stage = -1
-    self.speed = 0
-    self.rotation = 0
-    self.bankingLeft = True
-    self.minSpeed = 0
-    self.updater = updater
-  def start(self, dist, ca):
-    self.running = True
-    self.speed = self.minSpeed + dist / 50
-    if(ca < 90):
-      #Rotate robot counter clockwise
-      self.rotation = -1
-      self.bankingLeft = True
-    elif(ca > 90):
-      #Rotate robot clockwise
-      self.rotation = 1
-      self.bankingLeft = False
-  def update(self, dist=-1, yaw=-1):
-    if dist > 16: # after 16 inches, target is not visible
-      if self.bankingLeft:
-        if yaw >= 20:
-          #bank Right
-          self.rotation = 0.2
-        elif yaw <= 19:
-          self.rotation = -0.2
-        else:
-          self.rotaion = 0
-      else:
-        if yaw <= -20:
-          #bank Right
-          self.rotation = -0.2
-        elif yaw >= -19:
-          self.rotation = 0.2
-        else:
-          self.rotaion = 0
-
-      self.speed = self.minSpeed + dist / 50
-      self.updater.sendPathCommand(self.speed, self.rotation, 0)
-    else:
-      self.speed = self.minSpeed
-      self.updater.sendPathCommand(self.speed, 0, 1)
-      self.end()
-
-  def end(self):
-    self.updater.endPath()
-    self.running = False
-
-
 
 # Checks if tape contours are worthy based off of contour area and (not currently) hull area
 def checkContours(cntSize, hullSize):

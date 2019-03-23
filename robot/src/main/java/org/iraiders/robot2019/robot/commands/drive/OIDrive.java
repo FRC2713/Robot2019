@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.iraiders.robot2019.robot.OI;
 import org.iraiders.robot2019.robot.Robot;
 import org.iraiders.robot2019.robot.subsystems.DriveSubsystem;
@@ -57,10 +56,6 @@ public class OIDrive extends Command {
       lastLeftStickVal = 0;
       OI.rumbleController(xbox, .5, 500);
     }
-
-    SmartDashboard.putBoolean("LeftLine", driveSubsystem.leftLine.getValue());
-    SmartDashboard.putBoolean("midLine", driveSubsystem.midLine.getValue());
-    SmartDashboard.putBoolean("rightLine", driveSubsystem.rightLine.getValue());
 
     if (useTankInsteadOfBradford) {
       /*
