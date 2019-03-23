@@ -476,6 +476,7 @@ def findTarget(rectborders, frame=-1):
                   yawToTarget = calculateYaw(centerOfTarget[0], centerX, H_FOCAL_LENGTH)
                   global updater
                   updater.addValues(distance, degrees, yawToTarget)
+  updater.update()
 
   return frame
 
@@ -490,18 +491,21 @@ class NetworkTablesUpdater():
     self.distances = []
     self.correctionAngles = []
     self.yaws = []
+    self.iter = 0
 
   def addValues(self, distance, correctionAngle, yaw):
     self.detections += 1
     self.distances.append(distance)
     self.correctionAngles.append(correctionAngle)
     self.yaws.append(yaw)
-    self.update()
+
 
   def update(self):  # tries to average last 6 values
+
     self.table.putNumber("VideoTimestamp", timestamp)
-    if self.detections > 9:
-      if np.std(self.distances) < 3 and np.std(self.yaws) < 3:
+    if self.iter >= 12:
+      self.iter = 0
+      if self.detections >= 10 and np.std(self.distances) < 3 and np.std(self.yaws) < 3:
         ca = np.average(self.correctionAngles)
         dist = np.average(self.distances)
         yaw = np.average(self.yaws)
@@ -510,17 +514,20 @@ class NetworkTablesUpdater():
         self.table.putNumber("correctionAngle", ca)
         self.table.putBoolean("tapeDetected", True)
         print("dist:", str(dist), "yaw:", str(yaw), "ca:", str(ca))
-
+        self.reset()
       else:
         self.table.putNumber("tapeYaw", 0)
         self.table.putNumber("distance", -1)
         self.table.putNumber("correctionAngle", -1)
         self.table.putBoolean("tapeDetected", False)
-      self.reset()
+    self.iter+=1
+
+
+
 
 
 def generatePath(dist, yaw, ca):
-
+  pass
 
 # Checks if tape contours are worthy based off of contour area and (not currently) hull area
 def checkContours(cntSize, hullSize):
