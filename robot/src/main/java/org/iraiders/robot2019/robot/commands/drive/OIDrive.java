@@ -67,7 +67,7 @@ public class OIDrive extends Command {
       driveSubsystem.roboDrive.curvatureDrive(-measuredLeft, measuredRight, false);
     } else {
       measuredLeft = DriveSubsystem.slewLimit(xbox.getY(GenericHID.Hand.kLeft), lastLeftStickVal, joystickChangeLimit);
-      measuredRight = DriveSubsystem.slewLimit(-xbox.getX(GenericHID.Hand.kRight), lastRightStickVal, joystickChangeLimit);
+      measuredRight = DriveSubsystem.slewLimit(xbox.getX(GenericHID.Hand.kRight), lastRightStickVal, joystickChangeLimit);
       driveSubsystem.roboDrive.arcadeDrive(-measuredLeft, measuredRight, true);
 
       /*
