@@ -6,6 +6,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import org.iraiders.robot2019.robot.Robot;
 import org.iraiders.robot2019.robot.RobotMap;
+import org.iraiders.robot2019.robot.commands.lift.LiftEncoderMonitor;
 import org.iraiders.robot2019.robot.commands.lift.LiftJoystickControl;
 
 //Subsystem for elevator arm
@@ -17,6 +18,7 @@ public class LiftSubsystem extends Subsystem {
   private final WPI_TalonSRX liftTalonFour = new WPI_TalonSRX(RobotMap.liftFourTalonPort);
   
   private final LiftJoystickControl liftJoystickControl = new LiftJoystickControl(this);
+  private final LiftEncoderMonitor liftEncoderMonitor = new LiftEncoderMonitor(this);
 
   public LiftSubsystem() {
     Robot.initializeTalonDefaults(liftTalon, liftTalonTwo, liftTalonThree, liftTalonFour);
@@ -34,6 +36,7 @@ public class LiftSubsystem extends Subsystem {
   }
 
   public void initTeleop() {
+    liftEncoderMonitor.start();
     liftJoystickControl.start();
     //new EncoderReporter(FeedbackDevice.CTRE_MagEncoder_Relative, liftTalon).start();
     //new LaserArduinoInterface().start();

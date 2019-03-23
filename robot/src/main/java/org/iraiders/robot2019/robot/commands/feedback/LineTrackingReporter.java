@@ -10,9 +10,11 @@ import org.iraiders.robot2019.robot.subsystems.DriveSubsystem;
 public class LineTrackingReporter extends Command {
   private DriveSubsystem driveSubsystem;
   private UltraSonicSensorAnalog ultraSonicSensorAnalog;
+
   public LineTrackingReporter(DriveSubsystem driveSubsystem) {
     this.driveSubsystem = driveSubsystem;
     ultraSonicSensorAnalog = new UltraSonicSensorAnalog(RobotMap.ultrasonicAnalog);
+    this.setRunWhenDisabled(true);
   }
 
   @Override
