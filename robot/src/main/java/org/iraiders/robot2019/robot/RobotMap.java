@@ -47,13 +47,14 @@ public class RobotMap {
 
 
   // Sensors
-  public static int ballIntakeLimitSwitchPort = 0;
+ public static int ballIntakeLimitSwitchPort = 0;
   public static int leftLineSensorPort = 1;
   public static int midLineSensorPort = 2;
   public static int rightLineSensorPort = 3;
-  public static int ultraSonicPing = 5;
-  public static int ultraSonicEcho = 6;
-  public static int lineSenseAnalog = 7;
+ // public static int ultraSonicPing = 5;
+ // public static int ultraSonicEcho = 6;
+  //public static int lineSenseAnalog = 7;
+  public static int ultrasonicAnalog = 0;
 
   // Buttons
   private static GenericHID buttonBox = OI.arcadeController;

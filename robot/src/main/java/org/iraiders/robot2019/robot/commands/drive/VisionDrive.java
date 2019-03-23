@@ -28,6 +28,7 @@ public class VisionDrive extends PIDCommand {
   
   @Override
   protected void initialize() {
+
     DriverStation.reportWarning("Started VisionDrive command", false);
   }
 
