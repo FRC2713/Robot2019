@@ -76,5 +76,6 @@ public class RobotMap {
   public static JoystickButton lineTrackingToggle = new JoystickButton(xboxController, 4); // Y button
   public static JoystickButton turboSpeed = new JoystickButton(xboxController, 5);
   public static JoystickButton swapDriveMode = new JoystickButton(xboxController, 7);
+  public static JoystickButton pidLineToggle = new JoystickButton(xboxController, 3);
 
 }

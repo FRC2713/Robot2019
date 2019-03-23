@@ -35,7 +35,7 @@ public class OIDrive extends Command {
   @Override
   protected void initialize() {
     DriverStation.reportWarning("Starting OIDrive", false);
-    joystickChangeLimit = Robot.prefs.getDouble("JoystickChangeLimit", .09);
+    joystickChangeLimit = Robot.prefs.getDouble("JoystickChangeLimit", .04);
     driveSubsystem.roboDrive.setMaxOutput(Robot.prefs.getFloat("OIMaxSpeed", REGULAR_SPEED));
     /*
     try {
@@ -69,11 +69,11 @@ public class OIDrive extends Command {
       driveSubsystem.roboDrive.tankDrive(measuredLeft, measuredRight, true);*/
       measuredLeft = xbox.getY(GenericHID.Hand.kLeft);
       measuredRight = -xbox.getX(GenericHID.Hand.kRight);
-      driveSubsystem.roboDrive.curvatureDrive(measuredLeft, measuredRight, false);
+      driveSubsystem.roboDrive.curvatureDrive(-measuredLeft, measuredRight, false);
     } else {
       measuredLeft = DriveSubsystem.slewLimit(xbox.getY(GenericHID.Hand.kLeft), lastLeftStickVal, joystickChangeLimit);
       measuredRight = DriveSubsystem.slewLimit(-xbox.getX(GenericHID.Hand.kRight), lastRightStickVal, joystickChangeLimit);
-      driveSubsystem.roboDrive.arcadeDrive(measuredLeft, measuredRight, true);
+      driveSubsystem.roboDrive.arcadeDrive(-measuredLeft, measuredRight, true);
 
       /*
       try {

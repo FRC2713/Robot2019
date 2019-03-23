@@ -1,14 +1,15 @@
 package org.iraiders.robot2019.robot.commands.drive;
 
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.PIDCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.iraiders.robot2019.robot.OI;
 import org.iraiders.robot2019.robot.subsystems.DriveSubsystem;
 
-public class LineTrackingCommand extends Command {
+public class PIDLineTracking extends PIDCommand {
   private XboxController xbox = OI.xBoxController;
   private double lastLeftStickVal = 0;
   private double lastRightStickVal = 0;
@@ -19,9 +20,15 @@ public class LineTrackingCommand extends Command {
 
   public byte lineSensorByte = 0;
 
-  public LineTrackingCommand(DriveSubsystem driveSubsystem) {
+  public PIDLineTracking(DriveSubsystem driveSubsystem) {
+    super(.03,0,0);
     this.driveSubsystem = driveSubsystem;
     requires(driveSubsystem);
+
+    this.setSetpoint(0);
+    this.getPIDController().setInputRange(-1,1);
+    this.getPIDController().setOutputRange(-1,1);
+
   }
 
   @Override
@@ -35,9 +42,10 @@ public class LineTrackingCommand extends Command {
   }
 
   @Override
-  protected void execute() {
+  protected double returnPIDInput() {
     double measuredLeft;
     double measuredTurn = 0;
+    double measuredError = 0;
 
     lineSensorByte = 0;
 
@@ -53,54 +61,56 @@ public class LineTrackingCommand extends Command {
       lineSensorByte |= 4;
     }
 
-    if (snapScaleValue == 0) return; // Don't move if disabled
+    if (snapScaleValue == 0) return 0; // Don't move if disabled
 
 
     switch (lineSensorByte) {
       // No line sensors are detected
       case 0:
-        measuredTurn = 0;
+        measuredError = 0;
         break;
       // Just right line sensor detected
       case 4:
-        measuredTurn = snapScaleValue;
+        measuredError = 1;
         break;
       // Just middle line sensor detected (error)
       case 2:
-        measuredTurn = 0;
+        measuredError = 0;
         break;
       // Middle and right line sensor detected
       case 6:
-        measuredTurn = snapScaleValue / 2;
+        measuredError = 1 / 2;
         break;
       // left line sensor detected
       case 1:
-        measuredTurn = -snapScaleValue;
+        measuredError = -1;
         break;
       // Left and right line sensors detected (error)
       case 5:
-        measuredTurn = 0;
+        measuredError = 0;
         break;
       // Left and middle sensors detected
       case 3:
-        measuredTurn = -snapScaleValue / 2;
+        measuredError = -1 / 2;
         break;
-
       // All line sensors detected
       case 7:
-        measuredTurn = 0;
+        measuredError = 0;
         break;
       default:
         break;
     }
 
-    measuredLeft = DriveSubsystem.slewLimit(xbox.getY(GenericHID.Hand.kLeft), lastLeftStickVal, joystickChangeLimit);
-    measuredTurn = DriveSubsystem.slewLimit(measuredTurn, lastRightStickVal, joystickChangeLimit);
-    driveSubsystem.roboDrive.arcadeDrive(measuredLeft, measuredTurn, true);
+    return measuredError;
 
-    lastLeftStickVal = measuredLeft;
-    lastRightStickVal = measuredTurn;
   }
+
+  @Override
+  protected void usePIDOutput(double output) {
+    driveSubsystem.roboDrive.arcadeDrive(OI.xBoxController.getX(GenericHID.Hand.kLeft), output * snapScaleValue, false);
+
+  }
+
 
   @Override
   protected void end() {
@@ -113,3 +123,4 @@ public class LineTrackingCommand extends Command {
     return false;
   }
 }
+
