@@ -12,6 +12,7 @@ import org.iraiders.robot2019.robot.Robot;
 import org.iraiders.robot2019.robot.RobotMap;
 import org.iraiders.robot2019.robot.commands.SimpleMotorCommand;
 import org.iraiders.robot2019.robot.commands.climb.ClimbFollowDrive;
+import org.iraiders.robot2019.robot.commands.feedback.ClimberEncoderReporter;
 
 import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.kForward;
 import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.kReverse;
@@ -24,6 +25,7 @@ public class ClimbSubsystem extends Subsystem {
   private final DoubleSolenoid climbPiston = OI.getDoubleSolenoid(RobotMap.climbFrontOpenNodeId, RobotMap.climbFrontCloseNodeId);
 
   private ClimbFollowDrive climbFollowDrive = new ClimbFollowDrive(Robot.driveSubsystem, this);
+  private ClimberEncoderReporter climberEncoderReporter = new ClimberEncoderReporter(this);
 
   public void initTeleop() {
     //DriverStation.reportWarning("Default SparkMax Stall & Free current limit:" + leftLArm.getParameterInt(CANSparkMaxLowLevel.ConfigParameter.kSmartCurrentStallLimit) + " & " + leftLArm.getParameterInt(CANSparkMaxLowLevel.ConfigParameter.kSmartCurrentFreeLimit), false);
@@ -50,6 +52,8 @@ public class ClimbSubsystem extends Subsystem {
 
     RobotMap.climberLevelButton.whenPressed(new InstantCommand(() -> this.climbPiston.set(this.climbPiston.get() == kForward ? kReverse : kForward)));
     RobotMap.climberLevelButton.toggleWhenPressed(climbFollowDrive);
+
+    climberEncoderReporter.start();
   }
 
   @Override
