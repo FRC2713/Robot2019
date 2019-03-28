@@ -6,8 +6,11 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import org.iraiders.robot2019.robot.Robot;
 import org.iraiders.robot2019.robot.RobotMap;
+import org.iraiders.robot2019.robot.commands.lift.LiftControlCommand;
 import org.iraiders.robot2019.robot.commands.lift.LiftEncoderMonitor;
 import org.iraiders.robot2019.robot.commands.lift.LiftJoystickControl;
+
+import static org.iraiders.robot2019.robot.RobotMap.liftPositionControl;
 
 //Subsystem for elevator arm
 public class LiftSubsystem extends Subsystem {
@@ -33,6 +36,7 @@ public class LiftSubsystem extends Subsystem {
   public void initControls(){
     //liftUpButton.whileHeld(new SimpleMotorCommand(liftTalon,-.25));
     //liftDownButton.whileHeld(new SimpleMotorCommand(liftTalon,.25));
+    liftPositionControl.whileHeld(new LiftControlCommand(this, LiftPosition.HATCH));
   }
 
   public void initTeleop() {
@@ -49,6 +53,6 @@ public class LiftSubsystem extends Subsystem {
 
 
   public enum LiftPosition {
-    STARTING, ROCKET_LOW, ROCKET_MID, ROCKET_HIGH
+    STARTING, ROCKET_LOW, ROCKET_MID, ROCKET_HIGH, HATCH
   }
 }

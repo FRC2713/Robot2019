@@ -13,9 +13,15 @@ public class LiftControlCommand extends PIDCommand {
     motor = liftSubsystem.liftTalon;
 
     // TODO Properly configure PID targets and ranges
-    this.setSetpoint(0);
+    switch (position) {
+      case HATCH:
+        this.setSetpoint(400);
+        break;
+      default:
+        break;
+    }
     this.getPIDController().setContinuous(false);
-    this.getPIDController().setInputRange(0,1000);
+    this.getPIDController().setInputRange(0,10000);
     this.getPIDController().setPercentTolerance(5);
   }
 
@@ -36,6 +42,6 @@ public class LiftControlCommand extends PIDCommand {
 
   @Override
   protected boolean isFinished() {
-    return this.getPIDController().onTarget();
+    return false;
   }
 }

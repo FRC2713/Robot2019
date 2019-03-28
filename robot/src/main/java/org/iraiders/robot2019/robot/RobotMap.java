@@ -66,6 +66,7 @@ public class RobotMap {
   public static JoystickButton climberArmButton = new JoystickButton(joystick, 8);
   public static JoystickButton climberLevelButton = new JoystickButton(joystick, 9);
   public static JoystickButton  climbTurtle = new JoystickButton(joystick, 11);
+  public static JoystickButton liftPositionControl = new JoystickButton(joystick, 10);
 
   public static JoystickButton ballIntakeMotorOutButton = new JoystickButton(joystick, 1);
   public static JoystickButton ballIntakeJointToggleButton = new JoystickButton(joystick, 3);
