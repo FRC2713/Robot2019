@@ -54,7 +54,8 @@ public class ClimbSubsystem extends Subsystem {
     RobotMap.climberLevelButton.whenPressed(new InstantCommand(() -> this.climbPiston.set(this.climbPiston.get() == kForward ? kReverse : kForward)));
     RobotMap.climberLevelButton.toggleWhenPressed(climbFollowDrive);
 
-    RobotMap.climberArmButton.whileHeld(new ClimbArmControl(this));
+    RobotMap.climberArmButton.whileHeld(new ClimbArmControl(this, leftLArm, false));
+    RobotMap.climberArmButton.whileHeld(new ClimbArmControl(this, rightLArm, true));
 
     climberEncoderReporter.start();
   }
