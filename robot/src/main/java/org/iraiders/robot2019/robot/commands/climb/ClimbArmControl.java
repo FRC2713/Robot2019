@@ -20,7 +20,7 @@ public class ClimbArmControl extends PIDCommand {
   protected double returnPIDInput() {
     DriverStation.reportWarning(String.valueOf(cs.leftLArm.getEncoder().getPosition()), false);
     this.setSetpoint(OI.arcadeController.getZ());
-    return (cs.leftLArm.getEncoder().getPosition()/500)-1;
+    return ((cs.leftLArm.getEncoder().getPosition()+5)/47.5)-1;
   }
 
   @Override
