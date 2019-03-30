@@ -1,6 +1,5 @@
 package org.iraiders.robot2019.robot.commands.climb;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.PIDCommand;
 import org.iraiders.robot2019.robot.OI;
 import org.iraiders.robot2019.robot.RobotMap;
@@ -12,15 +11,14 @@ public class ClimbArmControl extends PIDCommand {
   public ClimbArmControl(ClimbSubsystem climbSubsystem) {
     super(.05, 0, 0); // TODO Tune this and max & min range
     this.cs = climbSubsystem;
-    this.setInputRange(0, 1);
+    this.setInputRange(-1, 1);
     this.getPIDController().setPercentTolerance(5);
   }
 
   @Override
   protected double returnPIDInput() {
-    DriverStation.reportWarning(String.valueOf(cs.leftLArm.getEncoder().getPosition()), false);
-    this.setSetpoint((OI.arcadeController.getZ()+1)/2);
-    return ((cs.leftLArm.getEncoder().getPosition()+5)/95);
+    this.setSetpoint(OI.arcadeController.getZ());
+    return ((cs.leftLArm.getEncoder().getPosition()+5)/(95.0/2.0))-1;
   }
 
   @Override
