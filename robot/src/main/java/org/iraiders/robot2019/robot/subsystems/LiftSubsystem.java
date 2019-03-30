@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.iraiders.robot2019.robot.Robot;
 import org.iraiders.robot2019.robot.RobotMap;
 import org.iraiders.robot2019.robot.commands.lift.LiftControlCommand;
@@ -24,13 +25,18 @@ public class LiftSubsystem extends Subsystem {
   private final LiftEncoderMonitor liftEncoderMonitor = new LiftEncoderMonitor(this);
 
   public LiftSubsystem() {
+    this.setName("LiftSubsystem");
+    liftTalon.setName(this.getName(), "LiftMaster");
+    liftTalonTwo.setName(this.getName(), "LiftTwo");
+    liftTalonThree.setName(this.getName(), "LiftThree");
+    liftTalonFour.setName(this.getName(), "LiftFour");
+    
     Robot.initializeTalonDefaults(liftTalon, liftTalonTwo, liftTalonThree, liftTalonFour);
+    SmartDashboard.putNumber("Lift Master Volts", liftTalon.getMotorOutputVoltage());
     liftTalon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
     liftTalonTwo.set(ControlMode.Follower, RobotMap.liftOneTalonPort);
     liftTalonThree.set(ControlMode.Follower, RobotMap.liftOneTalonPort);
     liftTalonFour.set(ControlMode.Follower, RobotMap.liftOneTalonPort);
-    
-    liftTalon.setName("LiftMaster");
   }
 
   public void initControls(){

@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import org.iraiders.robot2019.robot.subsystems.ClimbSubsystem;
 import org.iraiders.robot2019.robot.subsystems.DriveSubsystem;
 import org.iraiders.robot2019.robot.subsystems.IntakeSubsystem;
@@ -138,6 +139,7 @@ public class Robot extends TimedRobot {
       talon.enableCurrentLimit(true);
       talon.configContinuousCurrentLimit(RobotMap.MAX_MOTOR_STALL_AMPS);
       talon.configPeakCurrentLimit(RobotMap.MAX_MOTOR_FREE_AMPS);
+      LiveWindow.add(talon);
     }
   }
   
