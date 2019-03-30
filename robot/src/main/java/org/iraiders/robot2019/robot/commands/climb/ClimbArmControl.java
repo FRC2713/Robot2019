@@ -18,7 +18,9 @@ public class ClimbArmControl extends PIDCommand {
   @Override
   protected double returnPIDInput() {
     this.setSetpoint(OI.arcadeController.getZ());
-    return ((cs.leftLArm.getEncoder().getPosition()+5)/(95.0/2.0))-1;
+    return ((cs.leftLArm.getEncoder().getPosition()+5) // add 5 to change encoder min -5 to 0, and max to 95
+      /(95.0/2.0) // set max to 2, min is 0
+    )-1; // set max to 1, min to -1
   }
 
   @Override

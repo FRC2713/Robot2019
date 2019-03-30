@@ -11,6 +11,7 @@ import org.iraiders.robot2019.robot.OI;
 import org.iraiders.robot2019.robot.Robot;
 import org.iraiders.robot2019.robot.RobotMap;
 import org.iraiders.robot2019.robot.commands.SimpleMotorCommand;
+import org.iraiders.robot2019.robot.commands.climb.ClimbArmControl;
 import org.iraiders.robot2019.robot.commands.climb.ClimbFollowDrive;
 import org.iraiders.robot2019.robot.commands.feedback.ClimberEncoderReporter;
 
@@ -52,6 +53,8 @@ public class ClimbSubsystem extends Subsystem {
 
     RobotMap.climberLevelButton.whenPressed(new InstantCommand(() -> this.climbPiston.set(this.climbPiston.get() == kForward ? kReverse : kForward)));
     RobotMap.climberLevelButton.toggleWhenPressed(climbFollowDrive);
+
+    RobotMap.climberArmButton.whileHeld(new ClimbArmControl(this));
 
     climberEncoderReporter.start();
   }
