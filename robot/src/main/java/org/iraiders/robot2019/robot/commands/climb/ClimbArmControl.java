@@ -12,7 +12,7 @@ public class ClimbArmControl extends PIDCommand {
   public ClimbArmControl(ClimbSubsystem climbSubsystem) {
     super(.05, 0, 0); // TODO Tune this and max & min range
     this.cs = climbSubsystem;
-    this.setInputRange(-1, 1);
+    this.setInputRange(0, 1);
     this.getPIDController().setPercentTolerance(5);
   }
 
