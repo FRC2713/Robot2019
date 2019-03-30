@@ -1,5 +1,7 @@
 package org.iraiders.robot2019.robot.commands.climb;
 
+import com.revrobotics.CANSparkMax;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.PIDCommand;
 import org.iraiders.robot2019.robot.OI;
 import org.iraiders.robot2019.robot.RobotMap;
@@ -7,12 +9,16 @@ import org.iraiders.robot2019.robot.subsystems.ClimbSubsystem;
 
 public class ClimbArmControl extends PIDCommand {
   private final ClimbSubsystem cs;
+  private CANSparkMax armMotor;
+  private boolean inverted;
 
-  public ClimbArmControl(ClimbSubsystem climbSubsystem) {
+  public ClimbArmControl(ClimbSubsystem climbSubsystem, CANSparkMax armMotor, boolean inverted) {
     super(.05, 0, 0); // TODO Tune this and max & min range
     this.cs = climbSubsystem;
     this.setInputRange(-1, 1);
     this.getPIDController().setPercentTolerance(5);
+    this.armMotor = armMotor;
+    this.inverted = inverted;
   }
 
   @Override
@@ -26,8 +32,9 @@ public class ClimbArmControl extends PIDCommand {
   @Override
   protected void usePIDOutput(double output) {
     if (!RobotMap.climberArmButton.get()) return;
+    if (inverted) output *= -1;
 
-    cs.leftLArm.set(output);
+    armMotor.set(output);
   }
 
   @Override
