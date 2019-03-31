@@ -6,7 +6,6 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import org.iraiders.robot2019.robot.OI;
-import org.iraiders.robot2019.robot.Robot;
 import org.iraiders.robot2019.robot.RobotMap;
 import org.iraiders.robot2019.robot.commands.intake.BallIntakeControlCommand;
 import org.iraiders.robot2019.robot.commands.intake.BallIntakeJointCommand;
@@ -49,7 +48,10 @@ public class IntakeSubsystem extends Subsystem {
     //ballIntakeMonitor.start();
     //new EncoderReporter(intakeTalon).start();
 
-    Robot.initializeTalonDefaults(intakeTalon);
+    //Robot.initializeTalonDefaults(intakeTalon);
+    intakeTalon.configPeakCurrentLimit(40);
+    intakeTalon.configContinuousCurrentLimit(10);
+    intakeTalon.enableCurrentLimit(true);
   }
 
   public void initControls() {
