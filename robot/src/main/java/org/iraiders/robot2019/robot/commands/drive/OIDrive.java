@@ -34,7 +34,7 @@ public class OIDrive extends Command {
   @Override
   protected void initialize() {
     DriverStation.reportWarning("Starting OIDrive", false);
-    joystickChangeLimit = Robot.prefs.getDouble("JoystickChangeLimit", .04);
+    joystickChangeLimit = Robot.prefs.getDouble("JoystickChangeLimit", .03);
     driveSubsystem.roboDrive.setMaxOutput(Robot.prefs.getFloat("OIMaxSpeed", REGULAR_SPEED));
     /*
     try {

@@ -19,7 +19,7 @@ public class LiftJoystickControl extends Command {
   protected void execute(){
     double value;
     value = OI.getDeadband(leftAttack.getY(), .05);
-    if (RobotMap.climbTurtle.get()) { value = value/3; }
+    if (RobotMap.climbTurtle.get()) { value = value/2; }
 
     if (value != 0) motor.set(Math.copySign(Math.pow(value, 2), value) / 2);
   }
