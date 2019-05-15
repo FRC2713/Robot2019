@@ -55,6 +55,7 @@ public class RobotMap {
  // public static int ultraSonicEcho = 6;
   //public static int lineSenseAnalog = 7;
   public static int ultrasonicAnalog = 0;
+  public static int ballIntakeLightSensor = 5;
 
   // Buttons
   private static GenericHID buttonBox = OI.arcadeController;

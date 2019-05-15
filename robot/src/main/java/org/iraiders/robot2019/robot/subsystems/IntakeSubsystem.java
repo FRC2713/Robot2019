@@ -28,12 +28,14 @@ public class IntakeSubsystem extends Subsystem {
   public final DoubleSolenoid hatchSolenoid = OI.getDoubleSolenoid(RobotMap.hatchInNodeId, RobotMap.hatchOutNodeId);
   public final DoubleSolenoid plateSolenoid = OI.getDoubleSolenoid(RobotMap.plateOpenNodeId, RobotMap.plateCloseNodeId);
   public final DigitalInput ballIntakeLimitSwitch = new DigitalInput(RobotMap.ballIntakeLimitSwitchPort);
+  public DigitalInput ballIntakeLightSensor = new DigitalInput(RobotMap.ballIntakeLightSensor);
 
   private final BallIntakeMonitor ballIntakeMonitor = new BallIntakeMonitor(this);
   public BallIntakeControlCommand ballIntakeControlCommand = new BallIntakeControlCommand(this);
   public final BallIntakeJointCommand ballIntakeJointCommand = new BallIntakeJointCommand(this);
   public final GenericHatch plateExtendCommand = new PlateControl(this, plateSolenoid);
   public final GenericHatch hatchExtendCommand = new HatchControl(this, hatchSolenoid);
+
 
   public IntakeSubsystem() {
     ballIntakeSolenoid.setName("BallIntakeSolenoid");
