@@ -54,7 +54,7 @@ public class CanDeviceListFinder {
    * @return ArrayList of strings holding the names of devices we've found.
    */
   public List<String> getDeviceList() {
-    return deviceList;
+return deviceList;
   }
 
   /**

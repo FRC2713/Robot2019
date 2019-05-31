@@ -15,11 +15,14 @@ import org.iraiders.robot2019.robot.subsystems.DriveSubsystem;
 import org.iraiders.robot2019.robot.subsystems.IntakeSubsystem;
 import org.iraiders.robot2019.robot.subsystems.LiftSubsystem;
 
+import java.util.List;
+
 public class Robot extends TimedRobot {
   public static DriveSubsystem driveSubsystem;
   public static LiftSubsystem liftSubsystem;
   public static IntakeSubsystem intakeSubsystem;
   public static ClimbSubsystem climbSubsystem;
+  public CanDeviceListFinder canDeviceListFinder;
   public static Preferences prefs = Preferences.getInstance();
 
   public static OI m_oi;
@@ -41,6 +44,12 @@ public class Robot extends TimedRobot {
     liftSubsystem = new LiftSubsystem();
     intakeSubsystem = new IntakeSubsystem();
     climbSubsystem = new ClimbSubsystem();
+    canDeviceListFinder = new CanDeviceListFinder();
+    List<String> devices = canDeviceListFinder.getDeviceList();
+    for(int y = 0; y<devices.size() ;y++){
+     System.out.println(devices.get(y));
+
+    }
     //m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
     //chooser.addOption("My Auto", new MyAutoCommand());
     //SmartDashboard.putData("Auto mode", m_chooser);
