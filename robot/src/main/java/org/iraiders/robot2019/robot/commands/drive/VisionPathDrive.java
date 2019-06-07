@@ -21,7 +21,7 @@ public class VisionPathDrive extends PIDCommand {
     requires(driveSubsystem);
     
     this.setSetpoint(0); // Where we are trying to go
-    this.getPIDController().setPercentTolerance(2); // How close we want to be
+    this.getPIDController().setPercentTolerance(2); // How close we want to be to setpoint
     this.getPIDController().setInputRange(-22, 22); // Max and min yaw we have ever detected
     this.getPIDController().setOutputRange(-.75, .75); // 75% max speed
   }

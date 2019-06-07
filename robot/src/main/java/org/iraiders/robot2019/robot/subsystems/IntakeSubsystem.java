@@ -47,7 +47,7 @@ public class IntakeSubsystem extends Subsystem {
   
   public void initTeleop() {
     ballIntakeControlCommand.start();
-    //ballIntakeMonitor.start();
+    ballIntakeMonitor.start();
     //new EncoderReporter(intakeTalon).start();
 
     //Robot.initializeTalonDefaults(intakeTalon);

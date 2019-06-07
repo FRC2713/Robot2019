@@ -10,12 +10,11 @@ import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import org.iraiders.robot2019.robot.commands.feedback.DeviceListReporter;
 import org.iraiders.robot2019.robot.subsystems.ClimbSubsystem;
 import org.iraiders.robot2019.robot.subsystems.DriveSubsystem;
 import org.iraiders.robot2019.robot.subsystems.IntakeSubsystem;
 import org.iraiders.robot2019.robot.subsystems.LiftSubsystem;
-
-import java.util.List;
 
 public class Robot extends TimedRobot {
   public static DriveSubsystem driveSubsystem;
@@ -44,16 +43,17 @@ public class Robot extends TimedRobot {
     liftSubsystem = new LiftSubsystem();
     intakeSubsystem = new IntakeSubsystem();
     climbSubsystem = new ClimbSubsystem();
-    canDeviceListFinder = new CanDeviceListFinder();
-    List<String> devices = canDeviceListFinder.getDeviceList();
-    for(int y = 0; y<devices.size() ;y++){
-     System.out.println(devices.get(y));
+
+    DeviceListReporter deviceListReporter = new DeviceListReporter();
+    deviceListReporter.start();
+    //for(int y = 0; y<devices.size() ;y++){
+     //System.out.println(devices.get(y));
 
     }
     //m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
     //chooser.addOption("My Auto", new MyAutoCommand());
     //SmartDashboard.putData("Auto mode", m_chooser);
-  }
+ // }
 
   private void initCamera() {
     CameraServer cs = CameraServer.getInstance();
