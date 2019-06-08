@@ -16,7 +16,6 @@ public class LiftEncoderMonitor extends Command {
   protected void execute() {
     if (subsystem.liftTalon.getSensorCollection().isFwdLimitSwitchClosed())
       subsystem.liftTalon.setSelectedSensorPosition(0);
-
     SmartDashboard.putNumber("LiftPos", subsystem.liftTalon.getSelectedSensorPosition());
   }
   

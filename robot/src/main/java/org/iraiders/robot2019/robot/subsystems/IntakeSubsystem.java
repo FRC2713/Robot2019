@@ -52,7 +52,7 @@ public class IntakeSubsystem extends Subsystem {
 
     //Robot.initializeTalonDefaults(intakeTalon);
     intakeTalon.configPeakCurrentLimit(40);
-    intakeTalon.configContinuousCurrentLimit(10);
+    intakeTalon.configContinuousCurrentLimit(20);
     intakeTalon.enableCurrentLimit(true);
   }
 
