@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.iraiders.robot2019.robot.OI;
 import org.iraiders.robot2019.robot.Robot;
 import org.iraiders.robot2019.robot.subsystems.DriveSubsystem;
@@ -68,9 +69,9 @@ public class OIDrive extends Command {
       measuredRight = -xbox.getX(GenericHID.Hand.kRight);
       driveSubsystem.roboDrive.curvatureDrive(-measuredLeft, measuredRight, false);
     } else {
-      measuredLeft = DriveSubsystem.slewLimit(xbox.getY(GenericHID.Hand.kLeft), lastLeftStickVal, joystickChangeLimit);
+      measuredLeft =  DriveSubsystem.slewLimit(xbox.getY(GenericHID.Hand.kLeft), lastLeftStickVal, joystickChangeLimit);
       measuredRight = DriveSubsystem.slewLimit(xbox.getX(GenericHID.Hand.kRight), lastRightStickVal, joystickChangeLimit);
-      driveSubsystem.roboDrive.arcadeDrive(-measuredLeft, measuredRight, true);
+      driveSubsystem.roboDrive.arcadeDrive(measuredLeft, -measuredRight, true);
 
       /*
       try {
