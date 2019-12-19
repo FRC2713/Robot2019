@@ -20,6 +20,8 @@ public class LiftSubsystem extends Subsystem {
   private final WPI_TalonSRX liftTalonTwo = new WPI_TalonSRX(RobotMap.liftTwoTalonPort);
   private final WPI_TalonSRX liftTalonThree = new WPI_TalonSRX(RobotMap.liftThreeTalonPort);
   private final WPI_TalonSRX liftTalonFour = new WPI_TalonSRX(RobotMap.liftFourTalonPort);
+  private final DigitalInput liftLimitSwitchDown = new DigitalInput(RobotMap.liftLimitSwitchDown);
+  //private final DigitalInput liftLimitSwitchUp = new DigitalInput(RobotMap.liftLimitSwitchUp);
   
   private final LiftJoystickControl liftJoystickControl = new LiftJoystickControl(this);
   private final LiftEncoderMonitor liftEncoderMonitor = new LiftEncoderMonitor(this);
@@ -33,6 +35,9 @@ public class LiftSubsystem extends Subsystem {
     
     Robot.initializeTalonDefaults(liftTalon, liftTalonTwo, liftTalonThree, liftTalonFour);
     SmartDashboard.putNumber("Lift Master Volts", liftTalon.getMotorOutputVoltage());
+    SmartDashboard.putBoolean("Down", liftLimitSwitchDown.get());
+    SmartDashboard.putBoolean("Up Encoder Value", liftLimitSwitchUp.get());
+    System.out.println("sfgserth");
     liftTalon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
     liftTalonTwo.set(ControlMode.Follower, RobotMap.liftOneTalonPort);
     liftTalonThree.set(ControlMode.Follower, RobotMap.liftOneTalonPort);
